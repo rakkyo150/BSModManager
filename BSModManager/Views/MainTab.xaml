@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="ModManager.Views.MainTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <DataGrid>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="Blue"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Mod" MinWidth="100"/>
+                    <DataGridTextColumn Header="Installed" MinWidth="70"/>
+                    <DataGridTextColumn Header="Latest" MinWidth="70"/>
+                    <DataGridTextColumn Header="Original" MinWidth="70"/>
+                    <DataGridTextColumn Header="MA" MinWidth="70"/>
+                    <DataGridTextColumn Header="Description" MinWidth="200" Width="600"/>
+                    <DataGridTemplateColumn Header="Uninstall" MinWidth="70">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Uninstall"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
