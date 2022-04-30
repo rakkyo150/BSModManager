@@ -67,6 +67,7 @@ namespace ModManager.ViewModels
               });
             ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
               {
+                  Console = "Settings";
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
         }

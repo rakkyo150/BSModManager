@@ -97,7 +97,7 @@ namespace ModManager.ViewModels
             {
                 SetProperty(ref gitHubToken, value);
                 configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
-                mainWindowViewModel.Console = "Change GitHub Token";
+                mainWindowViewModel.Console = "GitHub Token Changed";
             }
         }
     }

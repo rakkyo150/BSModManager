@@ -112,12 +112,14 @@
             HorizontalAlignment="Left"
             FontSize="16"
             FontWeight="Bold"
-            Text="Get Prerelease" />
+            Text="Get Prerelease(Unimplemented)"
+            Foreground="Gray"/>
             <CheckBox
             Grid.Row="5"
-            Grid.Column="0"
+            Grid.Column="1"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center" />
+            VerticalAlignment="Center" 
+            IsEnabled="False"/>
             <TextBlock
                 Text="Diagnostic"
                 Grid.Row="6"
@@ -153,8 +155,9 @@
                 Height="30"
                 Margin="5"
                 Padding="5"
-                Content="Console Version"
-                Background="LightGreen"/>
+                Content="Console Version(Unimplemented)"
+                Background="LightGreen"
+                IsEnabled="False"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>
