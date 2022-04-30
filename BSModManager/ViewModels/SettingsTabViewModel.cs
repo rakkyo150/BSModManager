@@ -63,6 +63,8 @@ namespace ModManager.ViewModels
                 mainWindowViewModel.Console = "Open Temp Folder";
                 FolderManager.OpenFolderCommand(FolderManager.modTempFolder);
             });
+
+            mainWindowViewModel.Console = "Settings";
         }
 
         private string bSFolderPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Sabe";
