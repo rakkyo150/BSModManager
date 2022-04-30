@@ -38,6 +38,34 @@ namespace ModManager.ViewModels
             set { SetProperty(ref myselfVersion, value); }
         }
 
+        private bool installButtonEnable = true;
+        public bool InstallButtonEnable
+        {
+            get { return installButtonEnable; }
+            set { SetProperty(ref installButtonEnable, value); }
+        }
+
+        private bool modRepositoryButtonEnable = true;
+        public bool ModRepositoryButtonEnable
+        {
+            get { return modRepositoryButtonEnable; }
+            set { SetProperty(ref modRepositoryButtonEnable, value); }
+        }
+
+        private bool changeUrlButtonEnable = true;
+        public bool ChangeUrlButtonEnable
+        {
+            get { return changeUrlButtonEnable; }
+            set { SetProperty(ref changeUrlButtonEnable, value); }
+        }
+
+        private bool allCheckedButtonEnable = true;
+        public bool AllCheckedButtonEnable
+        {
+            get { return allCheckedButtonEnable; }
+            set { SetProperty(ref allCheckedButtonEnable, value); }
+        }
+
         ConfigFileManager configFileManager;
         VersionManager versionManager;
 
@@ -63,11 +91,19 @@ namespace ModManager.ViewModels
             ShowMainTabViewCommand = new DelegateCommand<string>((x) =>
               {
                   Console = "Main";
+                  InstallButtonEnable = true;
+                  ModRepositoryButtonEnable = true;
+                  ChangeUrlButtonEnable = true;
+                  AllCheckedButtonEnable = true;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
             ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
               {
                   Console = "Settings";
+                  InstallButtonEnable = false;
+                  ModRepositoryButtonEnable = false;
+                  ChangeUrlButtonEnable = false;
+                  AllCheckedButtonEnable = false;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
         }

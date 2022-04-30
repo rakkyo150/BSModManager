@@ -5,7 +5,7 @@
              prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <DataGrid>
+            <DataGrid ItemsSource="{Binding ModsData}" AutoGenerateColumns="False" CanUserAddRows="False">
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -13,16 +13,32 @@
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="Mod" MinWidth="100"/>
-                    <DataGridTextColumn Header="Installed" MinWidth="70"/>
-                    <DataGridTextColumn Header="Latest" MinWidth="70"/>
-                    <DataGridTextColumn Header="Original" MinWidth="70"/>
-                    <DataGridTextColumn Header="MA" MinWidth="70"/>
-                    <DataGridTextColumn Header="Description" MinWidth="200" Width="600"/>
+                    <DataGridCheckBoxColumn Header="Checked" MinWidth="10" Binding="{Binding Checked}"/>
+                    <DataGridTextColumn Header="Mod" MinWidth="100" Binding="{Binding Mod}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Installed" MinWidth="70" Binding="{Binding Installed}" IsReadOnly="True">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Foreground" Value="{Binding InstalledColor}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Latest" MinWidth="70" Binding="{Binding Latest}" IsReadOnly="True">
+                        <!--
+                        https://social.msdn.microsoft.com/Forums/ja-JP/4d9aadf3-fad7-48d0-aac4-d8bd8c9e8bb5/datagridtextcolumn12391259912338312398333941243426465202141239512424?forum=wpfja
+                        -->
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Foreground" Value="{Binding LatestColor}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Original"  MinWidth="70" Binding="{Binding Original}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="MA" MinWidth="70" Binding="{Binding MA}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Description" MinWidth="200" Width="600" Binding="{Binding Description}" IsReadOnly="True"/>
                     <DataGridTemplateColumn Header="Uninstall" MinWidth="70">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Uninstall"/>
+                                <Button Content="Uninstall" Background="Black" Foreground="White"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
