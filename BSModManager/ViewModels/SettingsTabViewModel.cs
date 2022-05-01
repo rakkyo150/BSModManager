@@ -12,7 +12,7 @@ namespace ModManager.ViewModels
 {
     public class SettingsTabViewModel : BindableBase, INotifyPropertyChanged
     {
-        MainWindowViewModel mainWindowViewModel;
+        MainWindowPropertyModel mainWindowPropertyModel;
         ConfigFileManager configFileManager;
         VersionManager versionManager;
 
@@ -24,11 +24,11 @@ namespace ModManager.ViewModels
         public ReactiveCommand OpenModTempFolder { get; } = new ReactiveCommand();
 
         // IContainerProviderをDIしてResolveで取ってきてもOK
-        public SettingsTabViewModel(MainWindowViewModel mwvm, ConfigFileManager cfm, VersionManager vm)
+        public SettingsTabViewModel(ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm)
         {
             configFileManager = cfm;
             versionManager = vm;
-            mainWindowViewModel = mwvm;
+            mainWindowPropertyModel = mwpm;
 
             Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
             if (tempDictionary["BSFolderPath"] != null && tempDictionary["GitHubToken"] != null)
@@ -37,11 +37,10 @@ namespace ModManager.ViewModels
                 GitHubToken = tempDictionary["GitHubToken"];
             }
 
-            mainWindowViewModel = mwvm;
             SelectBSFolder.Subscribe(_ => BSFolderPath = FolderManager.SelectFolderCommand(BSFolderPath));
             OpenBSFolder.Subscribe(_ =>
             {
-                mainWindowViewModel.Console = "Open BS Folder";
+                mainWindowPropertyModel.Console = "Open BS Folder";
                 FolderManager.OpenFolderCommand(BSFolderPath);
             });
             ChangeToken.Subscribe((x) =>
@@ -50,21 +49,21 @@ namespace ModManager.ViewModels
             });
             OpenDataFolder.Subscribe(_ =>
             {
-                mainWindowViewModel.Console = "Open Data Folder";
+                mainWindowPropertyModel.Console = "Open Data Folder";
                 FolderManager.OpenFolderCommand(FolderManager.dataFolder);
             });
             OpenBackupFolder.Subscribe(_ =>
             {
-                mainWindowViewModel.Console = "Open Backup Folder";
+                mainWindowPropertyModel.Console = "Open Backup Folder";
                 FolderManager.OpenFolderCommand(FolderManager.backupFolder);
             });
             OpenModTempFolder.Subscribe(_ =>
             {
-                mainWindowViewModel.Console = "Open Temp Folder";
+                mainWindowPropertyModel.Console = "Open Temp Folder";
                 FolderManager.OpenFolderCommand(FolderManager.modTempFolder);
             });
 
-            mainWindowViewModel.Console = "Settings";
+            mainWindowPropertyModel.Console = "Settings";
         }
 
         private string bSFolderPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Sabe";
@@ -74,9 +73,9 @@ namespace ModManager.ViewModels
             set
             {
                 SetProperty(ref bSFolderPath, value);
-                mainWindowViewModel.GameVersion = versionManager.GetGameVersion(BSFolderPath);
+                mainWindowPropertyModel.GameVersion = versionManager.GetGameVersion(BSFolderPath);
                 configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
-                mainWindowViewModel.Console = BSFolderPath;
+                mainWindowPropertyModel.Console = BSFolderPath;
                 if (Directory.Exists(BSFolderPath)) OpenBSFolderButton = true;
                 else OpenBSFolderButton = false;
             }
@@ -97,7 +96,7 @@ namespace ModManager.ViewModels
             {
                 SetProperty(ref gitHubToken, value);
                 configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
-                mainWindowViewModel.Console = "GitHub Token Changed";
+                mainWindowPropertyModel.Console = "GitHub Token Changed";
             }
         }
     }

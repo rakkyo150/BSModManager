@@ -3,32 +3,25 @@ using ModManager.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System.Collections.Generic;
 
 namespace ModManager.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        public ReactiveCommand AllCheckedButtonCommand = new ReactiveCommand();
+
+        // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
+        public ReadOnlyReactivePropertySlim<string> Console { get; }
+        public ReadOnlyReactivePropertySlim<string> GameVersion { get; }
+        
         private string title = "BSModManager";
         public string Title
         {
             get { return title; }
             set { SetProperty(ref title, value); }
-        }
-
-        private string console = "Hello World";
-
-        public string Console
-        {
-            get { return console; }
-            set { SetProperty(ref console, value); }
-        }
-
-        private string gameVersion = "GameVersion\n---";
-        public string GameVersion
-        {
-            get { return gameVersion; }
-            set { SetProperty(ref gameVersion, value); }
         }
 
         private string myselfVersion = "Version\n---";
@@ -68,20 +61,26 @@ namespace ModManager.ViewModels
 
         ConfigFileManager configFileManager;
         VersionManager versionManager;
+        MainWindowPropertyModel mainWindowPropertyModel;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
 
-        public MainWindowViewModel(IRegionManager regionManager, ConfigFileManager cfm, VersionManager vm)
+        public MainWindowViewModel(IRegionManager regionManager, ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm)
         {
             configFileManager = cfm;
             versionManager = vm;
+            mainWindowPropertyModel = mwpm;
+
+            // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
+            this.Console = mainWindowPropertyModel.ObserveProperty(x => x.Console).ToReadOnlyReactivePropertySlim();
+            this.GameVersion = mainWindowPropertyModel.ObserveProperty(x => x.GameVersion).ToReadOnlyReactivePropertySlim();
 
             Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
             if (tempDictionary["BSFolderPath"] != null)
             {
-                GameVersion = versionManager.GetGameVersion(tempDictionary["BSFolderPath"]);
+                mainWindowPropertyModel.GameVersion = versionManager.GetGameVersion(tempDictionary["BSFolderPath"]);
             }
 
             MyselfVersion = versionManager.GetMyselfVersion();
@@ -90,7 +89,7 @@ namespace ModManager.ViewModels
             regionManager.RegisterViewWithRegion("ContentRegion", typeof(MainTab));
             ShowMainTabViewCommand = new DelegateCommand<string>((x) =>
               {
-                  Console = "Main";
+                  mainWindowPropertyModel.Console = "Main";
                   InstallButtonEnable = true;
                   ModRepositoryButtonEnable = true;
                   ChangeUrlButtonEnable = true;
@@ -99,7 +98,7 @@ namespace ModManager.ViewModels
               });
             ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
               {
-                  Console = "Settings";
+                  mainWindowPropertyModel.Console = "Settings";
                   InstallButtonEnable = false;
                   ModRepositoryButtonEnable = false;
                   ChangeUrlButtonEnable = false;
