@@ -5,13 +5,15 @@ using Prism.Mvvm;
 using Prism.Regions;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace ModManager.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        public ReactiveCommand AllCheckedButtonCommand = new ReactiveCommand();
+        // プロパティにしないとバインドされない
+        public ReactiveCommand AllCheckedButtonCommand { get; } = new ReactiveCommand();
 
         // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
         public ReadOnlyReactivePropertySlim<string> Console { get; }
@@ -62,16 +64,18 @@ namespace ModManager.ViewModels
         ConfigFileManager configFileManager;
         VersionManager versionManager;
         MainWindowPropertyModel mainWindowPropertyModel;
+        MainTabPropertyModel mainTabPropertyModel;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
 
-        public MainWindowViewModel(IRegionManager regionManager, ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm)
+        public MainWindowViewModel(IRegionManager regionManager, ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm)
         {
             configFileManager = cfm;
             versionManager = vm;
             mainWindowPropertyModel = mwpm;
+            mainTabPropertyModel = mtpm;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             this.Console = mainWindowPropertyModel.ObserveProperty(x => x.Console).ToReadOnlyReactivePropertySlim();
@@ -105,6 +109,11 @@ namespace ModManager.ViewModels
                   AllCheckedButtonEnable = false;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
+
+            AllCheckedButtonCommand.Subscribe(_ => 
+            {
+                mainTabPropertyModel.AllCheckedOrUnchecked(); 
+            });
         }
     }
 }

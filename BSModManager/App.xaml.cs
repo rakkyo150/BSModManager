@@ -1,4 +1,5 @@
-﻿using BSModManager.Static;
+﻿using BSModManager.Models;
+using BSModManager.Static;
 using ModManager.ViewModels;
 using ModManager.Views;
 using Prism.Ioc;
@@ -25,8 +26,8 @@ namespace ModManager
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
-            containerRegistry.RegisterSingleton<MainWindowViewModel>();
-            containerRegistry.RegisterSingleton<SettingsTabViewModel>();
+            containerRegistry.RegisterSingleton<MainWindowPropertyModel>();
+            containerRegistry.RegisterSingleton<MainTabPropertyModel>();
 
             containerRegistry.RegisterForNavigation<MainTab>();
             containerRegistry.RegisterForNavigation<SettingsTab>();
