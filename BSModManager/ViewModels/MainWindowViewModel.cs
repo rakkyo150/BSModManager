@@ -1,5 +1,5 @@
 ﻿using BSModManager.Models;
-using ModManager.Views;
+using BSModManager.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -8,7 +8,7 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 
-namespace ModManager.ViewModels
+namespace BSModManager.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {

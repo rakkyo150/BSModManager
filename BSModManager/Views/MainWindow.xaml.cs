@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ModManager.Views
+namespace BSModManager.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

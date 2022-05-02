@@ -6,7 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 
-namespace ModManager.ViewModels
+namespace BSModManager.ViewModels
 {
     public class MainTabViewModel : BindableBase
     {

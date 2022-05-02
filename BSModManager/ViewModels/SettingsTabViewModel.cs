@@ -10,7 +10,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Controls;
 
-namespace ModManager.ViewModels
+namespace BSModManager.ViewModels
 {
     public class SettingsTabViewModel : BindableBase, INotifyPropertyChanged
     {

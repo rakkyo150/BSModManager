@@ -1,11 +1,11 @@
 ﻿using BSModManager.Models;
 using BSModManager.Static;
-using ModManager.ViewModels;
-using ModManager.Views;
+using BSModManager.ViewModels;
+using BSModManager.Views;
 using Prism.Ioc;
 using System.Windows;
 
-namespace ModManager
+namespace BSModManager
 {
     /// <summary>
     /// Interaction logic for App.xaml

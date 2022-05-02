@@ -3,11 +3,11 @@
 namespace BSModManager.Views
 {
     /// <summary>
-    /// Interaction logic for MainTab
+    /// Interaction logic for InitalSetting
     /// </summary>
-    public partial class MainTab : UserControl
+    public partial class InitalSetting : UserControl
     {
-        public MainTab()
+        public InitalSetting()
         {
             InitializeComponent();
         }

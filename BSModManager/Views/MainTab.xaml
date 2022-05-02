@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ModManager.Views.MainTab"
+﻿<UserControl x:Class="BSModManager.Views.MainTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"             

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ModManager.Properties
+namespace BSModManager.Properties
 {
 
 

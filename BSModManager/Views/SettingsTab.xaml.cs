@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ModManager.Views
+namespace BSModManager.Views
 {
     /// <summary>
     /// Interaction logic for SettingsTab
