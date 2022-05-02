@@ -1,7 +1,9 @@
 ﻿using BSModManager.Models;
+using BSModManager.Models.ViewModelPropertyModel;
 using BSModManager.Static;
 using Prism.Mvvm;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,8 +15,7 @@ namespace ModManager.ViewModels
     public class SettingsTabViewModel : BindableBase, INotifyPropertyChanged
     {
         MainWindowPropertyModel mainWindowPropertyModel;
-        ConfigFileManager configFileManager;
-        VersionManager versionManager;
+        SettingsTabPropertyModel settingsTabPropertyModel;
 
         public ReactiveCommand SelectBSFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenBSFolder { get; } = new ReactiveCommand();
@@ -24,28 +25,25 @@ namespace ModManager.ViewModels
         public ReactiveCommand OpenModTempFolder { get; } = new ReactiveCommand();
 
         // IContainerProviderをDIしてResolveで取ってきてもOK
-        public SettingsTabViewModel(ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm)
+        public SettingsTabViewModel(MainWindowPropertyModel mwpm,SettingsTabPropertyModel stpm)
         {
-            configFileManager = cfm;
-            versionManager = vm;
             mainWindowPropertyModel = mwpm;
+            settingsTabPropertyModel = stpm;
 
-            Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
-            if (tempDictionary["BSFolderPath"] != null && tempDictionary["GitHubToken"] != null)
-            {
-                BSFolderPath = tempDictionary["BSFolderPath"];
-                GitHubToken = tempDictionary["GitHubToken"];
-            }
+            this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x=>x.BSFolderPath).ToReadOnlyReactivePropertySlim();
+            this.GitHubToken = settingsTabPropertyModel.ObserveProperty(x => x.GitHubToken).ToReadOnlyReactivePropertySlim();
 
-            SelectBSFolder.Subscribe(_ => BSFolderPath = FolderManager.SelectFolderCommand(BSFolderPath));
-            OpenBSFolder.Subscribe(_ =>
-            {
-                mainWindowPropertyModel.Console = "Open BS Folder";
-                FolderManager.OpenFolderCommand(BSFolderPath);
-            });
+            SelectBSFolder.Subscribe(_ => settingsTabPropertyModel.BSFolderPath = FolderManager.SelectFolderCommand(settingsTabPropertyModel.BSFolderPath));
+            OpenBSFolder = settingsTabPropertyModel.OpenBSFolderButtonEnable
+                .ToReactiveCommand()
+                .WithSubscribe(() =>
+                {
+                    mainWindowPropertyModel.Console = "Open BS Folder";
+                    FolderManager.OpenFolderCommand(settingsTabPropertyModel.BSFolderPath);
+                });
             ChangeToken.Subscribe((x) =>
             {
-                GitHubToken = ((PasswordBox)x).Password;
+                settingsTabPropertyModel.GitHubToken = ((PasswordBox)x).Password;
             });
             OpenDataFolder.Subscribe(_ =>
             {
@@ -66,38 +64,9 @@ namespace ModManager.ViewModels
             mainWindowPropertyModel.Console = "Settings";
         }
 
-        private string bSFolderPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Sabe";
-        public string BSFolderPath
-        {
-            get => bSFolderPath;
-            set
-            {
-                SetProperty(ref bSFolderPath, value);
-                mainWindowPropertyModel.GameVersion = versionManager.GetGameVersion(BSFolderPath);
-                configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
-                mainWindowPropertyModel.Console = BSFolderPath;
-                if (Directory.Exists(BSFolderPath)) OpenBSFolderButton = true;
-                else OpenBSFolderButton = false;
-            }
-        }
+        public ReadOnlyReactivePropertySlim<string> BSFolderPath { get; }
+        public ReadOnlyReactivePropertySlim<string> GitHubToken { get; }
 
-        private bool openBSFolderButton = false;
-        public bool OpenBSFolderButton
-        {
-            get => openBSFolderButton;
-            set => SetProperty(ref openBSFolderButton, value);
-        }
 
-        private string gitHubToken = "";
-        public string GitHubToken
-        {
-            get => gitHubToken;
-            set
-            {
-                SetProperty(ref gitHubToken, value);
-                configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
-                mainWindowPropertyModel.Console = "GitHub Token Changed";
-            }
-        }
     }
 }

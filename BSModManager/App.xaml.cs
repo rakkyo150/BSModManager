@@ -28,6 +28,10 @@ namespace ModManager
             // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
             containerRegistry.RegisterSingleton<MainWindowPropertyModel>();
             containerRegistry.RegisterSingleton<MainTabPropertyModel>();
+            containerRegistry.RegisterSingleton<SettingsTabViewModel>();
+
+            containerRegistry.RegisterSingleton<ConfigFileManager>();
+            containerRegistry.RegisterSingleton<VersionManager>();
 
             containerRegistry.RegisterForNavigation<MainTab>();
             containerRegistry.RegisterForNavigation<SettingsTab>();

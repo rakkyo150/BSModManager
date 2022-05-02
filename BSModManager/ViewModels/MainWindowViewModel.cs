@@ -81,12 +81,6 @@ namespace ModManager.ViewModels
             this.Console = mainWindowPropertyModel.ObserveProperty(x => x.Console).ToReadOnlyReactivePropertySlim();
             this.GameVersion = mainWindowPropertyModel.ObserveProperty(x => x.GameVersion).ToReadOnlyReactivePropertySlim();
 
-            Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
-            if (tempDictionary["BSFolderPath"] != null)
-            {
-                mainWindowPropertyModel.GameVersion = versionManager.GetGameVersion(tempDictionary["BSFolderPath"]);
-            }
-
             MyselfVersion = versionManager.GetMyselfVersion();
 
             RegionManager = regionManager;

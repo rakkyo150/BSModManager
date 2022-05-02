@@ -57,9 +57,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\ConfigFileManager.cs" />
-    <Compile Include="Models\ViewModelPropertyModel\MainTabPropertyModel.cs" />
-    <Compile Include="Models\ViewModelPropertyModel\MainWindowPropertyModel.cs" />
+    <Compile Include="Models\ViewModelCommonProperty\MainTabPropertyModel.cs" />
+    <Compile Include="Models\ViewModelCommonProperty\MainWindowPropertyModel.cs" />
     <Compile Include="Models\VersionManager.cs" />
+    <Compile Include="Models\ViewModelCommonProperty\SettingsTabPropertyModel.cs" />
     <Compile Include="Static\FolderManager.cs" />
     <Compile Include="Views\SettingsTab.xaml.cs">
       <DependentUpon>SettingsTab.xaml</DependentUpon>

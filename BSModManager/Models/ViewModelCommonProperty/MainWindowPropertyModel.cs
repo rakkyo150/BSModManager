@@ -9,6 +9,9 @@ namespace BSModManager.Models
 {
     public class MainWindowPropertyModel : BindableBase
     {
+        private VersionManager versionManager;
+        private ConfigFileManager configFileManager;
+        
         private string console="Hello World";
         public string Console
         {
@@ -21,6 +24,18 @@ namespace BSModManager.Models
         {
             get { return gameVersion; }
             set { SetProperty(ref gameVersion, value); }
+        }
+
+        public MainWindowPropertyModel(VersionManager vm,ConfigFileManager cfm)
+        {
+            versionManager = vm;
+            configFileManager = cfm;
+            
+            Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
+            if (tempDictionary["BSFolderPath"] != null)
+            {
+                GameVersion = versionManager.GetGameVersion(tempDictionary["BSFolderPath"]);
+            }
         }
     }
 }
