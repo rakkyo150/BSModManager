@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BSModManager.Models.ViewModelPropertyModel
+namespace BSModManager.Models.ViewModelCommonProperty
 {
     public class SettingsTabPropertyModel: BindableBase
     {

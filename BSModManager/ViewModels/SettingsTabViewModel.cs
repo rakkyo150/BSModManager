@@ -1,5 +1,5 @@
 ﻿using BSModManager.Models;
-using BSModManager.Models.ViewModelPropertyModel;
+using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
 using Prism.Mvvm;
 using Reactive.Bindings;
@@ -18,7 +18,7 @@ namespace BSModManager.ViewModels
         SettingsTabPropertyModel settingsTabPropertyModel;
 
         public ReactiveCommand SelectBSFolder { get; } = new ReactiveCommand();
-        public ReactiveCommand OpenBSFolder { get; } = new ReactiveCommand();
+        public ReactiveCommand OpenBSFolder { get; }
         public ReactiveCommand ChangeToken { get; } = new ReactiveCommand();
         public ReactiveCommand OpenDataFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenBackupFolder { get; } = new ReactiveCommand();
@@ -30,7 +30,7 @@ namespace BSModManager.ViewModels
             mainWindowPropertyModel = mwpm;
             settingsTabPropertyModel = stpm;
 
-            this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x=>x.BSFolderPath).ToReadOnlyReactivePropertySlim();
+            this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x=> x.BSFolderPath).ToReadOnlyReactivePropertySlim();
             this.GitHubToken = settingsTabPropertyModel.ObserveProperty(x => x.GitHubToken).ToReadOnlyReactivePropertySlim();
 
             SelectBSFolder.Subscribe(_ => settingsTabPropertyModel.BSFolderPath = FolderManager.SelectFolderCommand(settingsTabPropertyModel.BSFolderPath));

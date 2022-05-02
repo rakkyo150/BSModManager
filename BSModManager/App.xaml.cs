@@ -1,6 +1,7 @@
 ﻿using BSModManager.Models;
+using BSModManager.Models.CoreManager;
+using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
-using BSModManager.ViewModels;
 using BSModManager.Views;
 using Prism.Ioc;
 using System.Windows;
@@ -28,13 +29,18 @@ namespace BSModManager
             // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
             containerRegistry.RegisterSingleton<MainWindowPropertyModel>();
             containerRegistry.RegisterSingleton<MainTabPropertyModel>();
-            containerRegistry.RegisterSingleton<SettingsTabViewModel>();
+            containerRegistry.RegisterSingleton<SettingsTabPropertyModel>();
+            containerRegistry.RegisterSingleton<UpdateMyselfConfirmPropertyModel>();
 
             containerRegistry.RegisterSingleton<ConfigFileManager>();
             containerRegistry.RegisterSingleton<VersionManager>();
 
             containerRegistry.RegisterForNavigation<MainTab>();
             containerRegistry.RegisterForNavigation<SettingsTab>();
+
+            containerRegistry.RegisterDialog<InitialSetting>();
+
+            containerRegistry.RegisterSingleton<InnerData>();
         }
     }
 }

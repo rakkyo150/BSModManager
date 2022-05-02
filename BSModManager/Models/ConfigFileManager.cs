@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BSModManager.Static;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,15 +8,13 @@ namespace BSModManager.Models
 {
     public class ConfigFileManager
     {
-        public string configFilePath = Path.Combine(Environment.CurrentDirectory, "config.json");
-
         public Dictionary<string, string> LoadConfigFile()
         {
             Dictionary<string, string> settingDictionary = null;
 
-            if (File.Exists(configFilePath))
+            if (File.Exists(FilePath.configFilePath))
             {
-                StreamReader re = new StreamReader(configFilePath);
+                StreamReader re = new StreamReader(FilePath.configFilePath);
                 string _jsonStr = re.ReadToEnd();
                 Console.WriteLine(_jsonStr);
                 re.Close();
@@ -48,7 +47,7 @@ namespace BSModManager.Models
 
             string _jsonFinish = JsonConvert.SerializeObject(settingDictionary, Formatting.Indented);
 
-            StreamWriter wr = new StreamWriter(new FileStream(configFilePath, FileMode.Create));
+            StreamWriter wr = new StreamWriter(new FileStream(FilePath.configFilePath, FileMode.Create));
             wr.WriteLine(_jsonFinish);
             wr.Close();
         }
