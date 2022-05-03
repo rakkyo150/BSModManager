@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace BSModManager.ViewModels
 {
@@ -32,18 +33,27 @@ namespace BSModManager.ViewModels
 
             this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x=> x.BSFolderPath).ToReadOnlyReactivePropertySlim();
             this.GitHubToken = settingsTabPropertyModel.ObserveProperty(x => x.GitHubToken).ToReadOnlyReactivePropertySlim();
+            this.VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim();
+            this.VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim();
+            this.VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim();
+            this.VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim();
 
-            SelectBSFolder.Subscribe(_ => settingsTabPropertyModel.BSFolderPath = FolderManager.SelectFolderCommand(settingsTabPropertyModel.BSFolderPath));
+            SelectBSFolder.Subscribe(_ => {
+                settingsTabPropertyModel.BSFolderPath = FolderManager.SelectFolderCommand(settingsTabPropertyModel.BSFolderPath);
+                mainWindowPropertyModel.Console = BSFolderPath.Value;
+            });
             OpenBSFolder = settingsTabPropertyModel.OpenBSFolderButtonEnable
                 .ToReactiveCommand()
                 .WithSubscribe(() =>
                 {
                     mainWindowPropertyModel.Console = "Open BS Folder";
                     FolderManager.OpenFolderCommand(settingsTabPropertyModel.BSFolderPath);
+                    mainWindowPropertyModel.Console = BSFolderPath.Value;
                 });
             ChangeToken.Subscribe((x) =>
             {
                 settingsTabPropertyModel.GitHubToken = ((PasswordBox)x).Password;
+                mainWindowPropertyModel.Console = "GitHub Token Changed";
             });
             OpenDataFolder.Subscribe(_ =>
             {
@@ -65,8 +75,12 @@ namespace BSModManager.ViewModels
         }
 
         public ReadOnlyReactivePropertySlim<string> BSFolderPath { get; }
+        public ReadOnlyReactivePropertySlim<string> VerifyBSFolder { get; }
+        public ReadOnlyReactivePropertySlim<Brush> VerifyBSFolderColor { get; }
+
         public ReadOnlyReactivePropertySlim<string> GitHubToken { get; }
 
-
+        public ReadOnlyReactivePropertySlim<string> VerifyGitHubToken { get; }
+        public ReadOnlyReactivePropertySlim<Brush> VerifyGitHubTokenColor { get; }
     }
 }

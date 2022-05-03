@@ -1,4 +1,5 @@
 ﻿using BSModManager.Models;
+using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Views;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -63,24 +64,22 @@ namespace BSModManager.ViewModels
         }
 
         IDialogService dialogService;
-        ConfigFileManager configFileManager;
         VersionManager versionManager;
+        SettingsTabPropertyModel settingsTabPropertyModel;
         MainWindowPropertyModel mainWindowPropertyModel;
         MainTabPropertyModel mainTabPropertyModel;
-        InitialSettingViewModel initialSettingViewModel;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
 
-        public MainWindowViewModel(IRegionManager regionManager,IDialogService ds,ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm,InitialSettingViewModel isvm)
+        public MainWindowViewModel(IRegionManager regionManager,SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm)
         {
-            configFileManager = cfm;
             versionManager = vm;
+            settingsTabPropertyModel = stpm;
             mainWindowPropertyModel = mwpm;
             mainTabPropertyModel = mtpm;
-            initialSettingViewModel = isvm;
 
             dialogService = ds;
 
@@ -118,7 +117,11 @@ namespace BSModManager.ViewModels
 
             LoadedCommand = new DelegateCommand(() =>
             {
-                dialogService.ShowDialog("InitialSetting");
+                if (!settingsTabPropertyModel.VerifyBoth.Value)
+                {
+                    System.Diagnostics.Debug.WriteLine(settingsTabPropertyModel.VerifyBoth.Value);
+                    dialogService.ShowDialog("InitialSetting");
+                }
             });
         }
     }

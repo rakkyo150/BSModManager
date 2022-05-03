@@ -20,8 +20,10 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Content="Install Directroy" Grid.Column="0"></Label>
-            <TextBox Text="{Binding VerifyBSFolder.Value}" Foreground="{Binding VerifyBSFolderColor.Value}" Width="25" Background="LightGray" Grid.Column="1" ></TextBox>
-            <TextBox Text="{Binding BSFolderPath.Value}" Grid.Column="2"></TextBox>
+            <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Width="25" Grid.Column="1">
+                <TextBlock Text="{Binding VerifyBSFolder.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyBSFolderColor.Value}" Width="25" ></TextBlock>
+            </Border>
+            <TextBox Text="{Binding BSFolderPath.Value}" VerticalContentAlignment="Center" Grid.Column="2"></TextBox>
             <Button Content="..." Command="{Binding SelectBSFolderCommand}" Width="40"  Grid.Column="3" />
         </Grid>
         <Grid Grid.Row="1">
@@ -29,24 +31,26 @@
                 <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Content="GitHub Token" Grid.Column="0"></Label>
-            <TextBox Text="{Binding VerifyGitHubToken.Value}" Foreground="{Binding VerifyGitHubTokenColor.Value}" Width="25" Background="LightGray" Grid.Column="1"></TextBox>
-            <PasswordBox x:Name="GitHubToken" Grid.Column="2"></PasswordBox>
+            <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Width="25" Grid.Column="1">
+                <TextBlock Text="{Binding VerifyGitHubToken.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyGitHubTokenColor.Value}" Width="25" Background="LightGray" Grid.Column="1"></TextBlock>
+            </Border>
+            <PasswordBox x:Name="GitHubToken" VerticalContentAlignment="Center" Grid.Column="2"></PasswordBox>
+            <Button Content="Verify" Command="{Binding VerifyGitHubTokenCommand}" CommandParameter="{Binding ElementName=GitHubToken}" Width="40"  Grid.Column="3" />
         </Grid>
         <Grid Grid.Row="2" Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Button HorizontalAlignment="Center" Content="Verify" Command="{Binding VerifyAllCommand}" Grid.Column="0" />
-            <Button HorizontalAlignment="Center" Content="Finish" Command="{Binding SettingFinishCommand}" Grid.Column="1" />
+            <Button HorizontalAlignment="Center" Content="Finish" Command="{Binding SettingFinishCommand}" Grid.Column="0" />
         </Grid>
     </Grid>
 </UserControl>

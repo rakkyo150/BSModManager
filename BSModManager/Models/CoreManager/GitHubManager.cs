@@ -16,13 +16,11 @@ namespace BSModManager.Models.CoreManager
 {
     public class GitHubManager: DataManager
     {
-        ConfigFileManager configFileManager;
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
         SettingsTabPropertyModel settingsTabPropertyModel;
         
-        public GitHubManager(InnerData id,ConfigFileManager cfm,UpdateMyselfConfirmPropertyModel umcpm,SettingsTabPropertyModel stpm): base(id,stpm,umcpm)
+        public GitHubManager(InnerData id,UpdateMyselfConfirmPropertyModel umcpm,SettingsTabPropertyModel stpm): base(id,stpm,umcpm)
         {
-            configFileManager = cfm;
             updateMyselfConfirmPropertyModel = umcpm;
             settingsTabPropertyModel = stpm;
         }
@@ -87,37 +85,6 @@ namespace BSModManager.Models.CoreManager
                 Console.WriteLine("更新版はみつかりませんでした");
                 return update;
             }
-        }
-
-        public async Task CheckCredential()
-        {
-            bool checkCredential = false;
-
-            while (!checkCredential)
-            {
-                var credential = new Credentials(settingsTabPropertyModel.GitHubToken);
-                GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"));
-                gitHub.Credentials = credential;
-
-                string owner = "rakkyo150";
-                string name = "GithubModUpdateCheckerConsole";
-
-                try
-                {
-                    var response = await gitHub.Repository.Release.GetLatest(owner, name);
-                    checkCredential = true;
-                    Console.WriteLine("Tokenは有効です");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Tokenは無効です");
-                    Console.WriteLine("新たなTokenを入力してください");
-                    string token = Console.ReadLine();
-                    settingsTabPropertyModel.GitHubToken = token;
-                }
-            }
-
-            configFileManager.MakeConfigFile(settingsTabPropertyModel.BSFolderPath,settingsTabPropertyModel.GitHubToken);
         }
 
         // Initializeでも使うので第二引数が必要

@@ -45,13 +45,20 @@
             Margin="5"
             Background="LightGray"
             BorderThickness="1">
-                <TextBlock
-                Name="DirectoryTextBlock"
-                Margin="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="16"
-                Text="{Binding BSFolderPath}" />
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Left">
+                        <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
+                            <TextBlock Text="{Binding VerifyBSFolder.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyBSFolderColor.Value}" ></TextBlock>
+                        </Border>
+                    </DockPanel>
+                    <TextBlock
+                    Name="DirectoryTextBlock"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="{Binding BSFolderPath}" />
+                </DockPanel>
             </Border>
             <Button
             Grid.Row="2"
@@ -84,16 +91,22 @@
             Margin="5"
             Background="LightGray"
             BorderThickness="1">
-                <PasswordBox
-                x:Name="GitHubToken"
-                Height="30"
-                MinWidth="450"
-                Margin="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Background="LightGray"
-                FontSize="16"
-                BorderThickness="1"/>
+                <DockPanel DockPanel.Dock="Left">
+                    <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
+                        <TextBlock Text="{Binding VerifyGitHubToken.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyGitHubTokenColor.Value}" ></TextBlock>
+                    </Border>
+                    <PasswordBox
+                    x:Name="GitHubToken"
+                    Height="30"
+                    MinWidth="450"
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    VerticalContentAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="LightGray"
+                    FontSize="16"
+                    BorderThickness="1"/>
+                </DockPanel>
             </Border>
             <Button
             Grid.Row="4"

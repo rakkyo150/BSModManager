@@ -9,49 +9,57 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace BSModManager.ViewModels
 {
     public class InitialSettingViewModel : BindableBase,IDialogAware
     {
-        // 別のViewModelから呼んでもらう必要あり
-        IDialogService dialogService;
-        MainWindowPropertyModel mainWindowPropertyModel;
+        // 別のクラスから呼んでもらう必要あり
         SettingsTabPropertyModel settingsTabPropertyModel;
 
-        public ReactiveProperty<string> VerifyBSFolder { get; }
-        public ReactiveProperty<Brush> VerifyBSFolderColor { get; }
+        public ReadOnlyReactivePropertySlim<string> VerifyBSFolder { get; }
+        public ReadOnlyReactivePropertySlim<Brush> VerifyBSFolderColor { get; }
 
         public ReactiveProperty<string> BSFolderPath { get; }
 
         public ReactiveCommand SelectBSFolderCommand { get; } = new ReactiveCommand();
 
-        public ReactiveProperty<string> VerifyGitHubToken { get; }
-        public ReactiveProperty<Brush> VerifyGitHubTokenColor { get; }
+        public ReadOnlyReactivePropertySlim<string> VerifyGitHubToken { get; }
+        public ReadOnlyReactivePropertySlim<Brush> VerifyGitHubTokenColor { get; }
+        public ReactiveCommand SettingFinishCommand { get; }
+        public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        public ReactiveCommand VerifyAllCommand { get; } = new ReactiveCommand();
-        public ReactiveCommand SettingFinishCommand { get; } = new ReactiveCommand();
-
-        public InitialSettingViewModel(IDialogService ds,MainWindowPropertyModel mwpm,SettingsTabPropertyModel stpm)
+        public InitialSettingViewModel(SettingsTabPropertyModel stpm)
         {
-            dialogService = ds;
-            mainWindowPropertyModel = mwpm;
             settingsTabPropertyModel = stpm;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x=> x.BSFolderPath);
 
+            VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim();
+            VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim();
+            
+            VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim();
+            VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim();
+
             SelectBSFolderCommand.Subscribe(_ => BSFolderPath.Value = FolderManager.SelectFolderCommand(BSFolderPath.Value));
 
-            Console.WriteLine("test");
+            SettingFinishCommand = settingsTabPropertyModel.VerifyBoth.ToReactiveCommand().WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
+
+            VerifyGitHubTokenCommand.Subscribe((x) =>
+            {
+                Console.WriteLine("test");
+                settingsTabPropertyModel.GitHubToken = ((PasswordBox)x).Password;
+            });
         }
 
         public string Title => "Initial Setting";
 
         public event Action<IDialogResult> RequestClose;
 
-        public bool CanCloseDialog() => true;
+        public bool CanCloseDialog() => SettingFinishCommand.CanExecute();
 
         public void OnDialogClosed() { }
 
