@@ -15,6 +15,7 @@ namespace BSModManager.ViewModels
 {
     public class InitialSettingViewModel : BindableBase,IDialogAware
     {
+        // 別のViewModelから呼んでもらう必要あり
         IDialogService dialogService;
         MainWindowPropertyModel mainWindowPropertyModel;
         SettingsTabPropertyModel settingsTabPropertyModel;
@@ -24,7 +25,7 @@ namespace BSModManager.ViewModels
 
         public ReactiveProperty<string> BSFolderPath { get; }
 
-        public ReactiveCommand SelectBSFolder { get; } = new ReactiveCommand();
+        public ReactiveCommand SelectBSFolderCommand { get; } = new ReactiveCommand();
 
         public ReactiveProperty<string> VerifyGitHubToken { get; }
         public ReactiveProperty<Brush> VerifyGitHubTokenColor { get; }
@@ -41,14 +42,9 @@ namespace BSModManager.ViewModels
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x=> x.BSFolderPath);
 
-            SelectBSFolder.Subscribe(_ => BSFolderPath.Value = FolderManager.SelectFolderCommand(BSFolderPath.Value));
+            SelectBSFolderCommand.Subscribe(_ => BSFolderPath.Value = FolderManager.SelectFolderCommand(BSFolderPath.Value));
 
-            if (mainWindowPropertyModel.GameVersion== "GameVersion\n---")
-            {
-                dialogService.ShowDialog("InitialSetting");
-            }
-
-
+            Console.WriteLine("test");
         }
 
         public string Title => "Initial Setting";

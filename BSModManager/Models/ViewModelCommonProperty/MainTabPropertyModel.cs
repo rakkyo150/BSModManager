@@ -27,6 +27,7 @@ namespace BSModManager.Models
             private string description = "?";
             private Brush installedColor = Brushes.Green;
             private Brush latestColor = Brushes.Red;
+            private string url = "http";
 
             public bool Checked
             {
@@ -62,6 +63,11 @@ namespace BSModManager.Models
             {
                 get { return description; }
                 set { SetProperty(ref description, value); }
+            }
+            public string Url
+            {
+                get { return url; }
+                set { SetProperty(ref url, value); }
             }
             public Brush InstalledColor
             {

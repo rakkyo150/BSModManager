@@ -68,7 +68,6 @@
             Margin="5"
             Padding="5"
             Content="Open Folder"
-            IsEnabled="{Binding OpenBSFolderButton}"
             Command="{Binding OpenBSFolder}"/>
             <TextBlock
                 Grid.Row="3"

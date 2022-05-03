@@ -3,6 +3,7 @@ using BSModManager.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
@@ -61,21 +62,27 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref allCheckedButtonEnable, value); }
         }
 
+        IDialogService dialogService;
         ConfigFileManager configFileManager;
         VersionManager versionManager;
         MainWindowPropertyModel mainWindowPropertyModel;
         MainTabPropertyModel mainTabPropertyModel;
+        InitialSettingViewModel initialSettingViewModel;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
+        public DelegateCommand LoadedCommand { get; }
 
-        public MainWindowViewModel(IRegionManager regionManager, ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm)
+        public MainWindowViewModel(IRegionManager regionManager,IDialogService ds,ConfigFileManager cfm, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm,InitialSettingViewModel isvm)
         {
             configFileManager = cfm;
             versionManager = vm;
             mainWindowPropertyModel = mwpm;
             mainTabPropertyModel = mtpm;
+            initialSettingViewModel = isvm;
+
+            dialogService = ds;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             this.Console = mainWindowPropertyModel.ObserveProperty(x => x.Console).ToReadOnlyReactivePropertySlim();
@@ -84,7 +91,7 @@ namespace BSModManager.ViewModels
             MyselfVersion = versionManager.GetMyselfVersion();
 
             RegionManager = regionManager;
-            regionManager.RegisterViewWithRegion("ContentRegion", typeof(MainTab));
+            RegionManager.RegisterViewWithRegion("ContentRegion", typeof(MainTab));
             ShowMainTabViewCommand = new DelegateCommand<string>((x) =>
               {
                   mainWindowPropertyModel.Console = "Main";
@@ -107,6 +114,11 @@ namespace BSModManager.ViewModels
             AllCheckedButtonCommand.Subscribe(_ => 
             {
                 mainTabPropertyModel.AllCheckedOrUnchecked(); 
+            });
+
+            LoadedCommand = new DelegateCommand(() =>
+            {
+                dialogService.ShowDialog("InitialSetting");
             });
         }
     }

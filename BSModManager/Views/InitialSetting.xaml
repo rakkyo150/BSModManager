@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"             
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid VerticalAlignment="Center" Height="79" Width="206">
+    <Grid VerticalAlignment="Center" Height="79" Width="500">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -11,7 +11,7 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
@@ -20,13 +20,13 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Content="Install Directroy" Grid.Column="0"></Label>
-            <TextBox Text="{Binding VerifyBSFolder.Value}" Foreground="{Binding VerifyBSFolderColor.Value}" Background="Gray" Grid.Column="1" ></TextBox>
+            <TextBox Text="{Binding VerifyBSFolder.Value}" Foreground="{Binding VerifyBSFolderColor.Value}" Width="25" Background="LightGray" Grid.Column="1" ></TextBox>
             <TextBox Text="{Binding BSFolderPath.Value}" Grid.Column="2"></TextBox>
             <Button Content="..." Command="{Binding SelectBSFolderCommand}" Width="40"  Grid.Column="3" />
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -34,7 +34,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Content="GitHub Token" Grid.Column="0"></Label>
-            <TextBox Text="{Binding VerifyGitHubToken.Value}" Foreground="{Binding VerifyGitHubTokenColor}" Background="Gray" Grid.Column="1"></TextBox>
+            <TextBox Text="{Binding VerifyGitHubToken.Value}" Foreground="{Binding VerifyGitHubTokenColor.Value}" Width="25" Background="LightGray" Grid.Column="1"></TextBox>
             <PasswordBox x:Name="GitHubToken" Grid.Column="2"></PasswordBox>
         </Grid>
         <Grid Grid.Row="2" Margin="5">
