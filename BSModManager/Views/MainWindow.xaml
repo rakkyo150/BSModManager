@@ -4,7 +4,7 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="700" Width="1250" MinHeight="400" MinWidth="800">
+        Title="{Binding Title}" Height="700" Width="1300" MinHeight="400" MinWidth="800">
     <DockPanel>
         <DockPanel DockPanel.Dock="Left">
             <Button Content="Main" Command="{Binding ShowMainTabViewCommand}" CommandParameter="MainTab" Margin="10" Height="70" Width="70" DockPanel.Dock="Top"/>

@@ -1,5 +1,6 @@
 ﻿using Prism.Mvvm;
 using Prism.Services.Dialogs;
+using System;
 using System.Linq;
 
 namespace BSModManager.Models.ViewModelCommonProperty
@@ -46,6 +47,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 SetProperty(ref original, value);
                 if (Original)
                 {
+                    Console.WriteLine("test");
                     mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Original = "〇";
                 }
                 else

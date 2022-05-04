@@ -30,7 +30,6 @@ namespace BSModManager.ViewModels
             settingsTabPropertyModel = stpm;
 
             this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x => x.BSFolderPath).ToReadOnlyReactivePropertySlim();
-            this.GitHubToken = settingsTabPropertyModel.ObserveProperty(x => x.GitHubToken).ToReadOnlyReactivePropertySlim();
             this.VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim();
             this.VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim();
             this.VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim();
@@ -76,8 +75,6 @@ namespace BSModManager.ViewModels
         public ReadOnlyReactivePropertySlim<string> BSFolderPath { get; }
         public ReadOnlyReactivePropertySlim<string> VerifyBSFolder { get; }
         public ReadOnlyReactivePropertySlim<Brush> VerifyBSFolderColor { get; }
-
-        public ReadOnlyReactivePropertySlim<string> GitHubToken { get; }
 
         public ReadOnlyReactivePropertySlim<string> VerifyGitHubToken { get; }
         public ReadOnlyReactivePropertySlim<Brush> VerifyGitHubTokenColor { get; }

@@ -28,9 +28,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Content="URL" HorizontalAlignment="Center" Grid.Column="0"></Label>
-            <Border BorderBrush="Gray" BorderThickness="1" Grid.Column="1" Margin="0 0 10 0">
-                <TextBlock Text="{Binding Url.Value}" TextAlignment="Center" VerticalAlignment="Center" Grid.Column="1"></TextBlock>
-            </Border>
+            <TextBox Text="{Binding Url.Value}" TextAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Margin="0 0 10 0"></TextBox>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

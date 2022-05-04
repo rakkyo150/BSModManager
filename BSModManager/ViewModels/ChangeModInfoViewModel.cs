@@ -27,10 +27,15 @@ namespace BSModManager.ViewModels
             changeModInfoPropertyModel = cmipm;
 
             ModNameAndProgress = changeModInfoPropertyModel.ObserveProperty(x => x.ModNameAndProgress).ToReadOnlyReactivePropertySlim();
+
+            // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
+            // 双方向のバインドにはToReactivePropertyAsSynchronizedを使う(ToReactivePropertyでは片方向になってしまう)
+
             // SetterでModsDataにデータセットされます
-            Url = changeModInfoPropertyModel.ObserveProperty(x => x.Url).ToReactiveProperty();
+            Url = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Url);
             // SetterでModsDataにデータセットされます
-            Original = changeModInfoPropertyModel.ObserveProperty(x => x.Original).ToReactiveProperty();
+            Original = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Original);
+
             NextOrFinish = changeModInfoPropertyModel.ObserveProperty(x => x.NextOrFinish).ToReadOnlyReactivePropertySlim();
 
             ExitCommand.Subscribe(() =>
