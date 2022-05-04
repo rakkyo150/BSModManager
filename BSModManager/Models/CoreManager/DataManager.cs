@@ -19,8 +19,8 @@ namespace BSModManager.Models.CoreManager
         SettingsTabPropertyModel settingsTabPropertyModel;
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
         MainTabPropertyModel mainTabPropertyModel;
-        
-        public DataManager(InnerData id,SettingsTabPropertyModel stpm,UpdateMyselfConfirmPropertyModel umcpm, MainTabPropertyModel mtpm)
+
+        public DataManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm, MainTabPropertyModel mtpm)
         {
             innerData = id;
             settingsTabPropertyModel = stpm;
@@ -39,7 +39,7 @@ namespace BSModManager.Models.CoreManager
             // Console.WriteLine("Start Getting FileInfo");
 
             string pluginFolderPath = Path.Combine(settingsTabPropertyModel.BSFolderPath, "Plugins");
-            
+
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(pluginFolderPath);
             IEnumerable<System.IO.FileInfo> filesName = di.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
             foreach (System.IO.FileInfo f in filesName)
@@ -47,7 +47,7 @@ namespace BSModManager.Models.CoreManager
                 string pluginPath = Path.Combine(pluginFolderPath, f.Name);
                 System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
                 Version installedModVersion = new Version(vi.FileVersion);
-                if (mainTabPropertyModel.ModsData != null && !mainTabPropertyModel.ModsData.Any(x=>x.Mod==f.Name.Replace(".dll", "")))
+                if (mainTabPropertyModel.ModsData != null && !mainTabPropertyModel.ModsData.Any(x => x.Mod == f.Name.Replace(".dll", "")))
                 {
                     mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
                     {
@@ -99,7 +99,7 @@ namespace BSModManager.Models.CoreManager
                         LocalVersion = fileAndVersion.Value.ToString(),
                         ModAssistantVersion = item.version,
                     };
-                   innerData.detectedModAssistantModCsvListForInitialize.Add(modAssistantCsvInstance);
+                    innerData.detectedModAssistantModCsvListForInitialize.Add(modAssistantCsvInstance);
 
                     passInputGithubModInformation = true;
                 }
@@ -267,7 +267,7 @@ namespace BSModManager.Models.CoreManager
             {
                 foreach (var a in innerData.modAssistantAllMods)
                 {
-                    if (!innerData.nowLocalGithubModAndVersionAndOriginalBoolAndUrl.ContainsKey(a.name) &&innerData.nowLocalFilesInfoDictionary.ContainsKey(a.name))
+                    if (!innerData.nowLocalGithubModAndVersionAndOriginalBoolAndUrl.ContainsKey(a.name) && innerData.nowLocalFilesInfoDictionary.ContainsKey(a.name))
                     {
                         MAModInformationCsv modAssistantCsvInstance = new MAModInformationCsv()
                         {

@@ -1,16 +1,13 @@
 ﻿using BSModManager.Models.ViewModelCommonProperty;
-using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BSModManager.ViewModels
 {
-    public class ChangeModInfoViewModel : BindableBase,IDialogAware
+    public class ChangeModInfoViewModel : BindableBase, IDialogAware
     {
         public ReadOnlyReactivePropertySlim<string> ModNameAndProgress { get; }
         public ReactiveProperty<string> Url { get; }
@@ -21,10 +18,10 @@ namespace BSModManager.ViewModels
         public ReactiveCommand NextOrFinishCommand { get; } = new ReactiveCommand();
 
         private bool canCloseDialog = false;
-        
-        
+
+
         public ChangeModInfoPropertyModel changeModInfoPropertyModel;
-        
+
         public ChangeModInfoViewModel(ChangeModInfoPropertyModel cmipm)
         {
             changeModInfoPropertyModel = cmipm;

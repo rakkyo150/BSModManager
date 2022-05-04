@@ -2,21 +2,18 @@
 using BSModManager.Models.ViewModelCommonProperty;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BSModManager.Models.CoreManager
 {
-    public class ModAssistantManager:DataManager
+    public class ModAssistantManager : DataManager
     {
-        public ModAssistantManager(InnerData id,SettingsTabPropertyModel stpm,UpdateMyselfConfirmPropertyModel umcpm,MainTabPropertyModel mtpm): base(id,stpm,umcpm,mtpm)
+        public ModAssistantManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm, MainTabPropertyModel mtpm) : base(id, stpm, umcpm, mtpm)
         {
 
         }
-        
+
         public async Task<ModAssistantModInformation[]> GetAllModAssistantModsAsync()
         {
             ModAssistantModInformation[] modAssistantMod = null;

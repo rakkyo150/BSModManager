@@ -1,9 +1,5 @@
 ﻿using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
@@ -11,8 +7,8 @@ namespace BSModManager.Models
     {
         private VersionManager versionManager;
         private ConfigFileManager configFileManager;
-        
-        private string console="Hello World";
+
+        private string console = "Hello World";
         public string Console
         {
             get { return console; }
@@ -26,11 +22,11 @@ namespace BSModManager.Models
             set { SetProperty(ref gameVersion, value); }
         }
 
-        public MainWindowPropertyModel(VersionManager vm,ConfigFileManager cfm)
+        public MainWindowPropertyModel(VersionManager vm, ConfigFileManager cfm)
         {
             versionManager = vm;
             configFileManager = cfm;
-            
+
             Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
             if (tempDictionary["BSFolderPath"] != null)
             {

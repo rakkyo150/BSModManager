@@ -51,9 +51,9 @@ namespace BSModManager.Models
 
         public string GetMyselfVersion()
         {
-            System.Reflection.Assembly assembly =System.Reflection.Assembly.GetExecutingAssembly();
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             System.Version version = assembly.GetName().Version;
-            return "Version\n"+version.ToString(3);
+            return "Version\n" + version.ToString(3);
         }
     }
 }

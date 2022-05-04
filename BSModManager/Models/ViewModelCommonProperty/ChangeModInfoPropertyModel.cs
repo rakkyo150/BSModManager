@@ -1,19 +1,15 @@
 ﻿using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BSModManager.Models.ViewModelCommonProperty
 {
-    public class ChangeModInfoPropertyModel:BindableBase
+    public class ChangeModInfoPropertyModel : BindableBase
     {
         IDialogService dialogService;
         MainTabPropertyModel mainTabPropertyModel;
-        
-        public ChangeModInfoPropertyModel(IDialogService ds,MainTabPropertyModel mtpm)
+
+        public ChangeModInfoPropertyModel(IDialogService ds, MainTabPropertyModel mtpm)
         {
             dialogService = ds;
             mainTabPropertyModel = mtpm;
@@ -33,8 +29,8 @@ namespace BSModManager.Models.ViewModelCommonProperty
         public string Url
         {
             get { return url; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref url, value);
                 mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Url = Url;
             }
@@ -45,8 +41,8 @@ namespace BSModManager.Models.ViewModelCommonProperty
         public bool Original
         {
             get { return original; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref original, value);
                 if (Original)
                 {
@@ -67,7 +63,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
         }
 
 
-        
+
         private int position = 1;
         // ModsDataのうち何個目のCheckedのデータを変更するか
         // Exit時や全情報更新終了時に1に戻す
@@ -81,7 +77,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             // 何個目のCheckedか
             int count = 0;
             int AllCheckedMod = mainTabPropertyModel.ModsData.Count(x => x.Checked == true);
-            
+
             foreach (var a in mainTabPropertyModel.ModsData)
             {
                 // Finishボタン押したとき
@@ -89,7 +85,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 {
                     break;
                 }
-                
+
                 if (a.Checked)
                 {
                     count++;
@@ -98,7 +94,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                     {
                         NextOrFinish = "Finish";
                     }
-                    
+
                     if (count == Position)
                     {
                         modName = a.Mod;

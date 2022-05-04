@@ -1,17 +1,12 @@
 ﻿using Prism.Mvvm;
-using Reactive.Bindings;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Media;
 
 namespace BSModManager.Models
 {
-    public class MainTabPropertyModel:BindableBase
+    public class MainTabPropertyModel : BindableBase
     {
         public ObservableCollection<ModData> ModsData = new ObservableCollection<ModData>();
 
@@ -22,7 +17,7 @@ namespace BSModManager.Models
             private bool c = false;
             private string mod = "";
             private Version installed = new Version("0.0.0");
-            private Version latest= new Version("0.0.0");
+            private Version latest = new Version("0.0.0");
             private string original = "?";
             private string mA = "?";
             private string description = "?";
@@ -83,14 +78,14 @@ namespace BSModManager.Models
         }
 
         public void AllCheckedOrUnchecked()
-        {            
+        {
             Console.WriteLine(ModsData.Count);
-            
+
             int i = 0;
             if (ModsData.Count(x => x.Checked == true) * 2 > ModsData.Count)
             {
                 Console.WriteLine("to false");
-                foreach(var _ in ModsData)
+                foreach (var _ in ModsData)
                 {
                     ModsData[i].Checked = false;
                     i++;

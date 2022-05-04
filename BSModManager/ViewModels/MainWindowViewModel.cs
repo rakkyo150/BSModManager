@@ -9,9 +9,7 @@ using Prism.Services.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Data;
 
 namespace BSModManager.ViewModels
 {
@@ -23,7 +21,7 @@ namespace BSModManager.ViewModels
         // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
         public ReadOnlyReactivePropertySlim<string> Console { get; }
         public ReadOnlyReactivePropertySlim<string> GameVersion { get; }
-        
+
         private string title = "BSModManager";
         public string Title
         {
@@ -80,7 +78,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
 
-        public MainWindowViewModel(IRegionManager regionManager,SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm,DataManager dm,ChangeModInfoPropertyModel cmipm)
+        public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm, MainWindowPropertyModel mwpm, MainTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
@@ -118,9 +116,9 @@ namespace BSModManager.ViewModels
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
 
-            AllCheckedButtonCommand.Subscribe(_ => 
+            AllCheckedButtonCommand.Subscribe(_ =>
             {
-                mainTabPropertyModel.AllCheckedOrUnchecked(); 
+                mainTabPropertyModel.AllCheckedOrUnchecked();
             });
 
             ChangeModInfoButtonCommand = new DelegateCommand(() =>
@@ -128,7 +126,7 @@ namespace BSModManager.ViewModels
                   changeModInfoPropertyModel.ChangeModInfo();
               });
 
-            LoadedCommand = new DelegateCommand(async() =>
+            LoadedCommand = new DelegateCommand(async () =>
             {
                 if (!settingsTabPropertyModel.VerifyBoth.Value)
                 {
@@ -136,8 +134,8 @@ namespace BSModManager.ViewModels
                     dialogService.ShowDialog("InitialSetting");
                 }
                 else
-                {              
-                    await Task.Run(()=>dataManager.GetLocalModFilesInfo());
+                {
+                    await Task.Run(() => dataManager.GetLocalModFilesInfo());
                 }
             });
         }

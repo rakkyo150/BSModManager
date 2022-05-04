@@ -5,9 +5,7 @@ using Prism.Mvvm;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -26,19 +24,20 @@ namespace BSModManager.ViewModels
         public ReactiveCommand OpenModTempFolder { get; } = new ReactiveCommand();
 
         // IContainerProviderをDIしてResolveで取ってきてもOK
-        public SettingsTabViewModel(MainWindowPropertyModel mwpm,SettingsTabPropertyModel stpm)
+        public SettingsTabViewModel(MainWindowPropertyModel mwpm, SettingsTabPropertyModel stpm)
         {
             mainWindowPropertyModel = mwpm;
             settingsTabPropertyModel = stpm;
 
-            this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x=> x.BSFolderPath).ToReadOnlyReactivePropertySlim();
+            this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x => x.BSFolderPath).ToReadOnlyReactivePropertySlim();
             this.GitHubToken = settingsTabPropertyModel.ObserveProperty(x => x.GitHubToken).ToReadOnlyReactivePropertySlim();
             this.VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim();
             this.VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim();
             this.VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim();
             this.VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim();
 
-            SelectBSFolder.Subscribe(_ => {
+            SelectBSFolder.Subscribe(_ =>
+            {
                 settingsTabPropertyModel.BSFolderPath = FolderManager.SelectFolderCommand(settingsTabPropertyModel.BSFolderPath);
                 mainWindowPropertyModel.Console = BSFolderPath.Value;
             });

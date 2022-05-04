@@ -1,24 +1,21 @@
-﻿using BSModManager.Models.CoreManager;
-using Octokit;
+﻿using Octokit;
 using Prism.Mvvm;
 using Reactive.Bindings;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace BSModManager.Models.ViewModelCommonProperty
 {
-    public class SettingsTabPropertyModel: BindableBase
+    public class SettingsTabPropertyModel : BindableBase
     {
         MainWindowPropertyModel mainWindowPropertyModel;
         VersionManager versionManager;
         ConfigFileManager configFileManager;
-        
-        public SettingsTabPropertyModel(MainWindowPropertyModel mwpm,VersionManager vm,ConfigFileManager cfm)
+
+        public SettingsTabPropertyModel(MainWindowPropertyModel mwpm, VersionManager vm, ConfigFileManager cfm)
         {
             mainWindowPropertyModel = mwpm;
             versionManager = vm;
@@ -50,7 +47,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 VerifyBSFolderColor.Value = Brushes.Green;
             }
         }
-        
+
         // テスト用にあえてパス間違えてる
         private string bSFolderPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Sabe";
         public string BSFolderPath
@@ -95,7 +92,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 {
                     await CheckCredential();
                 }).Start();
-                
+
                 /*
                 if (CheckCredential().Result)
                 {

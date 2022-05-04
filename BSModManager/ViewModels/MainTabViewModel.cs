@@ -1,11 +1,7 @@
 ﻿using BSModManager.Models;
 using Prism.Mvvm;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
-using System;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace BSModManager.ViewModels
 {
@@ -14,7 +10,7 @@ namespace BSModManager.ViewModels
         public ObservableCollection<MainTabPropertyModel.ModData> ModsData { get; }
 
         MainTabPropertyModel mainTabPropertyModel;
-        
+
         public MainTabViewModel(MainTabPropertyModel mtpm)
         {
             mainTabPropertyModel = mtpm;
@@ -23,7 +19,7 @@ namespace BSModManager.ViewModels
             BindingOperations.EnableCollectionSynchronization(mainTabPropertyModel.ModsData, new object());
 
             this.ModsData = mainTabPropertyModel.ModsData;
-            
+
             /*
             mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
             {

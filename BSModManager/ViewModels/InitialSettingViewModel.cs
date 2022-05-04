@@ -1,22 +1,18 @@
-﻿using BSModManager.Models;
-using BSModManager.Models.CoreManager;
+﻿using BSModManager.Models.CoreManager;
 using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
-using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace BSModManager.ViewModels
 {
-    public class InitialSettingViewModel : BindableBase,IDialogAware
+    public class InitialSettingViewModel : BindableBase, IDialogAware
     {
         // 別のクラスから呼んでもらう必要あり
         SettingsTabPropertyModel settingsTabPropertyModel;
@@ -41,11 +37,11 @@ namespace BSModManager.ViewModels
             dataManager = dm;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x=> x.BSFolderPath);
+            BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath);
 
             VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim();
             VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim();
-            
+
             VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim();
             VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim();
 
@@ -65,7 +61,7 @@ namespace BSModManager.ViewModels
 
         public bool CanCloseDialog() => SettingFinishCommand.CanExecute();
 
-        public void OnDialogClosed() 
+        public void OnDialogClosed()
         {
             Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
         }

@@ -1,30 +1,28 @@
-﻿using System;
+﻿using BSModManager.Models.Structure;
+using BSModManager.Models.ViewModelCommonProperty;
+using Octokit;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using BSModManager.Models.Structure;
-using BSModManager.Models.ViewModelCommonProperty;
-using Octokit;
 
 namespace BSModManager.Models.CoreManager
 {
-    public class GitHubManager: DataManager
+    public class GitHubManager : DataManager
     {
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
         SettingsTabPropertyModel settingsTabPropertyModel;
-        
-        public GitHubManager(InnerData id,UpdateMyselfConfirmPropertyModel umcpm,SettingsTabPropertyModel stpm,MainTabPropertyModel mtpm): base(id,stpm,umcpm,mtpm)
+
+        public GitHubManager(InnerData id, UpdateMyselfConfirmPropertyModel umcpm, SettingsTabPropertyModel stpm, MainTabPropertyModel mtpm) : base(id, stpm, umcpm, mtpm)
         {
             updateMyselfConfirmPropertyModel = umcpm;
             settingsTabPropertyModel = stpm;
         }
-        
+
         public async Task<bool> CheckNewVersionAndDowonload()
         {
             GitHubClient github = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"));
