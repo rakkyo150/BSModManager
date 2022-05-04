@@ -1,4 +1,5 @@
 ﻿using BSModManager.Models;
+using BSModManager.Models.CoreManager;
 using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Views;
 using Prism.Commands;
@@ -9,6 +10,8 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace BSModManager.ViewModels
 {
@@ -68,18 +71,20 @@ namespace BSModManager.ViewModels
         SettingsTabPropertyModel settingsTabPropertyModel;
         MainWindowPropertyModel mainWindowPropertyModel;
         MainTabPropertyModel mainTabPropertyModel;
+        DataManager dataManager;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
 
-        public MainWindowViewModel(IRegionManager regionManager,SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm)
+        public MainWindowViewModel(IRegionManager regionManager,SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm,DataManager dm)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
             mainWindowPropertyModel = mwpm;
             mainTabPropertyModel = mtpm;
+            dataManager = dm;
 
             dialogService = ds;
 
@@ -115,12 +120,16 @@ namespace BSModManager.ViewModels
                 mainTabPropertyModel.AllCheckedOrUnchecked(); 
             });
 
-            LoadedCommand = new DelegateCommand(() =>
+            LoadedCommand = new DelegateCommand(async() =>
             {
                 if (!settingsTabPropertyModel.VerifyBoth.Value)
                 {
                     System.Diagnostics.Debug.WriteLine(settingsTabPropertyModel.VerifyBoth.Value);
                     dialogService.ShowDialog("InitialSetting");
+                }
+                else
+                {              
+                    await Task.Run(()=>dataManager.GetLocalModFilesInfo());
                 }
             });
         }

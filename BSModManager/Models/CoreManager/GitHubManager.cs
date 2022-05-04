@@ -19,7 +19,7 @@ namespace BSModManager.Models.CoreManager
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
         SettingsTabPropertyModel settingsTabPropertyModel;
         
-        public GitHubManager(InnerData id,UpdateMyselfConfirmPropertyModel umcpm,SettingsTabPropertyModel stpm): base(id,stpm,umcpm)
+        public GitHubManager(InnerData id,UpdateMyselfConfirmPropertyModel umcpm,SettingsTabPropertyModel stpm,MainTabPropertyModel mtpm): base(id,stpm,umcpm,mtpm)
         {
             updateMyselfConfirmPropertyModel = umcpm;
             settingsTabPropertyModel = stpm;

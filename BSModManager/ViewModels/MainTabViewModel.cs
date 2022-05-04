@@ -4,6 +4,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace BSModManager.ViewModels
@@ -18,8 +19,12 @@ namespace BSModManager.ViewModels
         {
             mainTabPropertyModel = mtpm;
 
+            // https://alfort.online/689
+            BindingOperations.EnableCollectionSynchronization(mainTabPropertyModel.ModsData, new object());
+
             this.ModsData = mainTabPropertyModel.ModsData;
             
+            /*
             mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
             {
                 Mod = "TestMod",
@@ -38,6 +43,7 @@ namespace BSModManager.ViewModels
                 MA = "×",
                 Description = "Test2"
             });
+            */
         }
     }
 }

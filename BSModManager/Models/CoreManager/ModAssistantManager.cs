@@ -12,7 +12,7 @@ namespace BSModManager.Models.CoreManager
 {
     public class ModAssistantManager:DataManager
     {
-        public ModAssistantManager(InnerData id,SettingsTabPropertyModel stpm,UpdateMyselfConfirmPropertyModel umcpm): base(id,stpm,umcpm)
+        public ModAssistantManager(InnerData id,SettingsTabPropertyModel stpm,UpdateMyselfConfirmPropertyModel umcpm,MainTabPropertyModel mtpm): base(id,stpm,umcpm,mtpm)
         {
 
         }

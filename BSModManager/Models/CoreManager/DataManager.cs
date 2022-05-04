@@ -18,12 +18,14 @@ namespace BSModManager.Models.CoreManager
         InnerData innerData;
         SettingsTabPropertyModel settingsTabPropertyModel;
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
+        MainTabPropertyModel mainTabPropertyModel;
         
-        public DataManager(InnerData id,SettingsTabPropertyModel stpm,UpdateMyselfConfirmPropertyModel umcpm)
+        public DataManager(InnerData id,SettingsTabPropertyModel stpm,UpdateMyselfConfirmPropertyModel umcpm, MainTabPropertyModel mtpm)
         {
             innerData = id;
             settingsTabPropertyModel = stpm;
             updateMyselfConfirmPropertyModel = umcpm;
+            mainTabPropertyModel = mtpm;
         }
 
         /// <summary>
@@ -32,28 +34,28 @@ namespace BSModManager.Models.CoreManager
         /// </summary>
         /// <param name="pluginsFolderPath"></param>
         /// <returns></returns>
-        public Dictionary<string, Version> GetLocalModFilesInfo(string pluginsFolderPath, Dictionary<string, Tuple<Version, bool, string>> localGithubModAndVersionAndOriginalBoolAndUrl)
+        public void GetLocalModFilesInfo()
         {
             // Console.WriteLine("Start Getting FileInfo");
 
-            Dictionary<string, Version> filesInfo = new Dictionary<string, Version>();
-
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(pluginsFolderPath);
+            string pluginFolderPath = Path.Combine(settingsTabPropertyModel.BSFolderPath, "Plugins");
+            
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(pluginFolderPath);
             IEnumerable<System.IO.FileInfo> filesName = di.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
             foreach (System.IO.FileInfo f in filesName)
             {
-                string pluginPath = Path.Combine(pluginsFolderPath, f.Name);
+                string pluginPath = Path.Combine(pluginFolderPath, f.Name);
                 System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
                 Version installedModVersion = new Version(vi.FileVersion);
-                if (localGithubModAndVersionAndOriginalBoolAndUrl != null && localGithubModAndVersionAndOriginalBoolAndUrl.ContainsKey(f.Name))
+                if (mainTabPropertyModel.ModsData != null && !mainTabPropertyModel.ModsData.Any(x=>x.Mod==f.Name.Replace(".dll", "")))
                 {
-                    installedModVersion = localGithubModAndVersionAndOriginalBoolAndUrl[f.Name].Item1;
+                    mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                    {
+                        Mod = f.Name.Replace(".dll", ""),
+                        Installed = installedModVersion
+                    });
                 }
-
-                filesInfo.Add(f.Name.Replace(".dll", ""), installedModVersion);
             }
-
-            return filesInfo;
         }
 
         /// <summary>

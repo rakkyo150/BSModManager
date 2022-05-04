@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace BSModManager.Models
@@ -13,8 +14,8 @@ namespace BSModManager.Models
     public class MainTabPropertyModel:BindableBase
     {
         public ObservableCollection<ModData> ModsData = new ObservableCollection<ModData>();
-        
-        
+
+
         // 変更通知イベントがないとUIに反映されない
         public class ModData : BindableBase
         {
@@ -27,7 +28,7 @@ namespace BSModManager.Models
             private string description = "?";
             private Brush installedColor = Brushes.Green;
             private Brush latestColor = Brushes.Red;
-            private string url = "http";
+            private string url = "";
 
             public bool Checked
             {
