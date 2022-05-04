@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="BSModManager.Views.ChangeModInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid VerticalAlignment="Center" Height="105" Width="500">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="{Binding ModNameAndProgress.Value}" HorizontalAlignment="Center" Grid.Column="0"></Label>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="URL" HorizontalAlignment="Center" Grid.Column="0"></Label>
+            <Border BorderBrush="Gray" BorderThickness="1" Grid.Column="1" Margin="0 0 10 0">
+                <TextBlock Text="{Binding Url.Value}" TextAlignment="Center" VerticalAlignment="Center" Grid.Column="1"></TextBlock>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="Original" HorizontalAlignment="Center" Grid.Column="0"></Label>
+            <CheckBox IsChecked="{Binding Original.Value}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2"></CheckBox>
+        </Grid>
+        <Grid Grid.Row="3" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Button HorizontalAlignment="Center" Content="Exit" Width="60" Command="{Binding ExitCommand}" Grid.Column="0" />
+            <Button HorizontalAlignment="Center" Content="{Binding NextOrFinish}" Width="60" Command="{Binding NextOrFinishCommand}" Grid.Column="1" />
+        </Grid>
+    </Grid>
+</UserControl>

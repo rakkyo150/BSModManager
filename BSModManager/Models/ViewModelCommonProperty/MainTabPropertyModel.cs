@@ -24,7 +24,7 @@ namespace BSModManager.Models
             private Version installed = new Version("0.0.0");
             private Version latest= new Version("0.0.0");
             private string original = "?";
-            private string mA = "×";
+            private string mA = "?";
             private string description = "?";
             private Brush installedColor = Brushes.Green;
             private Brush latestColor = Brushes.Red;

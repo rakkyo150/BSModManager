@@ -17,7 +17,7 @@
             <Button Content="Install/Update" Width="100" Margin="5 5 10 10"  Padding="5" Background="Red" Foreground="White" DockPanel.Dock="right" IsEnabled="{Binding InstallButtonEnable}"/>
             <Button Content="All Checked&#xa;/Unchecked" Width="100" Margin="5 5 5 10" Padding="5" Background="Orange" DockPanel.Dock="right" IsEnabled="{Binding AllCheckedButtonEnable}" Command="{Binding AllCheckedButtonCommand}"/>
             <Button Content="Mod Repository" Width="100" Margin="5 5 5 10"  Padding="5" DockPanel.Dock="right" IsEnabled="{Binding ModRepositoryButtonEnable}"/>
-            <Button Content="Change URL" Width="100" Margin="5 5 5 10" Padding="5" Background="LightGoldenrodYellow" DockPanel.Dock="right" IsEnabled="{Binding ChangeUrlButtonEnable}"/>
+            <Button Content="Change Mod Info" Width="100" Margin="5 5 5 10" Padding="5" Background="LightGoldenrodYellow" DockPanel.Dock="right" IsEnabled="{Binding ChangeModInfoButtonEnable}" Command="{Binding ChangeModInfoButtonCommand}"/>
             <TextBlock Text="{Binding Console.Value}" Background="LightGray" Margin="0 5 10 10" Padding="10" FontSize="20"/>
         </DockPanel>
         <ContentControl Margin="0 10 10 10" prism:RegionManager.RegionName="ContentRegion" />

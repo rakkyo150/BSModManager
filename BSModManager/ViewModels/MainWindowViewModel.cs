@@ -52,11 +52,11 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref modRepositoryButtonEnable, value); }
         }
 
-        private bool changeUrlButtonEnable = true;
-        public bool ChangeUrlButtonEnable
+        private bool changeModInfoButtonEnable = true;
+        public bool ChangeModInfoButtonEnable
         {
-            get { return changeUrlButtonEnable; }
-            set { SetProperty(ref changeUrlButtonEnable, value); }
+            get { return changeModInfoButtonEnable; }
+            set { SetProperty(ref changeModInfoButtonEnable, value); }
         }
 
         private bool allCheckedButtonEnable = true;
@@ -72,19 +72,22 @@ namespace BSModManager.ViewModels
         MainWindowPropertyModel mainWindowPropertyModel;
         MainTabPropertyModel mainTabPropertyModel;
         DataManager dataManager;
+        ChangeModInfoPropertyModel changeModInfoPropertyModel;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
+        public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
 
-        public MainWindowViewModel(IRegionManager regionManager,SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm,DataManager dm)
+        public MainWindowViewModel(IRegionManager regionManager,SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,MainWindowPropertyModel mwpm,MainTabPropertyModel mtpm,DataManager dm,ChangeModInfoPropertyModel cmipm)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
             mainWindowPropertyModel = mwpm;
             mainTabPropertyModel = mtpm;
             dataManager = dm;
+            changeModInfoPropertyModel = cmipm;
 
             dialogService = ds;
 
@@ -101,7 +104,7 @@ namespace BSModManager.ViewModels
                   mainWindowPropertyModel.Console = "Main";
                   InstallButtonEnable = true;
                   ModRepositoryButtonEnable = true;
-                  ChangeUrlButtonEnable = true;
+                  ChangeModInfoButtonEnable = true;
                   AllCheckedButtonEnable = true;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
@@ -110,7 +113,7 @@ namespace BSModManager.ViewModels
                   mainWindowPropertyModel.Console = "Settings";
                   InstallButtonEnable = false;
                   ModRepositoryButtonEnable = false;
-                  ChangeUrlButtonEnable = false;
+                  ChangeModInfoButtonEnable = false;
                   AllCheckedButtonEnable = false;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
@@ -119,6 +122,11 @@ namespace BSModManager.ViewModels
             {
                 mainTabPropertyModel.AllCheckedOrUnchecked(); 
             });
+
+            ChangeModInfoButtonCommand = new DelegateCommand(() =>
+              {
+                  changeModInfoPropertyModel.ChangeModInfo();
+              });
 
             LoadedCommand = new DelegateCommand(async() =>
             {

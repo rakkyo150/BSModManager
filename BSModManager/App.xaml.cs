@@ -31,6 +31,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<MainTabPropertyModel>();
             containerRegistry.RegisterSingleton<SettingsTabPropertyModel>();
             containerRegistry.RegisterSingleton<UpdateMyselfConfirmPropertyModel>();
+            containerRegistry.RegisterSingleton<ChangeModInfoPropertyModel>();
 
             containerRegistry.RegisterSingleton<ConfigFileManager>();
             containerRegistry.RegisterSingleton<VersionManager>();
@@ -39,6 +40,7 @@ namespace BSModManager
             containerRegistry.RegisterForNavigation<SettingsTab>();
 
             containerRegistry.RegisterDialog<InitialSetting>();
+            containerRegistry.RegisterDialog<ChangeModInfo>();
 
             containerRegistry.RegisterSingleton<InnerData>();
         }

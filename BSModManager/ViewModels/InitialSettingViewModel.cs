@@ -55,7 +55,6 @@ namespace BSModManager.ViewModels
 
             VerifyGitHubTokenCommand.Subscribe((x) =>
             {
-                Console.WriteLine("test");
                 settingsTabPropertyModel.GitHubToken = ((PasswordBox)x).Password;
             });
         }
