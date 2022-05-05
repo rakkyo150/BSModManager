@@ -82,8 +82,8 @@ namespace BSModManager.ViewModels
         public DelegateCommand LoadedCommand { get; }
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
-        public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm, 
-            MainWindowPropertyModel mwpm, MainTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm,ModAssistantManager mam,InnerData id)
+        public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,
+            MainWindowPropertyModel mwpm, MainTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm, ModAssistantManager mam, InnerData id)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
@@ -146,10 +146,11 @@ namespace BSModManager.ViewModels
                     innerData.modAssistantAllMods = await modAssistantManager.GetAllModAssistantModsAsync();
                     await Task.Run(() => dataManager.GetLocalModFilesInfo());
                     mainWindowPropertyModel.Console = "Start Making Backup";
-                    dataManager.Backup();
+                    await Task.Run(() => { dataManager.Backup(); });
                     mainWindowPropertyModel.Console = "Finish Making Backup";
                 }
             });
+            
 
             ClosingCommand = new DelegateCommand<System.ComponentModel.CancelEventArgs>((x) =>
             {
