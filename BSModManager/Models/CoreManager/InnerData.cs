@@ -17,8 +17,8 @@ namespace BSModManager.Models.CoreManager
         public ModAssistantModInformation[] modAssistantAllMods { get; set; }
 
 
-        public List<GitHubModInformationCsv> installedGithubModInformationToCsvForInitialize { get; set; } = new List<GitHubModInformationCsv>();
-        public List<GitHubModInformationCsv> installedGitHubModInformationToCsvForUpdate { get; set; } = new List<GitHubModInformationCsv>();
+        public List<ModInformationCsv> installedGithubModInformationToCsvForInitialize { get; set; } = new List<ModInformationCsv>();
+        public List<ModInformationCsv> installedGitHubModInformationToCsvForUpdate { get; set; } = new List<ModInformationCsv>();
         public List<MAModInformationCsv> detectedModAssistantModCsvListForInitialize { get; set; } = new List<MAModInformationCsv>();
         public List<MAModInformationCsv> modAssistantModCsvListForUpdate { get; set; } = new List<MAModInformationCsv>();
     }

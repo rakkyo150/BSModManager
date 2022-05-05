@@ -1,15 +1,18 @@
 ﻿using Octokit;
 using Prism.Mvvm;
+using Prism.Navigation;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace BSModManager.Models.ViewModelCommonProperty
 {
-    public class SettingsTabPropertyModel : BindableBase
+    public class SettingsTabPropertyModel : BindableBase,IDestructible
     {
         MainWindowPropertyModel mainWindowPropertyModel;
         VersionManager versionManager;
@@ -21,6 +24,13 @@ namespace BSModManager.Models.ViewModelCommonProperty
             versionManager = vm;
             configFileManager = cfm;
 
+            OpenBSFolderButtonEnable.AddTo(disposables);
+            VerifyBSFolder.AddTo(disposables);
+            VerifyBSFolderColor.AddTo(disposables);
+            VerifyGitHubToken.AddTo(disposables);
+            VerifyGitHubTokenColor.AddTo(disposables);
+            VerifyBoth.AddTo(disposables);
+
             Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
             if (tempDictionary["BSFolderPath"] != null && tempDictionary["GitHubToken"] != null)
             {
@@ -31,7 +41,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             // https://nryblog.work/call-sync-to-async-method/
             Task.Run(() => { return CheckCredential(); }).GetAwaiter().GetResult();
 
-            if (versionManager.GetGameVersion(BSFolderPath) == "GameVersion\n---")
+            if (versionManager.GetGameVersionStr(BSFolderPath) == "GameVersion\n---")
             {
                 VerifyBSFolder.Value = "×";
                 VerifyBoth.Value = false;
@@ -56,11 +66,11 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set
             {
                 SetProperty(ref bSFolderPath, value);
-                mainWindowPropertyModel.GameVersion = versionManager.GetGameVersion(BSFolderPath);
+                mainWindowPropertyModel.GameVersion = versionManager.GetGameVersionStr(BSFolderPath);
                 configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
                 if (Directory.Exists(BSFolderPath)) OpenBSFolderButtonEnable.Value = true;
                 else OpenBSFolderButtonEnable.Value = false;
-                if (versionManager.GetGameVersion(BSFolderPath) == "GameVersion\n---")
+                if (versionManager.GetGameVersionStr(BSFolderPath) == "GameVersion\n---")
                 {
                     VerifyBSFolder.Value = "×";
                     VerifyBoth.Value = false;
@@ -92,19 +102,6 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 {
                     await CheckCredential();
                 }).Start();
-
-                /*
-                if (CheckCredential().Result)
-                {
-                    VerifyGitHubToken.Value = "〇";
-                    VerifyGitHubTokenColor.Value = Brushes.Green;
-                }
-                else
-                {
-                    VerifyGitHubToken.Value = "×";
-                    VerifyGitHubTokenColor.Value = Brushes.Red;
-                }
-                */
             }
         }
 
@@ -150,6 +147,13 @@ namespace BSModManager.Models.ViewModelCommonProperty
             return checkCredential;
         }
 
+        public void Destroy()
+        {
+            disposables.Dispose();
+        }
+
+        private CompositeDisposable disposables { get; } = new CompositeDisposable();
+        
         public ReactiveProperty<bool> OpenBSFolderButtonEnable { get; } = new ReactiveProperty<bool>();
 
         public ReactiveProperty<string> VerifyBSFolder { get; } = new ReactiveProperty<string>("ー");

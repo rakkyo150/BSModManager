@@ -1,6 +1,7 @@
 ﻿using BSModManager.Models;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
 using System.Windows.Data;
 
 namespace BSModManager.ViewModels

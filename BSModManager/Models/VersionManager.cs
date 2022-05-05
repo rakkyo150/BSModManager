@@ -6,7 +6,7 @@ namespace BSModManager.Models
 {
     public class VersionManager
     {
-        public string GetGameVersion(string bSFolderPath)
+        public string GetGameVersionStr(string bSFolderPath)
         {
             try
             {

@@ -3,17 +3,19 @@ using BSModManager.Models.CoreManager;
 using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
 using Prism.Mvvm;
+using Prism.Navigation;
 using Prism.Services.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace BSModManager.ViewModels
 {
-    public class InitialSettingViewModel : BindableBase, IDialogAware
+    public class InitialSettingViewModel : BindableBase, IDialogAware,IDestructible
     {
         // 別のクラスから呼んでもらう必要あり
         SettingsTabPropertyModel settingsTabPropertyModel;
@@ -25,6 +27,8 @@ namespace BSModManager.ViewModels
 
         MainWindowPropertyModel mainWindowPropertyModel;
 
+        CompositeDisposable disposables { get; } = new CompositeDisposable();
+        
         public ReadOnlyReactivePropertySlim<string> VerifyBSFolder { get; }
         public ReadOnlyReactivePropertySlim<Brush> VerifyBSFolderColor { get; }
 
@@ -46,22 +50,22 @@ namespace BSModManager.ViewModels
             mainWindowPropertyModel = mwpm;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath);
+            BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(disposables);
 
-            VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim();
-            VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim();
+            VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
 
-            VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim();
-            VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim();
+            VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
 
-            SelectBSFolderCommand.Subscribe(_ => BSFolderPath.Value = FolderManager.SelectFolderCommand(BSFolderPath.Value));
+            SelectBSFolderCommand.Subscribe(_ => BSFolderPath.Value = FolderManager.SelectFolderCommand(BSFolderPath.Value)).AddTo(disposables);
 
-            SettingFinishCommand = settingsTabPropertyModel.VerifyBoth.ToReactiveCommand().WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK)));
+            SettingFinishCommand = settingsTabPropertyModel.VerifyBoth.ToReactiveCommand().WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK))).AddTo(disposables);
 
             VerifyGitHubTokenCommand.Subscribe((x) =>
             {
                 settingsTabPropertyModel.GitHubToken = ((PasswordBox)x).Password;
-            });
+            }).AddTo(disposables);
         }
 
         public string Title => "Initial Setting";
@@ -72,18 +76,23 @@ namespace BSModManager.ViewModels
 
         public void OnDialogClosed()
         {
-            Task.Run(() => { innerData.modAssistantAllMods = modAssistantManager.GetAllModAssistantModsAsync().Result; }).GetAwaiter().GetResult();
-            Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
             Task.Run(() => 
             {
                 mainWindowPropertyModel.Console = "Start Making Backup";
                 dataManager.Backup();
                 mainWindowPropertyModel.Console = "Finish Making Backup";
             }).GetAwaiter().GetResult();
+            Task.Run(() => { innerData.modAssistantAllMods = modAssistantManager.GetAllModAssistantModsAsync().Result; }).GetAwaiter().GetResult();
+            Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
         }
 
         public void OnDialogOpened(IDialogParameters _)
         {
+        }
+
+        public void Destroy()
+        {
+            disposables.Dispose();
         }
     }
 }

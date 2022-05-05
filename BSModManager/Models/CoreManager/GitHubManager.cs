@@ -86,7 +86,7 @@ namespace BSModManager.Models.CoreManager
         }
 
         // Initializeでも使うので第二引数が必要
-        public async Task InputGitHubModInformationAsync(KeyValuePair<string, Version> fileAndVersion, List<GitHubModInformationCsv> githubModInformationToCsv)
+        public async Task InputGitHubModInformationAsync(KeyValuePair<string, Version> fileAndVersion, List<ModInformationCsv> githubModInformationToCsv)
         {
             Console.WriteLine($"{fileAndVersion.Key} : {fileAndVersion.Value}");
 
@@ -159,18 +159,18 @@ namespace BSModManager.Models.CoreManager
             Console.WriteLine("GithubModData.csvにデータを追加します");
             Console.WriteLine("データを書き換えたい場合、このcsvを直接書き換えてください");
 
-            var githubModInstance = new GitHubModInformationCsv()
+            var githubModInstance = new ModInformationCsv()
             {
-                GithubMod = fileAndVersion.Key,
+                Mod = fileAndVersion.Key,
                 LocalVersion = fileAndVersion.Value.ToString(),
-                GithubVersion = gitHubModVersion,
-                OriginalMod = originalMod,
-                GithubUrl = gitHubUrl,
+                LatestVersion = gitHubModVersion,
+                Original = originalMod,
+                Url = gitHubUrl,
             };
             githubModInformationToCsv.Add(githubModInstance);
         }
 
-        public async Task DownloadGitHubModAsync(string url, Version currentVersion, string destDirFullPath, List<GitHubModInformationCsv> gitHubModInformationToCsv, string fileName)
+        public async Task DownloadGitHubModAsync(string url, Version currentVersion, string destDirFullPath, List<ModInformationCsv> gitHubModInformationToCsv, string fileName)
         {
             if (url == "p") return;
 
@@ -261,13 +261,13 @@ namespace BSModManager.Models.CoreManager
 
                             if (gitHubModInformationToCsv != null)
                             {
-                                if (gitHubModInformationToCsv.Find(n => n.GithubMod == fileName) == null)
+                                if (gitHubModInformationToCsv.Find(n => n.Mod == fileName) == null)
                                 {
                                     Console.WriteLine("csvのModのバージョンを更新できませんでした");
                                 }
                                 else
                                 {
-                                    gitHubModInformationToCsv.Find(n => n.GithubMod == fileName).LocalVersion = latestVersion.ToString();
+                                    gitHubModInformationToCsv.Find(n => n.Mod == fileName).LocalVersion = latestVersion.ToString();
                                 }
                             }
                             downloadChoiceFinish = true;

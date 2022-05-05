@@ -2,17 +2,17 @@
 
 namespace BSModManager.Models.Structure
 {
-    public class GitHubModInformationCsv
+    public class ModInformationCsv
     {
         [Index(0)]
-        public string GithubMod { get; set; }
+        public string Mod { get; set; }
         [Index(1)]
         public string LocalVersion { get; set; }
         [Index(2)]
-        public string GithubVersion { get; set; }
+        public string LatestVersion { get; set; }
         [Index(3)]
-        public bool OriginalMod { get; set; }
+        public bool Original { get; set; }
         [Index(4)]
-        public string GithubUrl { get; set; }
+        public string Url { get; set; }
     }
 }

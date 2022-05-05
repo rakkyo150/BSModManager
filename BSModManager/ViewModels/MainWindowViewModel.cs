@@ -1,21 +1,27 @@
 ﻿using BSModManager.Models;
 using BSModManager.Models.CoreManager;
 using BSModManager.Models.ViewModelCommonProperty;
+using BSModManager.Static;
 using BSModManager.Views;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Navigation;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.IO;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace BSModManager.ViewModels
 {
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : BindableBase,IDestructible
     {
+        CompositeDisposable disposables { get; } = new CompositeDisposable();
+        
         // プロパティにしないとバインドされない
         public ReactiveCommand AllCheckedButtonCommand { get; } = new ReactiveCommand();
 
@@ -97,8 +103,8 @@ namespace BSModManager.ViewModels
             dialogService = ds;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            this.Console = mainWindowPropertyModel.ObserveProperty(x => x.Console).ToReadOnlyReactivePropertySlim();
-            this.GameVersion = mainWindowPropertyModel.ObserveProperty(x => x.GameVersion).ToReadOnlyReactivePropertySlim();
+            this.Console = mainWindowPropertyModel.ObserveProperty(x => x.Console).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            this.GameVersion = mainWindowPropertyModel.ObserveProperty(x => x.GameVersion).ToReadOnlyReactivePropertySlim().AddTo(disposables);
 
             MyselfVersion = versionManager.GetMyselfVersion();
 
@@ -126,7 +132,7 @@ namespace BSModManager.ViewModels
             AllCheckedButtonCommand.Subscribe(_ =>
             {
                 mainTabPropertyModel.AllCheckedOrUnchecked();
-            });
+            }).AddTo(disposables);
 
             ChangeModInfoButtonCommand = new DelegateCommand(() =>
               {
@@ -143,11 +149,11 @@ namespace BSModManager.ViewModels
                 }
                 else
                 {
-                    innerData.modAssistantAllMods = await modAssistantManager.GetAllModAssistantModsAsync();
-                    await Task.Run(() => dataManager.GetLocalModFilesInfo());
                     mainWindowPropertyModel.Console = "Start Making Backup";
                     await Task.Run(() => { dataManager.Backup(); });
                     mainWindowPropertyModel.Console = "Finish Making Backup";
+                    innerData.modAssistantAllMods = await modAssistantManager.GetAllModAssistantModsAsync();
+                    await Task.Run(() => dataManager.GetLocalModFilesInfo());
                 }
             });
             
@@ -160,7 +166,27 @@ namespace BSModManager.ViewModels
                     x.Cancel = true;
                     return;
                 }
+                else
+                {
+                    if (dataManager.GetGameVersion() != null)
+                    {
+                        string dataDirectory = Path.Combine(FolderManager.dataFolder, dataManager.GetGameVersion());
+                        if (!Directory.Exists(dataDirectory))
+                        {
+                            Directory.CreateDirectory(dataDirectory);
+                        }
+                        string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
+                        Task.Run(async()=>await dataManager.WriteCsv(modsDataCsvPath, mainTabPropertyModel.ModsData)).GetAwaiter().GetResult();
+                    }
+                }
             });
+
+
+        }
+
+        public void Destroy()
+        {
+            disposables.Dispose();
         }
     }
 }

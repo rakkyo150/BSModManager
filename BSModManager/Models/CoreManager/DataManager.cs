@@ -4,6 +4,7 @@ using BSModManager.Static;
 using CsvHelper;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -122,7 +123,7 @@ namespace BSModManager.Models.CoreManager
                     Console.WriteLine($"よって、{ item.name} を管理から外します");
 
                     innerData.nowLocalGithubModAndVersionAndOriginalBoolAndUrl.Remove(item.name);
-                    innerData.installedGitHubModInformationToCsvForUpdate.Remove(innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.GithubMod == item.name));
+                    innerData.installedGitHubModInformationToCsvForUpdate.Remove(innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.Mod == item.name));
                 }
             }
         }
@@ -179,7 +180,7 @@ namespace BSModManager.Models.CoreManager
                 if (!innerData.nowLocalFilesInfoDictionary.ContainsKey(a.Key))
                 {
                     innerData.nowLocalGithubModAndVersionAndOriginalBoolAndUrl.Remove(a.Key);
-                    innerData.installedGitHubModInformationToCsvForUpdate.Remove(innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.GithubMod == a.Key));
+                    innerData.installedGitHubModInformationToCsvForUpdate.Remove(innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.Mod == a.Key));
                 }
             }
             // ローカルファイル増加分
@@ -189,9 +190,9 @@ namespace BSModManager.Models.CoreManager
                 {
                     await gitHubManager.InputGitHubModInformationAsync(new KeyValuePair<string, Version>(a.Key, a.Value), innerData.installedGitHubModInformationToCsvForUpdate);
                     Tuple<Version, bool, string> tempGithubModInformation = new Tuple<Version, bool, string>(
-                        new Version(innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.GithubMod == a.Key).LocalVersion),
-                        innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.GithubMod == a.Key).OriginalMod,
-                        innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.GithubMod == a.Key).GithubUrl
+                        new Version(innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.Mod == a.Key).LocalVersion),
+                        innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.Mod == a.Key).Original,
+                        innerData.installedGitHubModInformationToCsvForUpdate.Find(n => n.Mod == a.Key).Url
                     );
                     innerData.nowLocalGithubModAndVersionAndOriginalBoolAndUrl[a.Key] = tempGithubModInformation;
                 }
@@ -243,12 +244,27 @@ namespace BSModManager.Models.CoreManager
         /// <typeparam name="T"></typeparam>
         /// <param name="csvPath"></param>
         /// <param name="list"></param>
-        public void WriteCsv<T>(string csvPath, List<T> list)
+        public async Task WriteCsv(string csvPath, IEnumerable<MainTabPropertyModel.ModData> e)
         {
+            List<ModInformationCsv> modInformationCsvList = new List<ModInformationCsv>();
+            
+            foreach(var a in e)
+            {
+                var githubModInstance = new ModInformationCsv()
+                {
+                    Mod = a.Mod,
+                    LocalVersion = a.Installed.ToString(),
+                    LatestVersion = a.Latest.ToString(),
+                    Original = (a.Original=="〇")? true : false,
+                    Url = a.Url,
+                };
+                modInformationCsvList.Add(githubModInstance);
+            }
+
             using (var writer = new StreamWriter(csvPath, false))
             using (var csv = new CsvWriter(writer, new CultureInfo("ja-JP", false)))
             {
-                csv.WriteRecords(list);
+                await csv.WriteRecordsAsync(modInformationCsvList);
             }
         }
 
@@ -280,7 +296,7 @@ namespace BSModManager.Models.CoreManager
                     }
                 }
 
-                WriteCsv(FilePath.mAModCsvPath, innerData.modAssistantModCsvListForUpdate);
+                // WriteCsv(FilePath.mAModCsvPath, innerData.modAssistantModCsvListForUpdate);
             }
         }
 

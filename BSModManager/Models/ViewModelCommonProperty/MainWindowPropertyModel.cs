@@ -30,7 +30,7 @@ namespace BSModManager.Models
             Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
             if (tempDictionary["BSFolderPath"] != null)
             {
-                GameVersion = versionManager.GetGameVersion(tempDictionary["BSFolderPath"]);
+                GameVersion = versionManager.GetGameVersionStr(tempDictionary["BSFolderPath"]);
             }
         }
     }

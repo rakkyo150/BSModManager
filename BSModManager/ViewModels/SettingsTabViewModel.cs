@@ -2,20 +2,24 @@
 using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
 using Prism.Mvvm;
+using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace BSModManager.ViewModels
 {
-    public class SettingsTabViewModel : BindableBase, INotifyPropertyChanged
+    public class SettingsTabViewModel : BindableBase, INotifyPropertyChanged,IDestructible
     {
         MainWindowPropertyModel mainWindowPropertyModel;
         SettingsTabPropertyModel settingsTabPropertyModel;
 
+        CompositeDisposable disposables { get; } = new CompositeDisposable();
+        
         public ReactiveCommand SelectBSFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenBSFolder { get; }
         public ReactiveCommand ChangeToken { get; } = new ReactiveCommand();
@@ -29,17 +33,17 @@ namespace BSModManager.ViewModels
             mainWindowPropertyModel = mwpm;
             settingsTabPropertyModel = stpm;
 
-            this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x => x.BSFolderPath).ToReadOnlyReactivePropertySlim();
-            this.VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim();
-            this.VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim();
-            this.VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim();
-            this.VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim();
+            this.BSFolderPath = settingsTabPropertyModel.ObserveProperty(x => x.BSFolderPath).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            this.VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            this.VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            this.VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            this.VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
 
             SelectBSFolder.Subscribe(_ =>
             {
                 settingsTabPropertyModel.BSFolderPath = FolderManager.SelectFolderCommand(settingsTabPropertyModel.BSFolderPath);
                 mainWindowPropertyModel.Console = BSFolderPath.Value;
-            });
+            }).AddTo(disposables);
             OpenBSFolder = settingsTabPropertyModel.OpenBSFolderButtonEnable
                 .ToReactiveCommand()
                 .WithSubscribe(() =>
@@ -47,27 +51,27 @@ namespace BSModManager.ViewModels
                     mainWindowPropertyModel.Console = "Open BS Folder";
                     FolderManager.OpenFolderCommand(settingsTabPropertyModel.BSFolderPath);
                     mainWindowPropertyModel.Console = BSFolderPath.Value;
-                });
+                }).AddTo(disposables);
             ChangeToken.Subscribe((x) =>
             {
                 settingsTabPropertyModel.GitHubToken = ((PasswordBox)x).Password;
                 mainWindowPropertyModel.Console = "GitHub Token Changed";
-            });
+            }).AddTo(disposables);
             OpenDataFolder.Subscribe(_ =>
             {
                 mainWindowPropertyModel.Console = "Open Data Folder";
                 FolderManager.OpenFolderCommand(FolderManager.dataFolder);
-            });
+            }).AddTo(disposables);
             OpenBackupFolder.Subscribe(_ =>
             {
                 mainWindowPropertyModel.Console = "Open Backup Folder";
                 FolderManager.OpenFolderCommand(FolderManager.backupFolder);
-            });
+            }).AddTo(disposables);
             OpenModTempFolder.Subscribe(_ =>
             {
                 mainWindowPropertyModel.Console = "Open Temp Folder";
                 FolderManager.OpenFolderCommand(FolderManager.tempFolder);
-            });
+            }).AddTo(disposables);
 
             mainWindowPropertyModel.Console = "Settings";
         }
@@ -78,5 +82,10 @@ namespace BSModManager.ViewModels
 
         public ReadOnlyReactivePropertySlim<string> VerifyGitHubToken { get; }
         public ReadOnlyReactivePropertySlim<Brush> VerifyGitHubTokenColor { get; }
+
+        public void Destroy()
+        {
+            disposables.Dispose();
+        }
     }
 }
