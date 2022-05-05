@@ -66,7 +66,7 @@ namespace BSModManager.ViewModels
             OpenModTempFolder.Subscribe(_ =>
             {
                 mainWindowPropertyModel.Console = "Open Temp Folder";
-                FolderManager.OpenFolderCommand(FolderManager.modTempFolder);
+                FolderManager.OpenFolderCommand(FolderManager.tempFolder);
             });
 
             mainWindowPropertyModel.Console = "Settings";

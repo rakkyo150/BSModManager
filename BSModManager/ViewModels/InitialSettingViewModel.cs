@@ -1,4 +1,5 @@
-﻿using BSModManager.Models.CoreManager;
+﻿using BSModManager.Models;
+using BSModManager.Models.CoreManager;
 using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
 using Prism.Mvvm;
@@ -22,6 +23,8 @@ namespace BSModManager.ViewModels
         ModAssistantManager modAssistantManager;
         InnerData innerData;
 
+        MainWindowPropertyModel mainWindowPropertyModel;
+
         public ReadOnlyReactivePropertySlim<string> VerifyBSFolder { get; }
         public ReadOnlyReactivePropertySlim<Brush> VerifyBSFolderColor { get; }
 
@@ -34,12 +37,13 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id)
+        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id,MainWindowPropertyModel mwpm)
         {
             settingsTabPropertyModel = stpm;
             dataManager = dm;
             modAssistantManager = mam;
             innerData = id;
+            mainWindowPropertyModel = mwpm;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath);
@@ -70,6 +74,12 @@ namespace BSModManager.ViewModels
         {
             Task.Run(() => { innerData.modAssistantAllMods = modAssistantManager.GetAllModAssistantModsAsync().Result; }).GetAwaiter().GetResult();
             Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
+            Task.Run(() => 
+            {
+                mainWindowPropertyModel.Console = "Start Making Backup";
+                dataManager.Backup();
+                mainWindowPropertyModel.Console = "Finish Making Backup";
+            }).GetAwaiter().GetResult();
         }
 
         public void OnDialogOpened(IDialogParameters _)

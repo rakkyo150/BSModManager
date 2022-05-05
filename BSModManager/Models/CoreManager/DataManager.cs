@@ -389,6 +389,7 @@ namespace BSModManager.Models.CoreManager
 
         public void Backup()
         {
+            /*
             if (!Directory.Exists(FolderManager.backupFolder))
             {
                 Console.WriteLine($"{FolderManager.backupFolder}がありません");
@@ -401,10 +402,13 @@ namespace BSModManager.Models.CoreManager
                 Console.WriteLine($"{FolderManager.dataFolder}を作成します");
                 Directory.CreateDirectory(FolderManager.dataFolder);
             }
+            */
 
             innerData.gameVersion = GetGameVersion();
             string now = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string zipPath = Path.Combine(FolderManager.backupFolder, $"BS{innerData.gameVersion}-{now}");
+            
+            // なぜかBackupフォルダで一時フォルダ作ると画面固まるのでtempで一時フォルダ作る
+            string zipPath = Path.Combine(FolderManager.tempFolder, $"BS{innerData.gameVersion}-{now}");
             Directory.CreateDirectory(zipPath);
 
             DirectoryCopy(Path.Combine(settingsTabPropertyModel.BSFolderPath, "Plugins"),
@@ -413,18 +417,18 @@ namespace BSModManager.Models.CoreManager
             File.Copy(FilePath.configFilePath, Path.Combine(zipPath, "config.json"), true);
 
             ZipFile.CreateFromDirectory(zipPath, Path.Combine(FolderManager.backupFolder, $"BS{innerData.gameVersion}-{now}.zip"));
-            Directory.Delete(zipPath, true);
+            Directory.Delete(zipPath,true);
         }
 
         public void CleanModsTemp(string path)
         {
-            if (!Directory.Exists(FolderManager.modTempFolder))
+            if (!Directory.Exists(FolderManager.tempFolder))
             {
-                Console.WriteLine($"{FolderManager.modTempFolder}がありません");
-                Console.WriteLine($"{FolderManager.modTempFolder}を作成します");
-                Directory.CreateDirectory(FolderManager.modTempFolder);
+                Console.WriteLine($"{FolderManager.tempFolder}がありません");
+                Console.WriteLine($"{FolderManager.tempFolder}を作成します");
+                Directory.CreateDirectory(FolderManager.tempFolder);
             }
-            DirectoryInfo dir = new DirectoryInfo(FolderManager.modTempFolder);
+            DirectoryInfo dir = new DirectoryInfo(FolderManager.tempFolder);
 
             //ディレクトリ以外の全ファイルを削除
             string[] filePaths = Directory.GetFiles(path);
@@ -441,7 +445,7 @@ namespace BSModManager.Models.CoreManager
                 CleanModsTemp(directoryPath);
             }
 
-            if (path != FolderManager.modTempFolder)
+            if (path != FolderManager.tempFolder)
             {
                 Directory.Delete(path, false);
             }

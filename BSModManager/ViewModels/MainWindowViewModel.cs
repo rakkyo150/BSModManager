@@ -10,6 +10,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BSModManager.ViewModels
 {
@@ -79,6 +80,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
+        public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm, 
             MainWindowPropertyModel mwpm, MainTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm,ModAssistantManager mam,InnerData id)
@@ -133,6 +135,7 @@ namespace BSModManager.ViewModels
 
             LoadedCommand = new DelegateCommand(async () =>
             {
+                mainWindowPropertyModel.Console = "Start Initializing";
                 if (!settingsTabPropertyModel.VerifyBoth.Value)
                 {
                     System.Diagnostics.Debug.WriteLine(settingsTabPropertyModel.VerifyBoth.Value);
@@ -142,6 +145,19 @@ namespace BSModManager.ViewModels
                 {
                     innerData.modAssistantAllMods = await modAssistantManager.GetAllModAssistantModsAsync();
                     await Task.Run(() => dataManager.GetLocalModFilesInfo());
+                    mainWindowPropertyModel.Console = "Start Making Backup";
+                    dataManager.Backup();
+                    mainWindowPropertyModel.Console = "Finish Making Backup";
+                }
+            });
+
+            ClosingCommand = new DelegateCommand<System.ComponentModel.CancelEventArgs>((x) =>
+            {
+                // https://araramistudio.jimdo.com/2016/10/12/wpf%E3%81%A7window%E3%82%92%E9%96%89%E3%81%98%E3%82%8B%E5%89%8D%E3%81%AB%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B/
+                if (MessageBoxResult.Yes != MessageBox.Show("画面を閉じます。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
+                {
+                    x.Cancel = true;
+                    return;
                 }
             });
         }

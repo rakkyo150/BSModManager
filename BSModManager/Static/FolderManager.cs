@@ -9,7 +9,7 @@ namespace BSModManager.Static
     {
         public static string backupFolder = Path.Combine(Environment.CurrentDirectory, "Backup");
         public static string dataFolder = Path.Combine(Environment.CurrentDirectory, "Data");
-        public static string modTempFolder = Path.Combine(Path.GetTempPath(), "BSModManager");
+        public static string tempFolder = Path.Combine(Path.GetTempPath(), "BSModManager");
 
         public static string SelectFolderCommand(string previouPath)
         {
@@ -40,9 +40,9 @@ namespace BSModManager.Static
             {
                 Directory.CreateDirectory(dataFolder);
             }
-            if (!Directory.Exists(modTempFolder))
+            if (!Directory.Exists(tempFolder))
             {
-                Directory.CreateDirectory(modTempFolder);
+                Directory.CreateDirectory(tempFolder);
             }
         }
     }

@@ -36,13 +36,14 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<ConfigFileManager>();
             containerRegistry.RegisterSingleton<VersionManager>();
 
+            containerRegistry.RegisterSingleton<InnerData>();
+            containerRegistry.RegisterSingleton<DataManager>();
+
             containerRegistry.RegisterForNavigation<MainTab>();
             containerRegistry.RegisterForNavigation<SettingsTab>();
 
             containerRegistry.RegisterDialog<InitialSetting>();
             containerRegistry.RegisterDialog<ChangeModInfo>();
-
-            containerRegistry.RegisterSingleton<InnerData>();
         }
     }
 }
