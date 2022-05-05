@@ -13,9 +13,37 @@
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
                 <DataGrid.Columns>
-                    <DataGridCheckBoxColumn Header="Checked" MinWidth="10" Binding="{Binding Checked}"/>
-                    <DataGridTextColumn Header="Mod" MinWidth="100" Binding="{Binding Mod}" IsReadOnly="True"/>
+                    <DataGridCheckBoxColumn Header="Checked" MinWidth="10" Binding="{Binding Checked}">
+                        <!--https://stackoverflow.com/questions/67082078/datagridcheckboxcolumn-with-elementstyle-loses-binding-->
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="CheckBox" BasedOn="{x:Static DataGridCheckBoxColumn.DefaultElementStyle}">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.ElementStyle>
+                        <DataGridCheckBoxColumn.EditingElementStyle>
+                            <Style TargetType="CheckBox" BasedOn="{x:Static DataGridCheckBoxColumn.DefaultEditingElementStyle}">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <!--https://social.msdn.microsoft.com/Forums/en-US/7bdaacc3-199f-43ae-9bca-aff2dfcd8abe/bug-with-data-grid-column-element-styles-and-data-binding?forum=wpf-->
+                                <Setter Property="IsChecked" Value="{Binding Checked}"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.EditingElementStyle>
+                    </DataGridCheckBoxColumn>
+                    <DataGridTextColumn Header="Mod" MinWidth="100" Binding="{Binding Mod}" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Installed" MinWidth="70" Binding="{Binding Installed}" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell">
                                 <Setter Property="Foreground" Value="{Binding InstalledColor}"/>
@@ -23,6 +51,12 @@
                         </DataGridTextColumn.CellStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Header="Latest" MinWidth="70" Binding="{Binding Latest}" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
                         <!--
                         https://social.msdn.microsoft.com/Forums/ja-JP/4d9aadf3-fad7-48d0-aac4-d8bd8c9e8bb5/datagridtextcolumn12391259912338312398333941243426465202141239512424?forum=wpfja
                         -->
@@ -32,9 +66,36 @@
                             </Style>
                         </DataGridTextColumn.CellStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Original"  MinWidth="70" Binding="{Binding Original}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="MA" MinWidth="70" Binding="{Binding MA}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Description" MinWidth="200" Width="600" Binding="{Binding Description}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Updated" MinWidth="70" Binding="{Binding Updated}" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Foreground" Value="{Binding InstalledColor}"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Original"  MinWidth="70" Binding="{Binding Original}" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="MA" MinWidth="70" Binding="{Binding MA}" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Description" MinWidth="130" Width="600" Binding="{Binding Description}" IsReadOnly="True"/>
                     <DataGridTemplateColumn Header="Uninstall" MinWidth="70">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

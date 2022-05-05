@@ -48,6 +48,17 @@ namespace BSModManager.Models.ViewModelCommonProperty
             }
         }
 
+        private string updated;
+        public string Updated
+        {
+            get { return updated; }
+            set 
+            { 
+                SetProperty(ref updated, value);
+                mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Updated = Updated;
+            }
+        }
+
         private bool original;
         // SetterでModsDataにデータセットされます
         public bool Original
@@ -62,12 +73,24 @@ namespace BSModManager.Models.ViewModelCommonProperty
                     mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Original = "〇";
                     if (Array.Exists(innerData.modAssistantAllMods, x=>x.name==modName))
                     {
+                        DateTimeOffset now = DateTimeOffset.UtcNow;
+
                         ModAssistantModInformation[] a = innerData.modAssistantAllMods.Where(x => x.name == modName).ToArray();
                         ExistInMA = true;
                         Latest = new Version(a[0].version);
                         Url = a[0].link;
                         MA = "〇";
                         Description = a[0].description;
+
+                        DateTime mAUpdatedAt = DateTime.Parse(a[0].updatedDate);
+                        if ((now - mAUpdatedAt).Days >= 1)
+                        {
+                            Updated = (now - mAUpdatedAt).Days + "D ago";
+                        }
+                        else
+                        {
+                            Updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
+                        }
                     }
                 }
                 else
@@ -211,6 +234,11 @@ namespace BSModManager.Models.ViewModelCommonProperty
 
         public void GetModInfo()
         {
+            if (ExistInMA)
+            {
+                return;
+            }
+            
             Release response  =null;
             Task.Run(() => { response = gitHubManager.GetGitHubModLatestVersionAsync(Url).Result; }).GetAwaiter().GetResult();
             if (response != null)
@@ -223,14 +251,20 @@ namespace BSModManager.Models.ViewModelCommonProperty
 
                 if ((now - releaseCreatedAt).Days >= 1)
                 {
-                    Console.WriteLine((now - releaseCreatedAt).Days + "D");
+                    Updated=(now - releaseCreatedAt).Days + "D ago";
                 }
                 else
                 {
-                    Console.WriteLine((now - releaseCreatedAt).Hours + "H" + (now - releaseCreatedAt).Minutes + "m");
+                    Updated=(now - releaseCreatedAt).Hours + "H" + (now - releaseCreatedAt).Minutes + "m ago";
                 }
                 Console.WriteLine("リリースの説明");
                 Description=releaseBody;
+            }
+            else
+            {
+                Latest = new Version("0.0.0");
+                Updated = "?";
+                Description = "?";
             }
         }
     }

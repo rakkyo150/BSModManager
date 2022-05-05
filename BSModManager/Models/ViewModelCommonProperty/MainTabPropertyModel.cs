@@ -18,6 +18,7 @@ namespace BSModManager.Models
             private string mod = "";
             private Version installed = new Version("0.0.0");
             private Version latest = new Version("0.0.0");
+            private string updated = "?";
             private string original = "?";
             private string mA = "?";
             private string description = "?";
@@ -49,6 +50,11 @@ namespace BSModManager.Models
             {
                 get { return original; }
                 set { SetProperty(ref original, value); }
+            }
+            public string Updated
+            {
+                get { return updated; }
+                set { SetProperty(ref updated, value); }
             }
             public string MA
             {
