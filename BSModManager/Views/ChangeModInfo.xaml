@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"             
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid VerticalAlignment="Center" Height="105" Width="500">
+    <Grid VerticalAlignment="Center" Height="110" Width="500">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -23,12 +23,14 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label Content="URL" HorizontalAlignment="Center" Grid.Column="0"></Label>
-            <TextBox Text="{Binding Url.Value}" TextAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1" Margin="0 0 10 0"></TextBox>
+            <TextBox Text="{Binding Url.Value}" TextAlignment="Left" VerticalContentAlignment="Center" Grid.Column="1"></TextBox>
+            <Button Content="Search" Grid.Column="2" Margin="0 0 10 0" Padding="5 0 5 0" Command="{Binding SearchMod}"></Button>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -38,19 +40,23 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Label Content="Original" HorizontalAlignment="Center" Grid.Column="0"></Label>
-            <CheckBox IsChecked="{Binding Original.Value}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Grid.ColumnSpan="2"></CheckBox>
+            <Border Margin="0 5 0 0"  Grid.Column="0">
+                <Label Content="Original" HorizontalAlignment="Center"></Label>
+            </Border>
+            <Border Margin="0 5 0 0" Grid.Column="0" Grid.ColumnSpan="2">
+                <CheckBox IsChecked="{Binding Original.Value}" HorizontalAlignment="Center" VerticalAlignment="Center"></CheckBox>
+            </Border>
         </Grid>
         <Grid Grid.Row="3" Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Button HorizontalAlignment="Center" Content="Exit" Width="60" Command="{Binding ExitCommand}" Grid.Column="0" />
-            <Button HorizontalAlignment="Center" Content="{Binding NextOrFinish}" Width="60" Command="{Binding NextOrFinishCommand}" Grid.Column="1" />
+            <Button HorizontalAlignment="Right" Content="{Binding NextOrFinish}" Width="60" Command="{Binding NextOrFinishCommand}" Grid.Column="0" Margin="0 0 10 0" BorderBrush="Blue"/>
+            <Button HorizontalAlignment="Right" Content="Exit" Width="60" Command="{Binding ExitCommand}" Grid.Column="1" Margin="10 0 10 0" />
         </Grid>
     </Grid>
 </UserControl>

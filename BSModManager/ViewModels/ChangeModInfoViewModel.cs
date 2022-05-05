@@ -14,6 +14,7 @@ namespace BSModManager.ViewModels
         public ReactiveProperty<bool> Original { get; }
         public ReadOnlyReactivePropertySlim<string> NextOrFinish { get; }
 
+        public ReactiveCommand SearchMod { get; } = new ReactiveCommand();
         public ReactiveCommand ExitCommand { get; } = new ReactiveCommand();
         public ReactiveCommand NextOrFinishCommand { get; } = new ReactiveCommand();
 
@@ -38,6 +39,10 @@ namespace BSModManager.ViewModels
 
             NextOrFinish = changeModInfoPropertyModel.ObserveProperty(x => x.NextOrFinish).ToReadOnlyReactivePropertySlim();
 
+            SearchMod.Subscribe(() =>
+            {
+                changeModInfoPropertyModel.SearchMod();
+            });
             ExitCommand.Subscribe(() =>
             {
                 // Exitするので

@@ -1,6 +1,7 @@
 ﻿using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace BSModManager.Models.ViewModelCommonProperty
@@ -9,11 +10,13 @@ namespace BSModManager.Models.ViewModelCommonProperty
     {
         IDialogService dialogService;
         MainTabPropertyModel mainTabPropertyModel;
+        MainWindowPropertyModel MainWindowPropertyModel;
 
-        public ChangeModInfoPropertyModel(IDialogService ds, MainTabPropertyModel mtpm)
+        public ChangeModInfoPropertyModel(IDialogService ds, MainTabPropertyModel mtpm,MainWindowPropertyModel mwpm)
         {
             dialogService = ds;
             mainTabPropertyModel = mtpm;
+            MainWindowPropertyModel = mwpm;
         }
 
         private string modName;
@@ -126,6 +129,24 @@ namespace BSModManager.Models.ViewModelCommonProperty
             // 全情報更新終了したので
             Position = 1;
             NextOrFinish = "Next";
+        }
+
+        public void SearchMod()
+        {
+            try
+            {
+                string searchUrl = $"https://www.google.com/search?q={modName}";
+                ProcessStartInfo pi = new ProcessStartInfo()
+                {
+                    FileName = searchUrl,
+                    UseShellExecute = true,
+                };
+                Process.Start(pi);
+            }
+            catch (Exception ex)
+            {
+                MainWindowPropertyModel.Console = "Google検索できませんでした";
+            }
         }
     }
 }
