@@ -33,7 +33,7 @@ namespace BSModManager.Models.CoreManager
             System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
             System.Version currentVersion = asm.GetName().Version;
 
-            updateMyselfConfirmPropertyModel.LatestMyselfVersion = await GetGitHubModLatestVersionAsync(url);
+            updateMyselfConfirmPropertyModel.LatestMyselfVersion = DetectVersion((await GetGitHubModLatestVersionAsync(url)).TagName);
             if (updateMyselfConfirmPropertyModel.LatestMyselfVersion > currentVersion)
             {
                 destDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, updateMyselfConfirmPropertyModel.LatestMyselfVersion.ToString());
@@ -137,7 +137,7 @@ namespace BSModManager.Models.CoreManager
                 {
                     Console.WriteLine("Githubの最新のリリースのタグ情報を取得します");
 
-                    Version tempGitHubModVersion = await GetGitHubModLatestVersionAsync(gitHubUrl);
+                    Version tempGitHubModVersion = DetectVersion((await GetGitHubModLatestVersionAsync(gitHubUrl)).TagName);
                     gitHubModVersion = tempGitHubModVersion.ToString();
                     if (gitHubModVersion == new Version("0.0.0").ToString())
                     {
@@ -288,10 +288,8 @@ namespace BSModManager.Models.CoreManager
             }
         }
 
-        public async Task<Version> GetGitHubModLatestVersionAsync(string url)
+        public async Task<Release> GetGitHubModLatestVersionAsync(string url)
         {
-            if (url == "p") return new Version("0.0.0");
-
             var credential = new Credentials(settingsTabPropertyModel.GitHubToken);
             GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"));
             gitHub.Credentials = credential;
@@ -301,20 +299,21 @@ namespace BSModManager.Models.CoreManager
 
             if (nextSlashPosition == -1)
             {
-                Console.WriteLine("URLにミスがあるかもしれません");
+                Console.WriteLine("GitHubのURLではないです");
                 Console.WriteLine($"対象のURL : {url}");
-                return new Version("0.0.0");
+                return null;
             }
 
             string owner = temp.Substring(0, nextSlashPosition);
             string name = temp.Substring(nextSlashPosition + 1);
 
             Version latestVersion = null;
+            Release response = null;
 
             try
             {
-                // プレリリースを取得する場合はGetAllしかないが、効率が悪いのでプレリリースには対応しません
-                var response = await gitHub.Repository.Release.GetLatest(owner, name);
+                // プレリリース非対応
+                response = await gitHub.Repository.Release.GetLatest(owner, name);
                 latestVersion = DetectVersion(response.TagName);
 
                 if (latestVersion == null)
@@ -324,12 +323,12 @@ namespace BSModManager.Models.CoreManager
             }
             catch (Exception ex)
             {
-                Console.WriteLine("URLにミスがあるかもしれません");
+                Console.WriteLine("リポジトリのURLではなさそうです");
                 Console.WriteLine($"対象のURL : {url}");
-                return new Version("0.0.0");
+                return null;
             }
 
-            return latestVersion;
+            return response;
         }
 
         // Based on https://qiita.com/thrzn41/items/2754bec8ebad97ecd7fd

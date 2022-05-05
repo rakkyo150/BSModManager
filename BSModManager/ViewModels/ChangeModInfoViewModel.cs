@@ -48,6 +48,7 @@ namespace BSModManager.ViewModels
                 // Exitするので
                 changeModInfoPropertyModel.Position = 1;
                 canCloseDialog = true;
+                changeModInfoPropertyModel.GetModInfo();
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
                 canCloseDialog = false;
                 if (changeModInfoPropertyModel.NextOrFinish == "Finish")
@@ -58,6 +59,7 @@ namespace BSModManager.ViewModels
             NextOrFinishCommand.Subscribe(() =>
             {
                 canCloseDialog = true;
+                changeModInfoPropertyModel.GetModInfo();
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
                 canCloseDialog = false;
                 changeModInfoPropertyModel.ChangeModInfo();

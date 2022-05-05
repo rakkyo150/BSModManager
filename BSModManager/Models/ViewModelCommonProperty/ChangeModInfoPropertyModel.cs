@@ -1,8 +1,11 @@
-﻿using Prism.Mvvm;
+﻿using BSModManager.Models.CoreManager;
+using Octokit;
+using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BSModManager.Models.ViewModelCommonProperty
 {
@@ -11,12 +14,14 @@ namespace BSModManager.Models.ViewModelCommonProperty
         IDialogService dialogService;
         MainTabPropertyModel mainTabPropertyModel;
         MainWindowPropertyModel MainWindowPropertyModel;
+        GitHubManager gitHubManager;
 
-        public ChangeModInfoPropertyModel(IDialogService ds, MainTabPropertyModel mtpm,MainWindowPropertyModel mwpm)
+        public ChangeModInfoPropertyModel(IDialogService ds, MainTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm)
         {
             dialogService = ds;
             mainTabPropertyModel = mtpm;
             MainWindowPropertyModel = mwpm;
+            gitHubManager = ghm;
         }
 
         private string modName;
@@ -67,7 +72,27 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set { SetProperty(ref nextOrFinish, value); }
         }
 
+        private Version latest = new Version("0.0.0");
+        public Version Latest
+        {
+            get { return latest; }
+            set 
+            { 
+                SetProperty(ref latest, value);
+                mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Latest = Latest;
+            }
+        }
 
+        private string description = "?";
+        public string Description
+        {
+            get { return description; }
+            set 
+            { 
+                SetProperty(ref description, value);
+                mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Description = Description;
+            }
+        }
 
         private int position = 1;
         // ModsDataのうち何個目のCheckedのデータを変更するか
@@ -146,6 +171,31 @@ namespace BSModManager.Models.ViewModelCommonProperty
             catch (Exception ex)
             {
                 MainWindowPropertyModel.Console = "Google検索できませんでした";
+            }
+        }
+
+        public void GetModInfo()
+        {
+            Release response  =null;
+            Task.Run(() => { response = gitHubManager.GetGitHubModLatestVersionAsync(Url).Result; }).GetAwaiter().GetResult();
+            if (response != null)
+            {
+                string releaseBody = response.Body;
+                var releaseCreatedAt = response.CreatedAt;
+                DateTimeOffset now = DateTimeOffset.UtcNow;
+
+                Latest = gitHubManager.DetectVersion(response.TagName);
+
+                if ((now - releaseCreatedAt).Days >= 1)
+                {
+                    Console.WriteLine((now - releaseCreatedAt).Days + "D");
+                }
+                else
+                {
+                    Console.WriteLine((now - releaseCreatedAt).Hours + "H" + (now - releaseCreatedAt).Minutes + "m");
+                }
+                Console.WriteLine("リリースの説明");
+                Description=releaseBody;
             }
         }
     }
