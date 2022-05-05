@@ -11,6 +11,7 @@ namespace BSModManager.ViewModels
     {
         public ReadOnlyReactivePropertySlim<string> ModNameAndProgress { get; }
         public ReactiveProperty<string> Url { get; }
+        public ReadOnlyReactivePropertySlim<bool> ExistInMA { get; }
         public ReactiveProperty<bool> Original { get; }
         public ReadOnlyReactivePropertySlim<string> NextOrFinish { get; }
 
@@ -34,6 +35,7 @@ namespace BSModManager.ViewModels
 
             // SetterでModsDataにデータセットされます
             Url = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Url);
+            ExistInMA = changeModInfoPropertyModel.ObserveProperty(x => x.ExistInMA).ToReadOnlyReactivePropertySlim();
             // SetterでModsDataにデータセットされます
             Original = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Original);
 

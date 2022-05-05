@@ -1,4 +1,5 @@
 ﻿using BSModManager.Models.CoreManager;
+using BSModManager.Models.Structure;
 using Octokit;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -15,13 +16,15 @@ namespace BSModManager.Models.ViewModelCommonProperty
         MainTabPropertyModel mainTabPropertyModel;
         MainWindowPropertyModel MainWindowPropertyModel;
         GitHubManager gitHubManager;
+        InnerData innerData;
 
-        public ChangeModInfoPropertyModel(IDialogService ds, MainTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm)
+        public ChangeModInfoPropertyModel(IDialogService ds, MainTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm,InnerData id)
         {
             dialogService = ds;
             mainTabPropertyModel = mtpm;
             MainWindowPropertyModel = mwpm;
             gitHubManager = ghm;
+            innerData = id;
         }
 
         private string modName;
@@ -57,10 +60,21 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 {
                     Console.WriteLine("test");
                     mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Original = "〇";
+                    if (Array.Exists(innerData.modAssistantAllMods, x=>x.name==modName))
+                    {
+                        ModAssistantModInformation[] a = innerData.modAssistantAllMods.Where(x => x.name == modName).ToArray();
+                        ExistInMA = true;
+                        Latest = new Version(a[0].version);
+                        Url = a[0].link;
+                        MA = "〇";
+                        Description = a[0].description;
+                    }
                 }
                 else
                 {
                     mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Original = "×";
+                    ExistInMA = false;
+                    MA = "×";
                 }
             }
         }
@@ -80,6 +94,27 @@ namespace BSModManager.Models.ViewModelCommonProperty
             { 
                 SetProperty(ref latest, value);
                 mainTabPropertyModel.ModsData.First(x => x.Mod == modName).Latest = Latest;
+            }
+        }
+
+        private string mA = "?";
+        public string MA
+        {
+            get { return mA; }
+            set
+            {
+                SetProperty(ref mA, value);
+                mainTabPropertyModel.ModsData.First(x => x.Mod == modName).MA = MA;
+            }
+        }
+
+        private bool existInMA = false;
+        public bool ExistInMA
+        {
+            get { return existInMA; }
+            set
+            {
+                SetProperty(ref existInMA, value);
             }
         }
 

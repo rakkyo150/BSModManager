@@ -71,6 +71,8 @@ namespace BSModManager.ViewModels
         MainTabPropertyModel mainTabPropertyModel;
         DataManager dataManager;
         ChangeModInfoPropertyModel changeModInfoPropertyModel;
+        ModAssistantManager modAssistantManager;
+        InnerData innerData;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
@@ -78,7 +80,8 @@ namespace BSModManager.ViewModels
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
 
-        public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm, MainWindowPropertyModel mwpm, MainTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm)
+        public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm, 
+            MainWindowPropertyModel mwpm, MainTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm,ModAssistantManager mam,InnerData id)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
@@ -86,6 +89,8 @@ namespace BSModManager.ViewModels
             mainTabPropertyModel = mtpm;
             dataManager = dm;
             changeModInfoPropertyModel = cmipm;
+            modAssistantManager = mam;
+            innerData = id;
 
             dialogService = ds;
 
@@ -135,6 +140,7 @@ namespace BSModManager.ViewModels
                 }
                 else
                 {
+                    innerData.modAssistantAllMods = await modAssistantManager.GetAllModAssistantModsAsync();
                     await Task.Run(() => dataManager.GetLocalModFilesInfo());
                 }
             });

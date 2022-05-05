@@ -19,6 +19,9 @@ namespace BSModManager.ViewModels
 
         DataManager dataManager;
 
+        ModAssistantManager modAssistantManager;
+        InnerData innerData;
+
         public ReadOnlyReactivePropertySlim<string> VerifyBSFolder { get; }
         public ReadOnlyReactivePropertySlim<Brush> VerifyBSFolderColor { get; }
 
@@ -31,10 +34,12 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm)
+        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id)
         {
             settingsTabPropertyModel = stpm;
             dataManager = dm;
+            modAssistantManager = mam;
+            innerData = id;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath);
@@ -63,6 +68,7 @@ namespace BSModManager.ViewModels
 
         public void OnDialogClosed()
         {
+            Task.Run(() => { innerData.modAssistantAllMods = modAssistantManager.GetAllModAssistantModsAsync().Result; }).GetAwaiter().GetResult();
             Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
         }
 
