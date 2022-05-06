@@ -57,14 +57,6 @@
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
-                        <!--
-                        https://social.msdn.microsoft.com/Forums/ja-JP/4d9aadf3-fad7-48d0-aac4-d8bd8c9e8bb5/datagridtextcolumn12391259912338312398333941243426465202141239512424?forum=wpfja
-                        -->
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="Foreground" Value="{Binding LatestColor}"/>
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Header="Updated" MinWidth="70" Binding="{Binding Updated}" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
@@ -73,6 +65,9 @@
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
+                        <!--
+                        https://social.msdn.microsoft.com/Forums/ja-JP/4d9aadf3-fad7-48d0-aac4-d8bd8c9e8bb5/datagridtextcolumn12391259912338312398333941243426465202141239512424?forum=wpfja
+                        -->
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell">
                                 <Setter Property="Foreground" Value="{Binding InstalledColor}"/>

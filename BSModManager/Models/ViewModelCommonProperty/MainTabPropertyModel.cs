@@ -47,12 +47,28 @@ namespace BSModManager.Models
             public Version Installed
             {
                 get { return installed; }
-                set { SetProperty(ref installed, value); }
+                set 
+                { 
+                    SetProperty(ref installed,new Version(value.Major,value.Minor,value.Build));
+                    if (Installed == Latest) InstalledColor = Brushes.Green;
+                    else if (Installed < Latest) InstalledColor = Brushes.Red;
+                    else if (Installed > Latest) InstalledColor = Brushes.Orange;
+
+                    if (Latest == new Version("0.0.0")) InstalledColor = Brushes.Blue;
+                }
             }
             public Version Latest
             {
                 get { return latest; }
-                set { SetProperty(ref latest, value); }
+                set 
+                {
+                    SetProperty(ref latest, value);
+                    if (Installed == Latest) InstalledColor = Brushes.Green;
+                    else if (Installed < Latest) InstalledColor = Brushes.Red;
+                    else if (Installed > Latest) InstalledColor = Brushes.Orange;
+
+                    if (Latest == new Version("0.0.0")) InstalledColor = Brushes.Blue;
+                }
             }
             public string Original
             {
@@ -83,11 +99,6 @@ namespace BSModManager.Models
             {
                 get { return installedColor; }
                 set { SetProperty(ref installedColor, value); }
-            }
-            public Brush LatestColor
-            {
-                get { return latestColor; }
-                set { SetProperty(ref latestColor, value); }
             }
         }
 
