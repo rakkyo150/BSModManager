@@ -44,6 +44,14 @@ namespace BSModManager.ViewModels
 
         public ReadOnlyReactivePropertySlim<string> VerifyGitHubToken { get; }
         public ReadOnlyReactivePropertySlim<Brush> VerifyGitHubTokenColor { get; }
+
+        public ReadOnlyReactivePropertySlim<string> VerifyMAExe { get; }
+        public ReadOnlyReactivePropertySlim<Brush> VerifyMAExeColor { get; }
+
+        public ReactiveProperty<string> MAExePath { get; }
+
+        public ReactiveCommand SelectMAExeCommand { get; } = new ReactiveCommand();
+
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
@@ -59,6 +67,7 @@ namespace BSModManager.ViewModels
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(disposables);
+            MAExePath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.MAExePath).AddTo(disposables);
 
             VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim().AddTo(disposables);
             VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
@@ -66,7 +75,11 @@ namespace BSModManager.ViewModels
             VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim().AddTo(disposables);
             VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
 
+            VerifyMAExe = settingsTabPropertyModel.VerifyMAExe.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            VerifyMAExeColor = settingsTabPropertyModel.VerifyMAExeColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+
             SelectBSFolderCommand.Subscribe(_ => BSFolderPath.Value = FolderManager.SelectFolderCommand(BSFolderPath.Value)).AddTo(disposables);
+            SelectMAExeCommand.Subscribe(_ => MAExePath.Value = FilePath.SelectFile(MAExePath.Value)).AddTo(disposables);
 
             SettingFinishCommand = settingsTabPropertyModel.VerifyBoth.ToReactiveCommand().WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK))).AddTo(disposables);
 
@@ -187,6 +200,17 @@ namespace BSModManager.ViewModels
 
                 Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
 
+                if (settingsTabPropertyModel.VerifyMAExe.Value == "〇")
+                {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(settingsTabPropertyModel.MAExePath);
+                    }
+                    catch(Exception e)
+                    {
+                        mainWindowPropertyModel.Console = e.Message;
+                    }
+                }
             }
         }
 

@@ -276,6 +276,18 @@ namespace BSModManager.ViewModels
                         }
                     }
                     await Task.Run(() => dataManager.GetLocalModFilesInfo());
+
+                    if (settingsTabPropertyModel.VerifyMAExe.Value == "〇")
+                    {
+                        try
+                        {
+                            System.Diagnostics.Process.Start(settingsTabPropertyModel.MAExePath);
+                        }
+                        catch (Exception e)
+                        {
+                            mainWindowPropertyModel.Console = e.Message;
+                        }
+                    }
                 }
             });
             

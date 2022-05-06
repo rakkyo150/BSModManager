@@ -30,19 +30,21 @@ namespace BSModManager.Models
                 settingDictionary = new Dictionary<string, string>()
                 {
                     {"BSFolderPath",null },
-                    {"GitHubToken", null}
+                    {"GitHubToken", null},
+                    {"MAExePath", null }
                 };
             }
 
             return settingDictionary;
         }
 
-        public void MakeConfigFile(string bSFolderPath, string gitHubToken)
+        public void MakeConfigFile(string bSFolderPath, string gitHubToken, string mAExePath)
         {
             Dictionary<string, string> settingDictionary = new Dictionary<string, string>()
             {
                 {"BSFolderPath",bSFolderPath },
-                {"GitHubToken", gitHubToken}
+                {"GitHubToken", gitHubToken},
+                {"MAExePath", mAExePath }
             };
 
             string _jsonFinish = JsonConvert.SerializeObject(settingDictionary, Formatting.Indented);

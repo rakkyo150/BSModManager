@@ -30,12 +30,15 @@ namespace BSModManager.Models.ViewModelCommonProperty
             VerifyGitHubToken.AddTo(disposables);
             VerifyGitHubTokenColor.AddTo(disposables);
             VerifyBoth.AddTo(disposables);
+            VerifyMAExe.AddTo(disposables);
+            VerifyMAExeColor.AddTo(disposables);
 
             Dictionary<string, string> tempDictionary = configFileManager.LoadConfigFile();
             if (tempDictionary["BSFolderPath"] != null && tempDictionary["GitHubToken"] != null)
             {
                 BSFolderPath = tempDictionary["BSFolderPath"];
                 GitHubToken = tempDictionary["GitHubToken"];
+                MAExePath = tempDictionary["MAExePath"];
             }
 
             // https://nryblog.work/call-sync-to-async-method/
@@ -67,7 +70,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             {
                 SetProperty(ref bSFolderPath, value);
                 mainWindowPropertyModel.GameVersion = versionManager.GetGameVersionStr(BSFolderPath);
-                configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
+                configFileManager.MakeConfigFile(BSFolderPath, GitHubToken, MAExePath);
                 if (Directory.Exists(BSFolderPath)) OpenBSFolderButtonEnable.Value = true;
                 else OpenBSFolderButtonEnable.Value = false;
                 if (versionManager.GetGameVersionStr(BSFolderPath) == "GameVersion\n---")
@@ -95,13 +98,35 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set
             {
                 SetProperty(ref gitHubToken, value);
-                configFileManager.MakeConfigFile(BSFolderPath, GitHubToken);
+                configFileManager.MakeConfigFile(BSFolderPath, GitHubToken, MAExePath);
 
                 // https://stackoverflow.com/questions/6602244/how-to-call-an-async-method-from-a-getter-or-setter
                 new Task(async () =>
                 {
                     await CheckCredential();
                 }).Start();
+            }
+        }
+
+        private string mAExePath = "";
+        public string MAExePath
+        {
+            get { return mAExePath; }
+            set 
+            { 
+                SetProperty(ref mAExePath, value);
+                configFileManager.MakeConfigFile(BSFolderPath, GitHubToken, MAExePath);
+
+                if (Path.GetFileName(MAExePath) == "ModAssistant.exe")
+                {
+                    VerifyMAExe.Value = "〇";
+                    VerifyMAExeColor.Value = Brushes.Green;
+                }
+                else
+                {
+                    VerifyMAExe.Value = "×";
+                    VerifyMAExeColor.Value = Brushes.Red;
+                }
             }
         }
 
@@ -162,5 +187,8 @@ namespace BSModManager.Models.ViewModelCommonProperty
         public ReactiveProperty<Brush> VerifyGitHubTokenColor { get; } = new ReactiveProperty<Brush>(Brushes.Black);
 
         public ReactiveProperty<bool> VerifyBoth { get; } = new ReactiveProperty<bool>();
+
+        public ReactiveProperty<string> VerifyMAExe { get; } = new ReactiveProperty<string>("ー");
+        public ReactiveProperty<Brush> VerifyMAExeColor { get; } = new ReactiveProperty<Brush>(Brushes.Black);
     }
 }
