@@ -71,6 +71,7 @@ namespace BSModManager.Models.CoreManager
                         mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
                         {
                             Mod = f.Name.Replace(".dll", ""),
+                            Installed = installedModVersion,
                             Latest = new Version(temp.version),
                             Updated = updated,
                             Original = "〇",
@@ -307,6 +308,7 @@ namespace BSModManager.Models.CoreManager
                     LocalVersion = a.Installed.ToString(),
                     LatestVersion = a.Latest.ToString(),
                     Original = (a.Original=="×")? false : true,
+                    Ma = (a.MA=="×")? false:true,
                     Url = a.Url,
                 };
                 modInformationCsvList.Add(githubModInstance);

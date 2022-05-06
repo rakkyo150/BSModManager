@@ -13,6 +13,8 @@ namespace BSModManager.Models.Structure
         [Index(3)]
         public bool Original { get; set; }
         [Index(4)]
+        public bool Ma { get; set; }
+        [Index(5)]
         public string Url { get; set; }
     }
 }
