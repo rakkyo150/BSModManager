@@ -75,12 +75,16 @@
     <Compile Include="Static\FolderManager.cs" />
     <Compile Include="ViewModels\ChangeModInfoViewModel.cs" />
     <Compile Include="ViewModels\InitialSettingViewModel.cs" />
+    <Compile Include="ViewModels\InstallTabViewModel.cs" />
     <Compile Include="ViewModels\UpdateMyselfConfirmViewModel.cs" />
     <Compile Include="Views\ChangeModInfo.xaml.cs">
       <DependentUpon>ChangeModInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\InitialSetting.xaml.cs">
       <DependentUpon>InitialSetting.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InstallTab.xaml.cs">
+      <DependentUpon>InstallTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsTab.xaml.cs">
       <DependentUpon>SettingsTab.xaml</DependentUpon>
@@ -96,7 +100,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainTab.xaml">
+    <Page Include="Views\InstallTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UpdateTab.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -108,11 +116,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModels\MainTabViewModel.cs" />
+    <Compile Include="ViewModels\UpdateTabViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\SettingsTabViewModel.cs" />
-    <Compile Include="Views\MainTab.xaml.cs">
-      <DependentUpon>MainTab.xaml</DependentUpon>
+    <Compile Include="Views\UpdateTab.xaml.cs">
+      <DependentUpon>UpdateTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

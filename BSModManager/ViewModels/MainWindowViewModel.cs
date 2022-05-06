@@ -47,6 +47,13 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref myselfVersion, value); }
         }
 
+        private string updateOrInstall = "Update";
+        public string UpdateOrInstall
+        {
+            get { return updateOrInstall; }
+            set { SetProperty(ref updateOrInstall, value); }
+        }
+        
         private bool installButtonEnable = true;
         public bool InstallButtonEnable
         {
@@ -87,7 +94,8 @@ namespace BSModManager.ViewModels
         GitHubManager gitHubManager;
 
         public IRegionManager RegionManager { get; private set; }
-        public DelegateCommand<string> ShowMainTabViewCommand { get; private set; }
+        public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
+        public DelegateCommand<string> ShowInstallTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
         public DelegateCommand ModRepositoryButtonCommand { get; private set; }
@@ -116,16 +124,27 @@ namespace BSModManager.ViewModels
             MyselfVersion = versionManager.GetMyselfVersion();
 
             RegionManager = regionManager;
-            RegionManager.RegisterViewWithRegion("ContentRegion", typeof(MainTab));
-            ShowMainTabViewCommand = new DelegateCommand<string>((x) =>
+            RegionManager.RegisterViewWithRegion("ContentRegion", typeof(UpdateTab));
+            ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
               {
-                  mainWindowPropertyModel.Console = "Main";
+                  mainWindowPropertyModel.Console = "Update";
+                  UpdateOrInstall = "Update";
                   InstallButtonEnable = true;
                   ModRepositoryButtonEnable = true;
                   ChangeModInfoButtonEnable = true;
                   AllCheckedButtonEnable = true;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
+            ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                mainWindowPropertyModel.Console = "Install";
+                UpdateOrInstall = "Install";
+                InstallButtonEnable = true;
+                ModRepositoryButtonEnable = true;
+                ChangeModInfoButtonEnable = false;
+                AllCheckedButtonEnable = true;
+                RegionManager.RequestNavigate("ContentRegion", x);
+            });
             ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
               {
                   mainWindowPropertyModel.Console = "Settings";

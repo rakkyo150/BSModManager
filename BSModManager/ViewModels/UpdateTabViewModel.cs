@@ -6,13 +6,13 @@ using System.Windows.Data;
 
 namespace BSModManager.ViewModels
 {
-    public class MainTabViewModel : BindableBase
+    public class UpdateTabViewModel : BindableBase
     {
         public ObservableCollection<MainTabPropertyModel.ModData> ModsData { get; }
 
         MainTabPropertyModel mainTabPropertyModel;
 
-        public MainTabViewModel(MainTabPropertyModel mtpm)
+        public UpdateTabViewModel(MainTabPropertyModel mtpm)
         {
             mainTabPropertyModel = mtpm;
 

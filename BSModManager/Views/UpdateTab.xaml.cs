@@ -5,9 +5,9 @@ namespace BSModManager.Views
     /// <summary>
     /// Interaction logic for MainTab
     /// </summary>
-    public partial class MainTab : UserControl
+    public partial class UpdateTab : UserControl
     {
-        public MainTab()
+        public UpdateTab()
         {
             InitializeComponent();
         }

@@ -39,7 +39,8 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<InnerData>();
             containerRegistry.RegisterSingleton<DataManager>();
 
-            containerRegistry.RegisterForNavigation<MainTab>();
+            containerRegistry.RegisterForNavigation<UpdateTab>();
+            containerRegistry.RegisterForNavigation<InstallTab>();
             containerRegistry.RegisterForNavigation<SettingsTab>();
 
             containerRegistry.RegisterDialog<InitialSetting>();
