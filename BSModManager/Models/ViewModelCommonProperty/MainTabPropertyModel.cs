@@ -1,6 +1,7 @@
 ﻿using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
 
@@ -9,6 +10,13 @@ namespace BSModManager.Models
     public class MainTabPropertyModel : BindableBase
     {
         public ObservableCollection<ModData> ModsData = new ObservableCollection<ModData>();
+
+        public MainWindowPropertyModel mainWindowPropertyModel;
+
+        public MainTabPropertyModel(MainWindowPropertyModel mwpm)
+        {
+            mainWindowPropertyModel = mwpm;
+        }
 
 
         // 変更通知イベントがないとUIに反映されない
@@ -104,6 +112,30 @@ namespace BSModManager.Models
                 {
                     ModsData[i].Checked = true;
                     i++;
+                }
+            }
+        }
+
+        public void ModRepositoryOpen()
+        {
+            foreach(var a in ModsData)
+            {
+                if (a.Checked)
+                {
+                    try
+                    {
+                        string searchUrl = a.Url;
+                        ProcessStartInfo pi = new ProcessStartInfo()
+                        {
+                            FileName = searchUrl,
+                            UseShellExecute = true,
+                        };
+                        Process.Start(pi);
+                    }
+                    catch (Exception ex)
+                    {
+                        mainWindowPropertyModel.Console = $"{a.Mod}のURL : \"{a.Url}\"を開けませんでした";
+                    }
                 }
             }
         }

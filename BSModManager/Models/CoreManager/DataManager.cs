@@ -48,13 +48,17 @@ namespace BSModManager.Models.CoreManager
                 string pluginPath = Path.Combine(pluginFolderPath, f.Name);
                 System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
                 Version installedModVersion = new Version(vi.FileVersion);
-                if (mainTabPropertyModel.ModsData != null && !mainTabPropertyModel.ModsData.Any(x => x.Mod == f.Name.Replace(".dll", "")))
+                if (!mainTabPropertyModel.ModsData.Any(x => x.Mod == f.Name.Replace(".dll", "")))
                 {
                     mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
                     {
                         Mod = f.Name.Replace(".dll", ""),
                         Installed = installedModVersion
                     });
+                }
+                else
+                {           
+                    mainTabPropertyModel.ModsData.First(x => x.Mod == f.Name.Replace(".dll", "")).Installed=installedModVersion;
                 }
             }
         }
@@ -268,13 +272,20 @@ namespace BSModManager.Models.CoreManager
             }
         }
 
-        public void ReadCsv<T>(string csvPath, out List<T> listOutput)
+        public async Task<List<ModInformationCsv>> ReadCsv(string csvPath)
         {
+            List<ModInformationCsv> output=null;
+
             using (var reader = new StreamReader(csvPath))
             using (var csv = new CsvReader(reader, new CultureInfo("ja-JP", false)))
             {
-                listOutput = csv.GetRecords<T>().ToList();
+                await Task.Run(() => 
+                { 
+                    output = csv.GetRecords<ModInformationCsv>().ToList();
+                });
             }
+
+            return output;
         }
 
         public void UpdateModAssistantModCsv()
