@@ -48,18 +48,65 @@ namespace BSModManager.Models.CoreManager
                 string pluginPath = Path.Combine(pluginFolderPath, f.Name);
                 System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
                 Version installedModVersion = new Version(vi.FileVersion);
+                
+                // 以前のデータ無し
                 if (!mainTabPropertyModel.ModsData.Any(x => x.Mod == f.Name.Replace(".dll", "")))
                 {
-                    mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                    if (Array.Exists(innerData.modAssistantAllMods, x => x.name == f.Name.Replace(".dll", "")))
                     {
-                        Mod = f.Name.Replace(".dll", ""),
-                        Installed = installedModVersion
-                    });
+                        var temp = Array.Find(innerData.modAssistantAllMods, x => x.name == f.Name.Replace(".dll", ""));
+
+                        DateTime now = DateTime.Now;
+                        DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
+                        string updated = null;
+                        if ((now - mAUpdatedAt).Days >= 1)
+                        {
+                            updated = (now - mAUpdatedAt).Days + "D ago";
+                        }
+                        else
+                        {
+                            updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
+                        }
+
+                        mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                        {
+                            Mod = f.Name.Replace(".dll", ""),
+                            Latest = new Version(temp.version),
+                            Updated = updated,
+                            Original = "〇",
+                            MA = "〇",
+                            Description = temp.description,
+                            Url = temp.link
+                        });
+                    }
+                    else
+                    {
+                        mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                        {
+                            Mod = f.Name.Replace(".dll", ""),
+                            Installed = installedModVersion
+                        });
+                    }
                 }
+                // 以前のデータある場合
                 else
                 {           
                     mainTabPropertyModel.ModsData.First(x => x.Mod == f.Name.Replace(".dll", "")).Installed=installedModVersion;
                 }
+            }
+
+            // 以前実行時から手動で消したModの情報を消す
+            List<MainTabPropertyModel.ModData> removeList = new List<MainTabPropertyModel.ModData>();
+            foreach(var data in mainTabPropertyModel.ModsData)
+            {
+                if (!filesName.Any(x => x.Name.Replace(".dll", "") == data.Mod))
+                {
+                    removeList.Add(data);
+                }
+            }
+            foreach(var removeData in removeList)
+            {
+                mainTabPropertyModel.ModsData.Remove(removeData);
             }
         }
 
@@ -259,7 +306,7 @@ namespace BSModManager.Models.CoreManager
                     Mod = a.Mod,
                     LocalVersion = a.Installed.ToString(),
                     LatestVersion = a.Latest.ToString(),
-                    Original = (a.Original=="〇")? true : false,
+                    Original = (a.Original=="×")? false : true,
                     Url = a.Url,
                 };
                 modInformationCsvList.Add(githubModInstance);

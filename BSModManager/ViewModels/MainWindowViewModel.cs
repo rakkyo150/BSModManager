@@ -207,13 +207,13 @@ namespace BSModManager.ViewModels
                             {
                                 Release response = await gitHubManager.GetGitHubModLatestVersionAsync(previousData.Url);
                                 string original = null;
-                                if (previousData.Original)
+                                if (!previousData.Original)
                                 {
-                                    original = "〇";
+                                    original = "×";
                                 }
                                 else
                                 {
-                                    original = "×";
+                                    original = "〇";
                                 }
                                 
                                 if (response == null)

@@ -136,13 +136,13 @@ namespace BSModManager.ViewModels
                         string original = null;
                         Task.Run(async()=> { response = await gitHubManager.GetGitHubModLatestVersionAsync(previousData.Url); }).GetAwaiter().GetResult();
 
-                        if (previousData.Original)
+                        if (!previousData.Original)
                         {
-                            original = "〇";
+                            original = "×";
                         }
                         else
                         {
-                            original = "×";
+                            original = "〇";
                         }
 
                         if (response == null)
