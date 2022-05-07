@@ -42,21 +42,53 @@ namespace BSModManager.Models.CoreManager
             // Console.WriteLine("Start Getting FileInfo");
 
             string pluginFolderPath = Path.Combine(settingsTabPropertyModel.BSFolderPath, "Plugins");
+            string pendingPluginFolderPath = Path.Combine(settingsTabPropertyModel.BSFolderPath, "IPA", "Pending", "Plugins");
 
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(pluginFolderPath);
+            System.IO.DirectoryInfo pendingDi = new System.IO.DirectoryInfo(pendingPluginFolderPath);
+
             IEnumerable<System.IO.FileInfo> filesName = di.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
+            IEnumerable<System.IO.FileInfo> pendingFilesName = pendingDi.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
+
+            Dictionary<string, Version> combinedModNameAndVersion = new Dictionary<string, Version>();
+
             foreach (System.IO.FileInfo f in filesName)
             {
                 string pluginPath = Path.Combine(pluginFolderPath, f.Name);
+
                 System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
                 Version installedModVersion = new Version(vi.FileVersion);
-                
-                // 以前のデータ無し
-                if (!updateTabPropertyModel.ModsData.Any(x => x.Mod == f.Name.Replace(".dll", "")))
+
+                combinedModNameAndVersion.Add(f.Name.Replace(".dll",""), installedModVersion);
+            }
+            foreach(System.IO.FileInfo pendingF in pendingFilesName)
+            {
+                string pendingPluginPath = Path.Combine(pendingPluginFolderPath, pendingF.Name);
+
+                System.Diagnostics.FileVersionInfo pendingVi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pendingPluginPath);
+                Version pendingInstalledModVersion = new Version(pendingVi.FileVersion);
+
+                if (!combinedModNameAndVersion.ContainsKey(pendingF.Name.Replace(".dll","")))
                 {
-                    if (Array.Exists(innerData.modAssistantAllMods, x => x.name == f.Name.Replace(".dll", "")))
+                    combinedModNameAndVersion.Add(pendingF.Name.Replace(".dll", ""), pendingInstalledModVersion);
+                }
+                else
+                {
+                    if(pendingInstalledModVersion > combinedModNameAndVersion[pendingF.Name.Replace(".dll", "")])
                     {
-                        var temp = Array.Find(innerData.modAssistantAllMods, x => x.name == f.Name.Replace(".dll", ""));
+                        combinedModNameAndVersion[pendingF.Name.Replace(".dll", "")] = pendingInstalledModVersion;
+                    }
+                }
+            }
+
+            foreach(KeyValuePair<string,Version> modNameAndVersion in combinedModNameAndVersion)
+            {
+                // 以前のデータ無し
+                if (!updateTabPropertyModel.ModsData.Any(x => x.Mod == modNameAndVersion.Key))
+                {
+                    if (Array.Exists(innerData.modAssistantAllMods, x => x.name == modNameAndVersion.Key))
+                    {
+                        var temp = Array.Find(innerData.modAssistantAllMods, x => x.name == modNameAndVersion.Key);
 
                         DateTime now = DateTime.Now;
                         DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
@@ -72,8 +104,8 @@ namespace BSModManager.Models.CoreManager
 
                         updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
-                            Mod = f.Name.Replace(".dll", ""),
-                            Installed = installedModVersion,
+                            Mod = modNameAndVersion.Key,
+                            Installed = modNameAndVersion.Value,
                             Latest = new Version(temp.version),
                             Updated = updated,
                             Original = "〇",
@@ -86,15 +118,15 @@ namespace BSModManager.Models.CoreManager
                     {
                         updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
-                            Mod = f.Name.Replace(".dll", ""),
-                            Installed = installedModVersion
+                            Mod = modNameAndVersion.Key,
+                            Installed = modNameAndVersion.Value
                         });
                     }
                 }
                 // 以前のデータある場合
                 else
                 {           
-                    updateTabPropertyModel.ModsData.First(x => x.Mod == f.Name.Replace(".dll", "")).Installed=installedModVersion;
+                    updateTabPropertyModel.ModsData.First(x => x.Mod == modNameAndVersion.Key).Installed = modNameAndVersion.Value;
                 }
             }
 
