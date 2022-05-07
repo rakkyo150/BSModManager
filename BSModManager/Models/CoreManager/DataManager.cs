@@ -19,14 +19,16 @@ namespace BSModManager.Models.CoreManager
         InnerData innerData;
         SettingsTabPropertyModel settingsTabPropertyModel;
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
-        MainTabPropertyModel mainTabPropertyModel;
+        UpdateTabPropertyModel updateTabPropertyModel;
+        MainWindowPropertyModel mainWindowPropertyModel;
 
-        public DataManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm, MainTabPropertyModel mtpm)
+        public DataManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm, UpdateTabPropertyModel utpm,MainWindowPropertyModel mwpm)
         {
             innerData = id;
             settingsTabPropertyModel = stpm;
             updateMyselfConfirmPropertyModel = umcpm;
-            mainTabPropertyModel = mtpm;
+            updateTabPropertyModel = utpm;
+            mainWindowPropertyModel = mwpm;
         }
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace BSModManager.Models.CoreManager
                 Version installedModVersion = new Version(vi.FileVersion);
                 
                 // 以前のデータ無し
-                if (!mainTabPropertyModel.ModsData.Any(x => x.Mod == f.Name.Replace(".dll", "")))
+                if (!updateTabPropertyModel.ModsData.Any(x => x.Mod == f.Name.Replace(".dll", "")))
                 {
                     if (Array.Exists(innerData.modAssistantAllMods, x => x.name == f.Name.Replace(".dll", "")))
                     {
@@ -68,7 +70,7 @@ namespace BSModManager.Models.CoreManager
                             updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                         }
 
-                        mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                        updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
                             Mod = f.Name.Replace(".dll", ""),
                             Installed = installedModVersion,
@@ -82,7 +84,7 @@ namespace BSModManager.Models.CoreManager
                     }
                     else
                     {
-                        mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                        updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
                             Mod = f.Name.Replace(".dll", ""),
                             Installed = installedModVersion
@@ -92,13 +94,13 @@ namespace BSModManager.Models.CoreManager
                 // 以前のデータある場合
                 else
                 {           
-                    mainTabPropertyModel.ModsData.First(x => x.Mod == f.Name.Replace(".dll", "")).Installed=installedModVersion;
+                    updateTabPropertyModel.ModsData.First(x => x.Mod == f.Name.Replace(".dll", "")).Installed=installedModVersion;
                 }
             }
 
             // 以前実行時から手動で消したModの情報を消す
-            List<MainTabPropertyModel.ModData> removeList = new List<MainTabPropertyModel.ModData>();
-            foreach(var data in mainTabPropertyModel.ModsData)
+            List<UpdateTabPropertyModel.ModData> removeList = new List<UpdateTabPropertyModel.ModData>();
+            foreach(var data in updateTabPropertyModel.ModsData)
             {
                 if (!filesName.Any(x => x.Name.Replace(".dll", "") == data.Mod))
                 {
@@ -107,7 +109,7 @@ namespace BSModManager.Models.CoreManager
             }
             foreach(var removeData in removeList)
             {
-                mainTabPropertyModel.ModsData.Remove(removeData);
+                updateTabPropertyModel.ModsData.Remove(removeData);
             }
         }
 
@@ -296,7 +298,7 @@ namespace BSModManager.Models.CoreManager
         /// <typeparam name="T"></typeparam>
         /// <param name="csvPath"></param>
         /// <param name="list"></param>
-        public async Task WriteCsv(string csvPath, IEnumerable<MainTabPropertyModel.ModData> e)
+        public async Task WriteCsv(string csvPath, IEnumerable<UpdateTabPropertyModel.ModData> e)
         {
             List<ModInformationCsv> modInformationCsvList = new List<ModInformationCsv>();
             

@@ -94,7 +94,7 @@
                     <DataGridTemplateColumn Header="Uninstall" MinWidth="70">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Uninstall" Background="Black" Foreground="White"/>
+                                <Button Content="Uninstall" Background="Black" Foreground="White" Command="{Binding UninstallCommand}" CommandParameter="{Binding Mod}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

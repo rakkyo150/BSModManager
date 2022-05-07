@@ -86,7 +86,7 @@ namespace BSModManager.ViewModels
         VersionManager versionManager;
         SettingsTabPropertyModel settingsTabPropertyModel;
         MainWindowPropertyModel mainWindowPropertyModel;
-        MainTabPropertyModel mainTabPropertyModel;
+        UpdateTabPropertyModel updateTabPropertyModel;
         DataManager dataManager;
         ChangeModInfoPropertyModel changeModInfoPropertyModel;
         ModAssistantManager modAssistantManager;
@@ -103,12 +103,12 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,
-            MainWindowPropertyModel mwpm, MainTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm, ModAssistantManager mam, InnerData id,GitHubManager ghm)
+            MainWindowPropertyModel mwpm, UpdateTabPropertyModel mtpm, DataManager dm, ChangeModInfoPropertyModel cmipm, ModAssistantManager mam, InnerData id,GitHubManager ghm)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
             mainWindowPropertyModel = mwpm;
-            mainTabPropertyModel = mtpm;
+            updateTabPropertyModel = mtpm;
             dataManager = dm;
             changeModInfoPropertyModel = cmipm;
             modAssistantManager = mam;
@@ -157,7 +157,7 @@ namespace BSModManager.ViewModels
 
             AllCheckedButtonCommand.Subscribe(_ =>
             {
-                mainTabPropertyModel.AllCheckedOrUnchecked();
+                updateTabPropertyModel.AllCheckedOrUnchecked();
             }).AddTo(disposables);
 
             ChangeModInfoButtonCommand = new DelegateCommand(() =>
@@ -167,7 +167,7 @@ namespace BSModManager.ViewModels
 
             ModRepositoryButtonCommand = new DelegateCommand(() =>
               {
-                  mainTabPropertyModel.ModRepositoryOpen();
+                  updateTabPropertyModel.ModRepositoryOpen();
               });
 
             LoadedCommand = new DelegateCommand(async () =>
@@ -210,7 +210,7 @@ namespace BSModManager.ViewModels
                                         updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                                     }
 
-                                    mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                                    updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = new Version(temp.version),
@@ -237,7 +237,7 @@ namespace BSModManager.ViewModels
                                 
                                 if (response == null)
                                 {
-                                    mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                                    updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = new Version("0.0.0"),
@@ -261,7 +261,7 @@ namespace BSModManager.ViewModels
                                         updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                                     }
 
-                                    mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                                    updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = gitHubManager.DetectVersion(response.TagName),
@@ -277,6 +277,8 @@ namespace BSModManager.ViewModels
                     }
                     await Task.Run(() => dataManager.GetLocalModFilesInfo());
 
+                    /*
+                    アップデート時などに必要なら立ち上げるのがいいかも　
                     if (settingsTabPropertyModel.VerifyMAExe.Value == "〇")
                     {
                         try
@@ -288,6 +290,7 @@ namespace BSModManager.ViewModels
                             mainWindowPropertyModel.Console = e.Message;
                         }
                     }
+                    */
                 }
             });
             
@@ -310,7 +313,7 @@ namespace BSModManager.ViewModels
                             Directory.CreateDirectory(dataDirectory);
                         }
                         string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-                        Task.Run(async()=>await dataManager.WriteCsv(modsDataCsvPath, mainTabPropertyModel.ModsData)).GetAwaiter().GetResult();
+                        Task.Run(async()=>await dataManager.WriteCsv(modsDataCsvPath, updateTabPropertyModel.ModsData)).GetAwaiter().GetResult();
                     }
                 }
             });

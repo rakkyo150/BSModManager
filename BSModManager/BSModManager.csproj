@@ -67,7 +67,7 @@
     <Compile Include="Models\CoreManager\Structure\MAModInformationCsv.cs" />
     <Compile Include="Models\CoreManager\Structure\ModAssistantModInformation.cs" />
     <Compile Include="Models\ViewModelCommonProperty\ChangeModInfoPropertyModel.cs" />
-    <Compile Include="Models\ViewModelCommonProperty\MainTabPropertyModel.cs" />
+    <Compile Include="Models\ViewModelCommonProperty\UpdateTabPropertyModel.cs" />
     <Compile Include="Models\ViewModelCommonProperty\MainWindowPropertyModel.cs" />
     <Compile Include="Models\VersionManager.cs" />
     <Compile Include="Models\ViewModelCommonProperty\SettingsTabPropertyModel.cs" />
