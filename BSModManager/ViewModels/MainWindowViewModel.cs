@@ -82,6 +82,13 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref allCheckedButtonEnable, value); }
         }
 
+        private bool refreshButtonEnable = true;
+        public bool RefreshButtonEnable
+        {
+            get { return refreshButtonEnable; }
+            set { SetProperty(ref refreshButtonEnable, value); }
+        }
+
         IDialogService dialogService;
         VersionManager versionManager;
         SettingsTabPropertyModel settingsTabPropertyModel;
@@ -99,6 +106,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
         public DelegateCommand ModRepositoryButtonCommand { get; private set; }
+        public DelegateCommand RefreshButtonCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
@@ -133,6 +141,7 @@ namespace BSModManager.ViewModels
                   ModRepositoryButtonEnable = true;
                   ChangeModInfoButtonEnable = true;
                   AllCheckedButtonEnable = true;
+                  RefreshButtonEnable = true;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
             ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
@@ -143,6 +152,7 @@ namespace BSModManager.ViewModels
                 ModRepositoryButtonEnable = true;
                 ChangeModInfoButtonEnable = false;
                 AllCheckedButtonEnable = true;
+                RefreshButtonEnable = true;
                 RegionManager.RequestNavigate("ContentRegion", x);
             });
             ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
@@ -152,6 +162,7 @@ namespace BSModManager.ViewModels
                   ModRepositoryButtonEnable = false;
                   ChangeModInfoButtonEnable = false;
                   AllCheckedButtonEnable = false;
+                  RefreshButtonEnable = false;
                   RegionManager.RequestNavigate("ContentRegion", x);
               });
 
@@ -168,6 +179,11 @@ namespace BSModManager.ViewModels
             ModRepositoryButtonCommand = new DelegateCommand(() =>
               {
                   updateTabPropertyModel.ModRepositoryOpen();
+              });
+
+            RefreshButtonCommand = new DelegateCommand(() =>
+              {
+                  dataManager.GetLocalModFilesInfo();
               });
 
             LoadedCommand = new DelegateCommand(async () =>
