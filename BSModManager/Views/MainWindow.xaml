@@ -9,12 +9,21 @@
         <DockPanel DockPanel.Dock="Left">
             <Button Command="{Binding ShowUpdateTabViewCommand}" CommandParameter="UpdateTab" Margin="10" Height="70" Width="70" DockPanel.Dock="Top">
                 <Image Source="Resources/Update.png" Width="40"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="Update Mod"/>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Command="{Binding ShowInstallTabViewCommand}" CommandParameter="InstallTab" Margin="10 0 10 10" Height="70" Width="70" DockPanel.Dock="Top">
                 <Image Source="Resources/Install.png" Width="40"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="Install Mod"/>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Command="{Binding ShowSettingsTabViewCommand}" CommandParameter="SettingsTab" Margin="10 0 10 10" Width="70" Height="70" DockPanel.Dock="Top">
                 <Image Source="Resources/Setting.png" Width="40"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="Settings"/>
+                </ToolTipService.ToolTip>
             </Button>
             <TextBlock Text="{Binding MyselfVersion}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" Margin="5 5 5 10" DockPanel.Dock="Bottom"/>
             <TextBlock Text="{Binding GameVersion.Value}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" Margin="5" DockPanel.Dock="Bottom"/>
@@ -23,15 +32,27 @@
         <DockPanel DockPanel.Dock="Bottom">
             <Button Width="100" Margin="5 5 10 10"  Padding="5" Background="OrangeRed" Foreground="White" DockPanel.Dock="right" IsEnabled="{Binding InstallButtonEnable}">
                 <Image Source="Resources/Execute.png" Width="30"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="Install or Update"/>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Width="100" Margin="5 5 5 10" Padding="5" Background="Orange" DockPanel.Dock="right" IsEnabled="{Binding AllCheckedButtonEnable}" Command="{Binding AllCheckedButtonCommand}">
                 <Image Source="Resources/Check.png" Width="30"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="All Check or Uncheck"/>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Width="100" Margin="5 5 5 10"  Padding="5" Background="LightGoldenrodYellow" DockPanel.Dock="right" IsEnabled="{Binding ModRepositoryButtonEnable}" Command="{Binding ModRepositoryButtonCommand}">
                 <Image Source="URL.png" Width="30"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="Open URL"/>
+                </ToolTipService.ToolTip>
             </Button>
             <Button Width="100" Margin="5 5 5 10" Padding="5" DockPanel.Dock="right" IsEnabled="{Binding ChangeModInfoButtonEnable}" Command="{Binding ChangeModInfoButtonCommand}">
                 <Image Source="Resources/ChangeData.png" Width="30"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="Change Mod Info"/>
+                </ToolTipService.ToolTip>
             </Button>
             <TextBlock Text="{Binding Console.Value}" Background="LightGray" Margin="0 5 10 10" Padding="10" FontSize="20"/>
         </DockPanel>
