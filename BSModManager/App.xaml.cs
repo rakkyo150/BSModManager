@@ -28,7 +28,7 @@ namespace BSModManager
         {
             // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
             containerRegistry.RegisterSingleton<MainWindowPropertyModel>();
-            containerRegistry.RegisterSingleton<MainTabPropertyModel>();
+            containerRegistry.RegisterSingleton<UpdateTabPropertyModel>();
             containerRegistry.RegisterSingleton<SettingsTabPropertyModel>();
             containerRegistry.RegisterSingleton<UpdateMyselfConfirmPropertyModel>();
             containerRegistry.RegisterSingleton<ChangeModInfoPropertyModel>();

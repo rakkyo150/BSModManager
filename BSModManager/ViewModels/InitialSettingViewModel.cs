@@ -29,7 +29,7 @@ namespace BSModManager.ViewModels
         ModAssistantManager modAssistantManager;
         InnerData innerData;
         GitHubManager gitHubManager;
-        MainTabPropertyModel mainTabPropertyModel;
+        UpdateTabPropertyModel updateTabPropertyModel;
 
         MainWindowPropertyModel mainWindowPropertyModel;
 
@@ -55,7 +55,7 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id,MainWindowPropertyModel mwpm,GitHubManager ghm,MainTabPropertyModel mtpm)
+        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id,MainWindowPropertyModel mwpm,GitHubManager ghm,UpdateTabPropertyModel mtpm)
         {
             settingsTabPropertyModel = stpm;
             dataManager = dm;
@@ -63,7 +63,7 @@ namespace BSModManager.ViewModels
             innerData = id;
             mainWindowPropertyModel = mwpm;
             gitHubManager = ghm;
-            mainTabPropertyModel = mtpm;
+            updateTabPropertyModel = mtpm;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(disposables);
@@ -131,7 +131,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                             }
 
-                            mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                            updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version(temp.version),
@@ -160,7 +160,7 @@ namespace BSModManager.ViewModels
 
                         if (response == null)
                         {
-                            mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                            updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version("0.0.0"),
@@ -184,7 +184,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                             }
 
-                            mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
+                            updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
                             {
                                 Mod = previousData.Mod,
                                 Latest = gitHubManager.DetectVersion(response.TagName),
@@ -200,6 +200,8 @@ namespace BSModManager.ViewModels
 
                 Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
 
+                /*
+                アップデート時などに必要なら立ち上げるのがいいかも　
                 if (settingsTabPropertyModel.VerifyMAExe.Value == "〇")
                 {
                     try
@@ -211,6 +213,7 @@ namespace BSModManager.ViewModels
                         mainWindowPropertyModel.Console = e.Message;
                     }
                 }
+                */
             }
         }
 
