@@ -54,6 +54,12 @@
                     <ToolTip FontSize="15" Content="Change Mod Info"/>
                 </ToolTipService.ToolTip>
             </Button>
+            <Button Width="100" Margin="5 5 5 10" Padding="5" DockPanel.Dock="right" IsEnabled="{Binding RefreshButtonEnable}" Command="{Binding RefreshButtonCommand}">
+                <Image Source="Resources/Refresh.png" Width="30"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="Refresh"/>
+                </ToolTipService.ToolTip>
+            </Button>
             <TextBlock Text="{Binding Console.Value}" Background="LightGray" Margin="0 5 10 10" Padding="10" FontSize="20"/>
         </DockPanel>
         <ContentControl Margin="0 10 10 10" prism:RegionManager.RegionName="ContentRegion" />
