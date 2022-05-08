@@ -14,6 +14,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
@@ -127,6 +128,10 @@ namespace BSModManager.ViewModels
             gitHubManager = ghm;
 
             dialogService = ds;
+
+            // あんまりいい方法なさそうなので
+            // https://stackoverflow.com/questions/3683450/handling-the-window-closing-event-with-wpf-mvvm-light-toolkit
+            System.Windows.Application.Current.MainWindow.Closing += new CancelEventHandler(ClosingCommand);
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             this.Console = mainWindowPropertyModel.ObserveProperty(x => x.Console).ToReadOnlyReactivePropertySlim().AddTo(disposables);
@@ -329,14 +334,14 @@ namespace BSModManager.ViewModels
                     */
                 }
             });
-            
 
-            ClosingCommand = new DelegateCommand<System.ComponentModel.CancelEventArgs>((x) =>
+
+            void ClosingCommand(object sender, CancelEventArgs e)
             {
                 // https://araramistudio.jimdo.com/2016/10/12/wpf%E3%81%A7window%E3%82%92%E9%96%89%E3%81%98%E3%82%8B%E5%89%8D%E3%81%AB%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B/
                 if (MessageBoxResult.Yes != MessageBox.Show("画面を閉じます。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
                 {
-                    x.Cancel = true;
+                    e.Cancel = true;
                     return;
                 }
                 else
@@ -352,7 +357,7 @@ namespace BSModManager.ViewModels
                         Task.Run(async()=>await dataManager.WriteCsv(modsDataCsvPath, modsDataModel.ModsData)).GetAwaiter().GetResult();
                     }
                 }
-            });
+            };
 
 
         }
