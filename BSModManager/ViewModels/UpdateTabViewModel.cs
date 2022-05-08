@@ -8,18 +8,18 @@ namespace BSModManager.ViewModels
 {
     public class UpdateTabViewModel : BindableBase
     {
-        public ObservableCollection<UpdateTabPropertyModel.ModData> ModsData { get; }
+        ModsDataModel modsDataModel;
+        
+        public ObservableCollection<ModsDataModel.ModData> ModsData { get; }
 
-        UpdateTabPropertyModel updateTabPropertyModel;
-
-        public UpdateTabViewModel(UpdateTabPropertyModel mtpm)
+        public UpdateTabViewModel(ModsDataModel mdm)
         {
-            updateTabPropertyModel = mtpm;
+            modsDataModel = mdm;
 
+            ModsData = modsDataModel.ModsData;
+            
             // https://alfort.online/689
-            BindingOperations.EnableCollectionSynchronization(updateTabPropertyModel.ModsData, new object());
-
-            this.ModsData = updateTabPropertyModel.ModsData;
+            BindingOperations.EnableCollectionSynchronization(ModsData, new object());
 
             /*
             mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
