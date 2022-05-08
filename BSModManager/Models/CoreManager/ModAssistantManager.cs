@@ -9,7 +9,7 @@ namespace BSModManager.Models.CoreManager
 {
     public class ModAssistantManager : DataManager
     {
-        public ModAssistantManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm, UpdateTabPropertyModel mtpm,MainWindowPropertyModel mwpm) : base(id, stpm, umcpm, mtpm,mwpm)
+        public ModAssistantManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm,MainWindowPropertyModel mwpm ,ModsDataModel mdm) : base(id, stpm, umcpm,mwpm,mdm)
         {
 
         }

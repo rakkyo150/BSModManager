@@ -13,14 +13,16 @@ namespace BSModManager.Models.ViewModelCommonProperty
     public class ChangeModInfoPropertyModel : BindableBase
     {
         IDialogService dialogService;
+        ModsDataModel modsDataModel;
         UpdateTabPropertyModel updateTabPropertyModel;
         MainWindowPropertyModel MainWindowPropertyModel;
         GitHubManager gitHubManager;
         InnerData innerData;
 
-        public ChangeModInfoPropertyModel(IDialogService ds, UpdateTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm,InnerData id)
+        public ChangeModInfoPropertyModel(IDialogService ds,ModsDataModel mdm, UpdateTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm,InnerData id)
         {
             dialogService = ds;
+            modsDataModel = mdm;
             updateTabPropertyModel = mtpm;
             MainWindowPropertyModel = mwpm;
             gitHubManager = ghm;
@@ -44,7 +46,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set
             {
                 SetProperty(ref url, value);
-                updateTabPropertyModel.ModsData.First(x => x.Mod == modName).Url = Url;
+                modsDataModel.ModsData.First(x => x.Mod == modName).Url = Url;
             }
         }
 
@@ -55,7 +57,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set 
             { 
                 SetProperty(ref updated, value);
-                updateTabPropertyModel.ModsData.First(x => x.Mod == modName).Updated = Updated;
+                modsDataModel.ModsData.First(x => x.Mod == modName).Updated = Updated;
             }
         }
 
@@ -69,8 +71,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 SetProperty(ref original, value);
                 if (Original)
                 {
-                    Console.WriteLine("test");
-                    updateTabPropertyModel.ModsData.First(x => x.Mod == modName).Original = "〇";
+                    modsDataModel.ModsData.First(x => x.Mod == modName).Original = "〇";
                     if (Array.Exists(innerData.modAssistantAllMods, x=>x.name==modName))
                     {
                         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -95,7 +96,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 }
                 else
                 {
-                    updateTabPropertyModel.ModsData.First(x => x.Mod == modName).Original = "×";
+                    modsDataModel.ModsData.First(x => x.Mod == modName).Original = "×";
                     ExistInMA = false;
                     MA = "×";
                 }
@@ -116,7 +117,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set 
             { 
                 SetProperty(ref latest, value);
-                updateTabPropertyModel.ModsData.First(x => x.Mod == modName).Latest = Latest;
+                modsDataModel.ModsData.First(x => x.Mod == modName).Latest = Latest;
             }
         }
 
@@ -127,7 +128,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set
             {
                 SetProperty(ref mA, value);
-                updateTabPropertyModel.ModsData.First(x => x.Mod == modName).MA = MA;
+                modsDataModel.ModsData.First(x => x.Mod == modName).MA = MA;
             }
         }
 
@@ -148,7 +149,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set 
             { 
                 SetProperty(ref description, value);
-                updateTabPropertyModel.ModsData.First(x => x.Mod == modName).Description = Description;
+                modsDataModel.ModsData.First(x => x.Mod == modName).Description = Description;
             }
         }
 
@@ -164,9 +165,9 @@ namespace BSModManager.Models.ViewModelCommonProperty
         {
             // 何個目のCheckedか
             int count = 0;
-            int AllCheckedMod = updateTabPropertyModel.ModsData.Count(x => x.Checked == true);
+            int AllCheckedMod = modsDataModel.ModsData.Count(x => x.Checked == true);
 
-            foreach (var a in updateTabPropertyModel.ModsData)
+            foreach (var a in modsDataModel.ModsData)
             {
                 // Finishボタン押したとき
                 if (Position > AllCheckedMod)

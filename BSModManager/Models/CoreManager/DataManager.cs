@@ -18,17 +18,17 @@ namespace BSModManager.Models.CoreManager
     {
         InnerData innerData;
         SettingsTabPropertyModel settingsTabPropertyModel;
-        UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
-        UpdateTabPropertyModel updateTabPropertyModel;
         MainWindowPropertyModel mainWindowPropertyModel;
+        ModsDataModel modsDataModel;
+        UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
 
-        public DataManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm, UpdateTabPropertyModel utpm,MainWindowPropertyModel mwpm)
+        public DataManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm,MainWindowPropertyModel mwpm,ModsDataModel mdm)
         {
             innerData = id;
             settingsTabPropertyModel = stpm;
-            updateMyselfConfirmPropertyModel = umcpm;
-            updateTabPropertyModel = utpm;
             mainWindowPropertyModel = mwpm;
+            modsDataModel = mdm;
+            updateMyselfConfirmPropertyModel = umcpm;
         }
 
         /// <summary>
@@ -52,11 +52,11 @@ namespace BSModManager.Models.CoreManager
 
             if (Directory.Exists(pluginFolderPath))
             {
-                filesName = di.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
+                filesName = di.EnumerateFiles("*.dll", System.IO.SearchOption.TopDirectoryOnly);
             }
             if (Directory.Exists(pendingDi.FullName))
             {
-                pendingFilesName = pendingDi.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
+                pendingFilesName = pendingDi.EnumerateFiles("*.dll", System.IO.SearchOption.TopDirectoryOnly);
             }
             
 
@@ -100,7 +100,7 @@ namespace BSModManager.Models.CoreManager
             foreach(KeyValuePair<string,Version> modNameAndVersion in combinedModNameAndVersion)
             {
                 // 以前のデータ無し
-                if (!updateTabPropertyModel.ModsData.Any(x => x.Mod == modNameAndVersion.Key))
+                if (!modsDataModel.ModsData.Any(x => x.Mod == modNameAndVersion.Key))
                 {
                     if (Array.Exists(innerData.modAssistantAllMods, x => x.name == modNameAndVersion.Key))
                     {
@@ -118,7 +118,7 @@ namespace BSModManager.Models.CoreManager
                             updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                         }
 
-                        updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
+                        modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
                             Mod = modNameAndVersion.Key,
                             Installed = modNameAndVersion.Value,
@@ -132,7 +132,7 @@ namespace BSModManager.Models.CoreManager
                     }
                     else
                     {
-                        updateTabPropertyModel.ModsData.Add(new UpdateTabPropertyModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
+                        modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
                             Mod = modNameAndVersion.Key,
                             Installed = modNameAndVersion.Value
@@ -142,13 +142,13 @@ namespace BSModManager.Models.CoreManager
                 // 以前のデータある場合
                 else
                 {           
-                    updateTabPropertyModel.ModsData.First(x => x.Mod == modNameAndVersion.Key).Installed = modNameAndVersion.Value;
+                    modsDataModel.ModsData.First(x => x.Mod == modNameAndVersion.Key).Installed = modNameAndVersion.Value;
                 }
             }
 
             // 以前実行時から手動で消したModの情報を消す
-            List<UpdateTabPropertyModel.ModData> removeList = new List<UpdateTabPropertyModel.ModData>();
-            foreach(var data in updateTabPropertyModel.ModsData)
+            List<ModsDataModel.ModData> removeList = new List<ModsDataModel.ModData>();
+            foreach(var data in modsDataModel.ModsData)
             {
                 if (!filesName.Any(x => x.Name.Replace(".dll", "") == data.Mod))
                 {
@@ -157,7 +157,7 @@ namespace BSModManager.Models.CoreManager
             }
             foreach(var removeData in removeList)
             {
-                updateTabPropertyModel.ModsData.Remove(removeData);
+                modsDataModel.ModsData.Remove(removeData);
             }
         }
 
@@ -346,7 +346,7 @@ namespace BSModManager.Models.CoreManager
         /// <typeparam name="T"></typeparam>
         /// <param name="csvPath"></param>
         /// <param name="list"></param>
-        public async Task WriteCsv(string csvPath, IEnumerable<UpdateTabPropertyModel.ModData> e)
+        public async Task WriteCsv(string csvPath, IEnumerable<ModsDataModel.ModData> e)
         {
             List<ModInformationCsv> modInformationCsvList = new List<ModInformationCsv>();
             

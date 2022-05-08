@@ -17,7 +17,7 @@ namespace BSModManager.Models.CoreManager
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
         SettingsTabPropertyModel settingsTabPropertyModel;
 
-        public GitHubManager(InnerData id, UpdateMyselfConfirmPropertyModel umcpm, SettingsTabPropertyModel stpm, UpdateTabPropertyModel mtpm,MainWindowPropertyModel mwpm) : base(id, stpm, umcpm, mtpm,mwpm)
+        public GitHubManager(InnerData id, UpdateMyselfConfirmPropertyModel umcpm, SettingsTabPropertyModel stpm, ModsDataModel mdm,MainWindowPropertyModel mwpm) : base(id, stpm, umcpm, mwpm,mdm)
         {
             updateMyselfConfirmPropertyModel = umcpm;
             settingsTabPropertyModel = stpm;
@@ -42,7 +42,7 @@ namespace BSModManager.Models.CoreManager
                     Directory.CreateDirectory(destDirFullPath);
                 }
 
-                await DownloadGitHubModAsync(url, currentVersion, destDirFullPath, null, null);
+                await DownloadGitHubModAsync(url, currentVersion, destDirFullPath, null);
 
                 string zipFileName = Path.Combine(destDirFullPath, "GitHubModUpdateCheckerConsole.zip");
                 try
@@ -170,10 +170,8 @@ namespace BSModManager.Models.CoreManager
             githubModInformationToCsv.Add(githubModInstance);
         }
 
-        public async Task DownloadGitHubModAsync(string url, Version currentVersion, string destDirFullPath, List<ModInformationCsv> gitHubModInformationToCsv, string fileName)
+        public async Task DownloadGitHubModAsync(string url, Version currentVersion, string destDirFullPath, string fileName)
         {
-            if (url == "p") return;
-
             var credential = new Credentials(settingsTabPropertyModel.GitHubToken);
             GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"));
             gitHub.Credentials = credential;
@@ -224,59 +222,12 @@ namespace BSModManager.Models.CoreManager
                     Console.WriteLine(releaseBody);
                     Console.WriteLine("----------------------------------------------------");
 
-                    bool downloadChoiceFinish = false;
-                    while (!downloadChoiceFinish)
+
+                    foreach (var item in response.Assets)
                     {
-                        Console.WriteLine("ダウンロードしますか？ [y/n]");
-                        Console.WriteLine("リポジトリを確認したい場合は\"r\"を入力してください");
-                        string download = Console.ReadLine();
-                        if (download == "r")
-                        {
-                            try
-                            {
-                                string searchUrl = url;
-                                ProcessStartInfo pi = new ProcessStartInfo()
-                                {
-                                    FileName = searchUrl,
-                                    UseShellExecute = true,
-                                };
-                                Process.Start(pi);
-
-                                downloadChoiceFinish = false;
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                                Console.WriteLine("リポジトリが開けませんでした");
-                            }
-                        }
-                        else if (download == "y")
-                        {
-                            foreach (var item in response.Assets)
-                            {
-                                Console.WriteLine("ダウンロード中");
-                                await DownloadModHelperAsync(item.BrowserDownloadUrl, item.Name, destDirFullPath);
-                                Console.WriteLine("ダウンロード成功！");
-                            }
-
-                            if (gitHubModInformationToCsv != null)
-                            {
-                                if (gitHubModInformationToCsv.Find(n => n.Mod == fileName) == null)
-                                {
-                                    Console.WriteLine("csvのModのバージョンを更新できませんでした");
-                                }
-                                else
-                                {
-                                    gitHubModInformationToCsv.Find(n => n.Mod == fileName).LocalVersion = latestVersion.ToString();
-                                }
-                            }
-                            downloadChoiceFinish = true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("ダウンロードしません");
-                            downloadChoiceFinish = true;
-                        }
+                        Console.WriteLine("ダウンロード中");
+                        await DownloadModHelperAsync(item.BrowserDownloadUrl, item.Name, destDirFullPath);
+                        Console.WriteLine("ダウンロード成功！");
                     }
                 }
             }

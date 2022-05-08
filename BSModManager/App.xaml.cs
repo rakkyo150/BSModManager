@@ -32,12 +32,14 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<SettingsTabPropertyModel>();
             containerRegistry.RegisterSingleton<UpdateMyselfConfirmPropertyModel>();
             containerRegistry.RegisterSingleton<ChangeModInfoPropertyModel>();
-
+            
             containerRegistry.RegisterSingleton<ConfigFileManager>();
             containerRegistry.RegisterSingleton<VersionManager>();
+            containerRegistry.RegisterSingleton<ModsDataModel>();
 
             containerRegistry.RegisterSingleton<InnerData>();
             containerRegistry.RegisterSingleton<DataManager>();
+            containerRegistry.RegisterSingleton<GitHubManager>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();
