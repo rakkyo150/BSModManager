@@ -165,8 +165,8 @@
     <PackageReference Include="CsvHelper">
       <Version>27.2.1</Version>
     </PackageReference>
-    <PackageReference Include="Expression.Blend.Sdk">
-      <Version>1.0.2</Version>
+    <PackageReference Include="Expression.Blend.Sdk.WPF">
+      <Version>1.0.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
