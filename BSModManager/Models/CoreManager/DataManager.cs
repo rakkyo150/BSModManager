@@ -47,39 +47,55 @@ namespace BSModManager.Models.CoreManager
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(pluginFolderPath);
             System.IO.DirectoryInfo pendingDi = new System.IO.DirectoryInfo(pendingPluginFolderPath);
 
-            IEnumerable<System.IO.FileInfo> filesName = di.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
-            IEnumerable<System.IO.FileInfo> pendingFilesName = pendingDi.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
+            IEnumerable<System.IO.FileInfo> filesName = null;
+            IEnumerable<System.IO.FileInfo> pendingFilesName = null;
+
+            if (Directory.Exists(pluginFolderPath))
+            {
+                filesName = di.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
+            }
+            if (Directory.Exists(pendingDi.FullName))
+            {
+                pendingFilesName = pendingDi.EnumerateFiles("*.dll", System.IO.SearchOption.AllDirectories);
+            }
+            
 
             Dictionary<string, Version> combinedModNameAndVersion = new Dictionary<string, Version>();
 
-            foreach (System.IO.FileInfo f in filesName)
+            if(filesName != null)
             {
-                string pluginPath = Path.Combine(pluginFolderPath, f.Name);
-
-                System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
-                Version installedModVersion = new Version(vi.FileVersion);
-
-                combinedModNameAndVersion.Add(f.Name.Replace(".dll",""), installedModVersion);
-            }
-            foreach(System.IO.FileInfo pendingF in pendingFilesName)
-            {
-                string pendingPluginPath = Path.Combine(pendingPluginFolderPath, pendingF.Name);
-
-                System.Diagnostics.FileVersionInfo pendingVi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pendingPluginPath);
-                Version pendingInstalledModVersion = new Version(pendingVi.FileVersion);
-
-                if (!combinedModNameAndVersion.ContainsKey(pendingF.Name.Replace(".dll","")))
+                foreach (System.IO.FileInfo f in filesName)
                 {
-                    combinedModNameAndVersion.Add(pendingF.Name.Replace(".dll", ""), pendingInstalledModVersion);
+                    string pluginPath = Path.Combine(pluginFolderPath, f.Name);
+
+                    System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
+                    Version installedModVersion = new Version(vi.FileVersion);
+
+                    combinedModNameAndVersion.Add(f.Name.Replace(".dll", ""), installedModVersion);
                 }
-                else
+            }
+            if(pendingFilesName != null)
+            {
+                foreach (System.IO.FileInfo pendingF in pendingFilesName)
                 {
-                    if(pendingInstalledModVersion > combinedModNameAndVersion[pendingF.Name.Replace(".dll", "")])
+                    string pendingPluginPath = Path.Combine(pendingPluginFolderPath, pendingF.Name);
+
+                    System.Diagnostics.FileVersionInfo pendingVi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pendingPluginPath);
+                    Version pendingInstalledModVersion = new Version(pendingVi.FileVersion);
+
+                    if (!combinedModNameAndVersion.ContainsKey(pendingF.Name.Replace(".dll", "")))
                     {
-                        combinedModNameAndVersion[pendingF.Name.Replace(".dll", "")] = pendingInstalledModVersion;
+                        combinedModNameAndVersion.Add(pendingF.Name.Replace(".dll", ""), pendingInstalledModVersion);
+                    }
+                    else
+                    {
+                        if (pendingInstalledModVersion > combinedModNameAndVersion[pendingF.Name.Replace(".dll", "")])
+                        {
+                            combinedModNameAndVersion[pendingF.Name.Replace(".dll", "")] = pendingInstalledModVersion;
+                        }
                     }
                 }
-            }
+            }         
 
             foreach(KeyValuePair<string,Version> modNameAndVersion in combinedModNameAndVersion)
             {

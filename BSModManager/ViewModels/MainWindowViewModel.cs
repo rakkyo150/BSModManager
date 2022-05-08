@@ -54,11 +54,11 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref updateOrInstall, value); }
         }
         
-        private bool installButtonEnable = true;
-        public bool InstallButtonEnable
+        private bool updateOrInstallButtonEnable = true;
+        public bool UpdateOrInstallButtonEnable
         {
-            get { return installButtonEnable; }
-            set { SetProperty(ref installButtonEnable, value); }
+            get { return updateOrInstallButtonEnable; }
+            set { SetProperty(ref updateOrInstallButtonEnable, value); }
         }
 
         private bool modRepositoryButtonEnable = true;
@@ -104,6 +104,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowInstallTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
+        public DelegateCommand<string> UpdateOrInstallButtonCommand { get; private set; }
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
         public DelegateCommand ModRepositoryButtonCommand { get; private set; }
         public DelegateCommand RefreshButtonCommand { get; private set; }
@@ -137,7 +138,7 @@ namespace BSModManager.ViewModels
               {
                   mainWindowPropertyModel.Console = "Update";
                   UpdateOrInstall = "Update";
-                  InstallButtonEnable = true;
+                  UpdateOrInstallButtonEnable = true;
                   ModRepositoryButtonEnable = true;
                   ChangeModInfoButtonEnable = true;
                   AllCheckedButtonEnable = true;
@@ -148,7 +149,7 @@ namespace BSModManager.ViewModels
             {
                 mainWindowPropertyModel.Console = "Install";
                 UpdateOrInstall = "Install";
-                InstallButtonEnable = true;
+                UpdateOrInstallButtonEnable = true;
                 ModRepositoryButtonEnable = true;
                 ChangeModInfoButtonEnable = false;
                 AllCheckedButtonEnable = true;
@@ -158,7 +159,7 @@ namespace BSModManager.ViewModels
             ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
               {
                   mainWindowPropertyModel.Console = "Settings";
-                  InstallButtonEnable = false;
+                  UpdateOrInstallButtonEnable = false;
                   ModRepositoryButtonEnable = false;
                   ChangeModInfoButtonEnable = false;
                   AllCheckedButtonEnable = false;
@@ -170,6 +171,11 @@ namespace BSModManager.ViewModels
             {
                 updateTabPropertyModel.AllCheckedOrUnchecked();
             }).AddTo(disposables);
+
+            UpdateOrInstallButtonCommand = new DelegateCommand<string>((x) =>
+              {
+                  mainWindowPropertyModel.Console = x;
+              });
 
             ChangeModInfoButtonCommand = new DelegateCommand(() =>
               {

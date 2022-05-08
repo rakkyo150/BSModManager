@@ -30,10 +30,10 @@
             <TextBlock Text=""/>
         </DockPanel>
         <DockPanel DockPanel.Dock="Bottom">
-            <Button Width="100" Margin="5 5 10 10"  Padding="5" Background="OrangeRed" Foreground="White" DockPanel.Dock="right" IsEnabled="{Binding InstallButtonEnable}">
+            <Button Width="100" Margin="5 5 10 10"  Padding="5" Background="OrangeRed" Foreground="White" DockPanel.Dock="right" IsEnabled="{Binding UpdateOrInstallButtonEnable}" Command="{Binding UpdateOrInstallButtonCommand}" CommandParameter="{Binding UpdateOrInstall}">
                 <Image Source="Resources/Execute.png" Width="30"/>
                 <ToolTipService.ToolTip>
-                    <ToolTip FontSize="15" Content="Install or Update"/>
+                    <ToolTip FontSize="15" Content="{Binding UpdateOrInstall}"/>
                 </ToolTipService.ToolTip>
             </Button>
             <Button Width="100" Margin="5 5 5 10" Padding="5" Background="Orange" DockPanel.Dock="right" IsEnabled="{Binding AllCheckedButtonEnable}" Command="{Binding AllCheckedButtonCommand}">
