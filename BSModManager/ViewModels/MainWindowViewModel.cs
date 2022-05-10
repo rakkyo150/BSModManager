@@ -15,6 +15,7 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
@@ -101,6 +102,7 @@ namespace BSModManager.ViewModels
         ModAssistantManager modAssistantManager;
         InnerData innerData;
         GitHubManager gitHubManager;
+        UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
@@ -114,7 +116,8 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,
-            MainWindowPropertyModel mwpm, UpdateTabPropertyModel utpm, DataManager dm, ChangeModInfoPropertyModel cmipm, ModAssistantManager mam, InnerData id,GitHubManager ghm,ModsDataModel mdm)
+            MainWindowPropertyModel mwpm, UpdateTabPropertyModel utpm, DataManager dm, ChangeModInfoPropertyModel cmipm, 
+            ModAssistantManager mam, InnerData id,GitHubManager ghm,ModsDataModel mdm,UpdateMyselfConfirmPropertyModel umcpm)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
@@ -126,6 +129,7 @@ namespace BSModManager.ViewModels
             modAssistantManager = mam;
             innerData = id;
             gitHubManager = ghm;
+            updateMyselfConfirmPropertyModel = umcpm;
 
             dialogService = ds;
 
@@ -210,6 +214,28 @@ namespace BSModManager.ViewModels
             LoadedCommand = new DelegateCommand(async () =>
             {
                 mainWindowPropertyModel.Console = "Start Initializing";
+
+
+                mainWindowPropertyModel.Console = "Check Myself Latest Version";
+                bool update = await gitHubManager.CheckNewVersionAndDowonload();
+
+                if (update)
+                {
+                    if (MessageBoxResult.Yes != MessageBox.Show("更新版を発見しました。更新しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
+                    {
+                        if(File.Exists(Path.Combine(Environment.CurrentDirectory, "Updater.exe")))
+                        {
+                            dataManager.UpdateUpdater();
+
+                            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+                            processStartInfo.Arguments = updateMyselfConfirmPropertyModel.LatestMyselfVersion.ToString();
+                            processStartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "Updater.exe");
+                            Process process = Process.Start(processStartInfo);
+                            Environment.Exit(0);
+                        }
+                    }
+                }
+
                 if (!settingsTabPropertyModel.VerifyBoth.Value)
                 {
                     System.Diagnostics.Debug.WriteLine(settingsTabPropertyModel.VerifyBoth.Value);

@@ -16,24 +16,36 @@ namespace BSModManager.Models.CoreManager
     {
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
         SettingsTabPropertyModel settingsTabPropertyModel;
+        VersionManager versionManager;
 
-        public GitHubManager(InnerData id, UpdateMyselfConfirmPropertyModel umcpm, SettingsTabPropertyModel stpm, ModsDataModel mdm,MainWindowPropertyModel mwpm) : base(id, stpm, umcpm, mwpm,mdm)
+        public GitHubManager(VersionManager vm,InnerData id, UpdateMyselfConfirmPropertyModel umcpm, SettingsTabPropertyModel stpm, ModsDataModel mdm,MainWindowPropertyModel mwpm) : base(id, stpm, umcpm, mwpm,mdm)
         {
             updateMyselfConfirmPropertyModel = umcpm;
             settingsTabPropertyModel = stpm;
+            versionManager = vm;
         }
 
         public async Task<bool> CheckNewVersionAndDowonload()
         {
-            GitHubClient github = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"));
+            GitHubClient github = new GitHubClient(new ProductHeaderValue("BSModManager"));
             bool update = false;
-            string url = "https://github.com/rakkyo150/GithubModUpdateCheckerConsole";
+            string url = "https://github.com/rakkyo150/BSModManager";
             string destDirFullPath;
 
-            System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
-            System.Version currentVersion = asm.GetName().Version;
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Version rawVersion = assembly.GetName().Version;
+
+            Version currentVersion = new Version(rawVersion.Major, rawVersion.Minor, rawVersion.Build);
+
+            Release response = await GetGitHubModLatestVersionAsync(url);
+            
+            if (response == null)
+            {
+                return update;
+            }
 
             updateMyselfConfirmPropertyModel.LatestMyselfVersion = DetectVersion((await GetGitHubModLatestVersionAsync(url)).TagName);
+            
             if (updateMyselfConfirmPropertyModel.LatestMyselfVersion > currentVersion)
             {
                 destDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, updateMyselfConfirmPropertyModel.LatestMyselfVersion.ToString());
@@ -42,9 +54,9 @@ namespace BSModManager.Models.CoreManager
                     Directory.CreateDirectory(destDirFullPath);
                 }
 
-                await DownloadGitHubModAsync(url, currentVersion, destDirFullPath, null);
+                await DownloadGitHubModAsync(url, currentVersion, destDirFullPath);
 
-                string zipFileName = Path.Combine(destDirFullPath, "GitHubModUpdateCheckerConsole.zip");
+                string zipFileName = Path.Combine(destDirFullPath, "BSModManager.zip");
                 try
                 {
                     using (var fs = File.Open(zipFileName, System.IO.FileMode.Open))
@@ -62,7 +74,7 @@ namespace BSModManager.Models.CoreManager
                     }
                     File.Delete(zipFileName);
 
-                    string unzipPath = Path.Combine(destDirFullPath, "GithubModUpdateCheckerConsole");
+                    string unzipPath = Path.Combine(destDirFullPath, "BSModManager");
                     if (Directory.Exists(unzipPath))
                     {
                         DirectoryCopy(unzipPath, destDirFullPath, true);
@@ -170,7 +182,7 @@ namespace BSModManager.Models.CoreManager
             githubModInformationToCsv.Add(githubModInstance);
         }
 
-        public async Task DownloadGitHubModAsync(string url, Version currentVersion, string destDirFullPath, string fileName)
+        public async Task DownloadGitHubModAsync(string url, Version currentVersion, string destDirFullPath)
         {
             var credential = new Credentials(settingsTabPropertyModel.GitHubToken);
             GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"));
