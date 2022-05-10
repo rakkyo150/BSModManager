@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BSModManager.Models.CoreManager
 {
@@ -589,7 +590,7 @@ namespace BSModManager.Models.CoreManager
                     FileInfo[] files = dir.GetFiles();
                     foreach (FileInfo file in files)
                     {
-                        if (file.Name.Contains("Updater") && !file.Name.Contains("GithubModUpdateCheckerConsole"))
+                        if (file.Name.Contains("Updater") && !file.Name.Contains("BSModManager"))
                         {
                             string tempPath = Path.Combine(Environment.CurrentDirectory, file.Name);
                             file.CopyTo(tempPath, true);
@@ -599,18 +600,16 @@ namespace BSModManager.Models.CoreManager
                 }
                 else
                 {
-                    Console.WriteLine("Updaterのアップデートができませんでした");
-                    Console.WriteLine("最新バージョンのフォルダが生成されているはずなので、手動で中身を上書きコピペしてください");
-                    Console.ReadLine();
+                    MessageBox.Show("Updaterのアップデートができませんでした\n最新バージョンのフォルダが生成されているはずなので、手動で中身を上書きコピペしてください",
+                        "アップデート失敗", MessageBoxButton.OK, MessageBoxImage.Error);
                     Environment.Exit(0);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                Console.WriteLine("正常にアップデートができませんでした");
-                Console.WriteLine("最新バージョンのフォルダが生成されているはずなので、手動で中身を上書きコピペしてください");
-                Console.ReadLine();
+                MessageBox.Show("Updaterのアップデートができませんでした\n最新バージョンのフォルダが生成されているはずなので、手動で中身を上書きコピペしてください",
+                        "アップデート失敗", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(0);
             }
         }

@@ -56,7 +56,7 @@ namespace BSModManager.Models
                         Task.Run(async() => response = await gitHubManager.GetGitHubModLatestVersionAsync(a.Url)).GetAwaiter().GetResult();
                         if (response != null)
                         {
-                            Task.Run(async() => await gitHubManager.DownloadGitHubModAsync(a.Url, a.Installed, FolderManager.tempFolder, a.Mod)).GetAwaiter().GetResult();
+                            Task.Run(async() => await gitHubManager.DownloadGitHubModAsync(a.Url, a.Installed, FolderManager.tempFolder)).GetAwaiter().GetResult();
                             Task.Run(()=>dataManager.OrganizeDownloadFileStructure(FolderManager.tempFolder, settingsTabPropertyModel.BSFolderPath)).GetAwaiter().GetResult();
                         }
                     }
