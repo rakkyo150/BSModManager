@@ -1,4 +1,5 @@
-﻿using BSModManager.Models.CoreManager;
+﻿using BSModManager.Interfaces;
+using BSModManager.Models.CoreManager;
 using BSModManager.Models.ViewModelCommonProperty;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -19,7 +20,7 @@ using static BSModManager.Models.UpdateTabPropertyModel;
 
 namespace BSModManager.Models
 {
-    public class ModsDataModel:BindableBase
+    public class ModsDataModel : BindableBase, IModsData
     {
         public ObservableCollection<ModData> ModsData = new ObservableCollection<ModData>();
 

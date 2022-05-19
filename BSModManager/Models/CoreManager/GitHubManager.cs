@@ -335,6 +335,8 @@ namespace BSModManager.Models.CoreManager
         {
             Version version = null;
 
+            if (tagName == null) return version;
+            
             // バージョン情報が始まる位置を特定
             int position = 0;
             foreach (char item in tagName)
