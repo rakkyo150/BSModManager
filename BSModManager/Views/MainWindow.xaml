@@ -13,13 +13,13 @@
                     <ToolTip FontSize="15" Content="Update Mod"/>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Command="{Binding ShowInstallTabViewCommand}" CommandParameter="InstallTab" Margin="10 0 10 10" Height="70" Width="70" DockPanel.Dock="Top">
+            <Button Command="{Binding ShowInstallTabViewCommand}" IsEnabled="{Binding ShowInstallTabViewEnable}" CommandParameter="InstallTab" Margin="10 0 10 10" Height="70" Width="70" DockPanel.Dock="Top">
                 <Image Source="Resources/Install.png" Width="40"/>
                 <ToolTipService.ToolTip>
                     <ToolTip FontSize="15" Content="Install Mod"/>
                 </ToolTipService.ToolTip>
             </Button>
-            <Button Command="{Binding ShowSettingsTabViewCommand}" CommandParameter="SettingsTab" Margin="10 0 10 10" Width="70" Height="70" DockPanel.Dock="Top">
+            <Button Command="{Binding ShowSettingsTabViewCommand}" IsEnabled="{Binding ShowSettingsTabViewEnable}" CommandParameter="SettingsTab" Margin="10 0 10 10" Width="70" Height="70" DockPanel.Dock="Top">
                 <Image Source="Resources/Setting.png" Width="40"/>
                 <ToolTipService.ToolTip>
                     <ToolTip FontSize="15" Content="Settings"/>

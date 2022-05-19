@@ -20,27 +20,6 @@ namespace BSModManager.ViewModels
             
             // https://alfort.online/689
             BindingOperations.EnableCollectionSynchronization(ModsData, new object());
-
-            /*
-            mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
-            {
-                Mod = "TestMod",
-                Installed = new Version("1.0.0"),
-                Latest = new Version("1.0.0"),
-                Original = "〇",
-                MA = "×",
-                Description = "Test"
-            });
-            mainTabPropertyModel.ModsData.Add(new MainTabPropertyModel.ModData()
-            {
-                Mod = "TestMod2",
-                Installed = new Version("1.0.0"),
-                Latest = new Version("1.0.0"),
-                Original = "〇",
-                MA = "×",
-                Description = "Test2"
-            });
-            */
         }
     }
 }

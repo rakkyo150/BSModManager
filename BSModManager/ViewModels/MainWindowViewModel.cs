@@ -55,7 +55,21 @@ namespace BSModManager.ViewModels
             get { return updateOrInstall; }
             set { SetProperty(ref updateOrInstall, value); }
         }
-        
+
+        private bool showInstallTabViewEnable = true;
+        public bool ShowInstallTabViewEnable
+        {
+            get { return showInstallTabViewEnable; }
+            set { SetProperty(ref showInstallTabViewEnable, value); }
+        }
+
+        private bool showSettingsTabViewEnable = true;
+        public bool ShowSettingsTabViewEnable
+        {
+            get { return showSettingsTabViewEnable; }
+            set { SetProperty(ref showSettingsTabViewEnable, value); }
+        }
+
         private bool updateOrInstallButtonEnable = true;
         public bool UpdateOrInstallButtonEnable
         {
@@ -103,6 +117,7 @@ namespace BSModManager.ViewModels
         InnerData innerData;
         GitHubManager gitHubManager;
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
+        PastModsDataModel pastModsDataModel;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
@@ -117,7 +132,8 @@ namespace BSModManager.ViewModels
 
         public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,
             MainWindowPropertyModel mwpm, UpdateTabPropertyModel utpm, DataManager dm, ChangeModInfoPropertyModel cmipm, 
-            ModAssistantManager mam, InnerData id,GitHubManager ghm,ModsDataModel mdm,UpdateMyselfConfirmPropertyModel umcpm)
+            ModAssistantManager mam, InnerData id,GitHubManager ghm,ModsDataModel mdm,UpdateMyselfConfirmPropertyModel umcpm,
+            PastModsDataModel pmdm)
         {
             versionManager = vm;
             settingsTabPropertyModel = stpm;
@@ -130,9 +146,10 @@ namespace BSModManager.ViewModels
             innerData = id;
             gitHubManager = ghm;
             updateMyselfConfirmPropertyModel = umcpm;
+            pastModsDataModel = pmdm;
 
             dialogService = ds;
-
+            
             // あんまりいい方法なさそうなので
             // https://stackoverflow.com/questions/3683450/handling-the-window-closing-event-with-wpf-mvvm-light-toolkit
             System.Windows.Application.Current.MainWindow.Closing += new CancelEventHandler(ClosingCommand);
@@ -215,6 +232,13 @@ namespace BSModManager.ViewModels
             {
                 mainWindowPropertyModel.Console = "Start Initializing";
 
+                ShowInstallTabViewEnable = false;
+                ShowSettingsTabViewEnable = false;
+                UpdateOrInstallButtonEnable = false;
+                ModRepositoryButtonEnable = false;
+                ChangeModInfoButtonEnable = false;
+                AllCheckedButtonEnable = false;
+                RefreshButtonEnable = false;
 
                 mainWindowPropertyModel.Console = "Check Myself Latest Version";
                 bool update = await gitHubManager.CheckNewVersionAndDowonload();
@@ -250,7 +274,9 @@ namespace BSModManager.ViewModels
                     await Task.Run(() => { dataManager.CleanModsTemp(FolderManager.tempFolder); });
                     mainWindowPropertyModel.Console = "Finish Cleanup ModsTemp";
 
+                    // ModAssistantのPopulateModsListを使った方がいい
                     innerData.modAssistantAllMods = await modAssistantManager.GetAllModAssistantModsAsync();
+
                     string dataDirectory = Path.Combine(FolderManager.dataFolder, dataManager.GetGameVersion());
                     string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
                     List<ModInformationCsv> previousDataList;
@@ -259,9 +285,9 @@ namespace BSModManager.ViewModels
                         previousDataList = await dataManager.ReadCsv(modsDataCsvPath);
                         foreach (var previousData in previousDataList)
                         {
-                            if (Array.Exists(innerData.modAssistantAllMods,x => x.name == previousData.Mod))
+                            if (Array.Exists(innerData.modAssistantAllMods, x => x.name == previousData.Mod))
                             {
-                                if(previousData.Original)
+                                if (previousData.Original)
                                 {
                                     var temp = Array.Find(innerData.modAssistantAllMods, x => x.name == previousData.Mod);
 
@@ -277,16 +303,16 @@ namespace BSModManager.ViewModels
                                         updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                                     }
 
-                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel, dataManager)
+                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = new Version(temp.version),
                                         Updated = updated,
-                                        Original="〇",
+                                        Original = "〇",
                                         MA = "〇",
-                                        Description=temp.description,
+                                        Description = temp.description,
                                         Url = temp.link
-                                    }); 
+                                    });
                                 }
                             }
                             else
@@ -301,10 +327,10 @@ namespace BSModManager.ViewModels
                                 {
                                     original = "〇";
                                 }
-                                
+
                                 if (response == null)
                                 {
-                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel, dataManager)
+                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = new Version("0.0.0"),
@@ -328,7 +354,7 @@ namespace BSModManager.ViewModels
                                         updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                                     }
 
-                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
+                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = gitHubManager.DetectVersion(response.TagName),
@@ -342,23 +368,19 @@ namespace BSModManager.ViewModels
                             }
                         }
                     }
+                    
                     await Task.Run(() => dataManager.GetLocalModFilesInfo());
-
-                    /*
-                    アップデート時などに必要なら立ち上げるのがいいかも　
-                    if (settingsTabPropertyModel.VerifyMAExe.Value == "〇")
-                    {
-                        try
-                        {
-                            System.Diagnostics.Process.Start(settingsTabPropertyModel.MAExePath);
-                        }
-                        catch (Exception e)
-                        {
-                            mainWindowPropertyModel.Console = e.Message;
-                        }
-                    }
-                    */
                 }
+
+                await pastModsDataModel.Initialize();
+
+                ShowInstallTabViewEnable = true;
+                ShowSettingsTabViewEnable = true;
+                UpdateOrInstallButtonEnable = true;
+                ModRepositoryButtonEnable = true;
+                ChangeModInfoButtonEnable = true;
+                AllCheckedButtonEnable = true;
+                RefreshButtonEnable = true;
             });
 
 

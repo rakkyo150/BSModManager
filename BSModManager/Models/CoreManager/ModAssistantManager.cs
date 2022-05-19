@@ -20,7 +20,8 @@ namespace BSModManager.Models.CoreManager
 
             string gameVersion = GetGameVersion();
 
-            string modAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={gameVersion}";
+            // 一時的に1.21.0にしておく
+            string modAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion=1.21.0";
 
             using (HttpClient httpClient = new HttpClient())
             {

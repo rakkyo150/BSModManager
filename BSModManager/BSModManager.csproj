@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Interfaces\IModsData.cs" />
     <Compile Include="Models\ConfigFileManager.cs" />
     <Compile Include="Models\CoreManager\DataManager.cs" />
     <Compile Include="Models\CoreManager\GitHubManager.cs" />
@@ -67,6 +68,8 @@
     <Compile Include="Models\CoreManager\Structure\MAModInformationCsv.cs" />
     <Compile Include="Models\CoreManager\Structure\ModAssistantModInformation.cs" />
     <Compile Include="Models\ModsDataModel.cs" />
+    <Compile Include="Models\PastModsDataModel.cs" />
+    <Compile Include="Models\RecommendModsDataModel.cs" />
     <Compile Include="Models\ViewModelCommonProperty\ChangeModInfoPropertyModel.cs" />
     <Compile Include="Models\ViewModelCommonProperty\UpdateTabPropertyModel.cs" />
     <Compile Include="Models\ViewModelCommonProperty\MainWindowPropertyModel.cs" />
