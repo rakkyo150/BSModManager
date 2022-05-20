@@ -20,10 +20,10 @@ namespace BSModManager.Models.CoreManager
         InnerData innerData;
         SettingsTabPropertyModel settingsTabPropertyModel;
         MainWindowPropertyModel mainWindowPropertyModel;
-        ModsDataModel modsDataModel;
+        LocalModsDataModel modsDataModel;
         UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
 
-        public DataManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm,MainWindowPropertyModel mwpm,ModsDataModel mdm)
+        public DataManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm,MainWindowPropertyModel mwpm,LocalModsDataModel mdm)
         {
             innerData = id;
             settingsTabPropertyModel = stpm;
@@ -101,7 +101,7 @@ namespace BSModManager.Models.CoreManager
             foreach(KeyValuePair<string,Version> modNameAndVersion in combinedModNameAndVersion)
             {
                 // 以前のデータ無し
-                if (!modsDataModel.ModsData.Any(x => x.Mod == modNameAndVersion.Key))
+                if (!modsDataModel.LocalModsData.Any(x => x.Mod == modNameAndVersion.Key))
                 {
                     if (Array.Exists(innerData.modAssistantAllMods, x => x.name == modNameAndVersion.Key))
                     {
@@ -119,7 +119,7 @@ namespace BSModManager.Models.CoreManager
                             updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                         }
 
-                        modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
+                        modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
                             Mod = modNameAndVersion.Key,
                             Installed = modNameAndVersion.Value,
@@ -133,7 +133,7 @@ namespace BSModManager.Models.CoreManager
                     }
                     else
                     {
-                        modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
+                        modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,this)
                         {
                             Mod = modNameAndVersion.Key,
                             Installed = modNameAndVersion.Value
@@ -143,13 +143,13 @@ namespace BSModManager.Models.CoreManager
                 // 以前のデータある場合
                 else
                 {           
-                    modsDataModel.ModsData.First(x => x.Mod == modNameAndVersion.Key).Installed = modNameAndVersion.Value;
+                    modsDataModel.LocalModsData.First(x => x.Mod == modNameAndVersion.Key).Installed = modNameAndVersion.Value;
                 }
             }
 
             // 以前実行時から手動で消したModの情報を消す
-            List<ModsDataModel.ModData> removeList = new List<ModsDataModel.ModData>();
-            foreach(var data in modsDataModel.ModsData)
+            List<LocalModsDataModel.LocalModData> removeList = new List<LocalModsDataModel.LocalModData>();
+            foreach(var data in modsDataModel.LocalModsData)
             {
                 if (!filesName.Any(x => x.Name.Replace(".dll", "") == data.Mod))
                 {
@@ -158,7 +158,7 @@ namespace BSModManager.Models.CoreManager
             }
             foreach(var removeData in removeList)
             {
-                modsDataModel.ModsData.Remove(removeData);
+                modsDataModel.LocalModsData.Remove(removeData);
             }
         }
 
@@ -347,7 +347,7 @@ namespace BSModManager.Models.CoreManager
         /// <typeparam name="T"></typeparam>
         /// <param name="csvPath"></param>
         /// <param name="list"></param>
-        public async Task WriteCsv(string csvPath, IEnumerable<ModsDataModel.ModData> e)
+        public async Task WriteCsv(string csvPath, IEnumerable<LocalModsDataModel.LocalModData> e)
         {
             List<ModInformationCsv> modInformationCsvList = new List<ModInformationCsv>();
             
@@ -516,21 +516,6 @@ namespace BSModManager.Models.CoreManager
 
         public void Backup()
         {
-            /*
-            if (!Directory.Exists(FolderManager.backupFolder))
-            {
-                Console.WriteLine($"{FolderManager.backupFolder}がありません");
-                Console.WriteLine($"{FolderManager.backupFolder}を作成します");
-                Directory.CreateDirectory(FolderManager.backupFolder);
-            }
-            if (!Directory.Exists(FolderManager.dataFolder))
-            {
-                Console.WriteLine($"{FolderManager.dataFolder}がありません");
-                Console.WriteLine($"{FolderManager.dataFolder}を作成します");
-                Directory.CreateDirectory(FolderManager.dataFolder);
-            }
-            */
-
             innerData.gameVersion = GetGameVersion();
             string now = DateTime.Now.ToString("yyyyMMddHHmmss");
             

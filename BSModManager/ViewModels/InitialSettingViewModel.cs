@@ -30,7 +30,7 @@ namespace BSModManager.ViewModels
         InnerData innerData;
         GitHubManager gitHubManager;
         UpdateTabPropertyModel updateTabPropertyModel;
-        ModsDataModel modsDataModel;
+        LocalModsDataModel modsDataModel;
 
         MainWindowPropertyModel mainWindowPropertyModel;
 
@@ -56,7 +56,7 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id,MainWindowPropertyModel mwpm,GitHubManager ghm,UpdateTabPropertyModel mtpm,ModsDataModel mdm)
+        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id,MainWindowPropertyModel mwpm,GitHubManager ghm,UpdateTabPropertyModel mtpm,LocalModsDataModel mdm)
         {
             settingsTabPropertyModel = stpm;
             dataManager = dm;
@@ -133,7 +133,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
+                            modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version(temp.version),
@@ -162,7 +162,7 @@ namespace BSModManager.ViewModels
 
                         if (response == null)
                         {
-                            modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
+                            modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version("0.0.0"),
@@ -186,7 +186,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
+                            modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
                             {
                                 Mod = previousData.Mod,
                                 Latest = gitHubManager.DetectVersion(response.TagName),

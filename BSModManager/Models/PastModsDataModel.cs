@@ -21,12 +21,12 @@ namespace BSModManager.Models
     {
         public ObservableCollection<PastModData> PastModsData = new ObservableCollection<PastModData>();
 
-        ModsDataModel currentModsDataModel;
+        LocalModsDataModel currentModsDataModel;
         InnerData innerData;
         DataManager dataManager;
         GitHubManager gitHubManager;
 
-        public PastModsDataModel(InnerData id, DataManager dm, GitHubManager ghm, ModsDataModel mdm)
+        public PastModsDataModel(InnerData id, DataManager dm, GitHubManager ghm, LocalModsDataModel mdm)
         {
             innerData = id;
             dataManager = dm;
@@ -82,7 +82,7 @@ namespace BSModManager.Models
                 previousDataList.Find(x => x.Mod == modAssistantMod.name).Url = modAssistantMod.link;
             }
 
-            foreach (var localMod in currentModsDataModel.ModsData)
+            foreach (var localMod in currentModsDataModel.LocalModsData)
             {
                 if (!previousDataList.Any(x => x.Mod == localMod.Mod)) continue;
                 if (!previousDataList.Any(x => x.Url == localMod.Url)) continue;
