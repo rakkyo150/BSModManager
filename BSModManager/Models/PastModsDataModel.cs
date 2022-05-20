@@ -136,10 +136,10 @@ namespace BSModManager.Models
                     {
                         Mod = previousData.Mod,
                         Latest = new Version("0.0.0"),
-                        Updated = "?",
+                        Updated = previousData.Url=="" ? "?" : "---",
                         Original = original,
                         MA = "×",
-                        Description = "?",
+                        Description = previousData.Url == "" ? "?" : "---",
                         Url = previousData.Url
                     });
                 }
