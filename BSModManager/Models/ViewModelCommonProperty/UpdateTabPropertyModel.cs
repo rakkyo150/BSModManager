@@ -24,10 +24,10 @@ namespace BSModManager.Models
         public MainWindowPropertyModel mainWindowPropertyModel;
         public SettingsTabPropertyModel settingsTabPropertyModel;
         public GitHubManager gitHubManager;
-        public ModsDataModel modsDataModel;
+        public LocalModsDataModel modsDataModel;
         DataManager dataManager;
 
-        public UpdateTabPropertyModel(MainWindowPropertyModel mwpm,SettingsTabPropertyModel stpm, GitHubManager gm,ModsDataModel mdm,DataManager dm)
+        public UpdateTabPropertyModel(MainWindowPropertyModel mwpm,SettingsTabPropertyModel stpm, GitHubManager gm,LocalModsDataModel mdm,DataManager dm)
         {
             mainWindowPropertyModel = mwpm;
             settingsTabPropertyModel = stpm;
@@ -40,7 +40,7 @@ namespace BSModManager.Models
         {
             bool openMA = false;
 
-            foreach (var a in modsDataModel.ModsData)
+            foreach (var a in modsDataModel.LocalModsData)
             {
                 Release response=null;
 

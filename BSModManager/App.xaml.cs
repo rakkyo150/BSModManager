@@ -37,7 +37,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<VersionManager>();
             containerRegistry.RegisterSingleton<PastModsDataModel>();
             containerRegistry.RegisterSingleton<RecommendModsDataModel>();
-            containerRegistry.RegisterSingleton<ModsDataModel>();
+            containerRegistry.RegisterSingleton<LocalModsDataModel>();
 
             containerRegistry.RegisterSingleton<InnerData>();
             containerRegistry.RegisterSingleton<DataManager>();

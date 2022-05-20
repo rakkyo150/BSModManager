@@ -13,13 +13,13 @@ namespace BSModManager.Models.ViewModelCommonProperty
     public class ChangeModInfoPropertyModel : BindableBase
     {
         IDialogService dialogService;
-        ModsDataModel modsDataModel;
+        LocalModsDataModel modsDataModel;
         UpdateTabPropertyModel updateTabPropertyModel;
         MainWindowPropertyModel MainWindowPropertyModel;
         GitHubManager gitHubManager;
         InnerData innerData;
 
-        public ChangeModInfoPropertyModel(IDialogService ds,ModsDataModel mdm, UpdateTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm,InnerData id)
+        public ChangeModInfoPropertyModel(IDialogService ds,LocalModsDataModel mdm, UpdateTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm,InnerData id)
         {
             dialogService = ds;
             modsDataModel = mdm;
@@ -46,7 +46,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set
             {
                 SetProperty(ref url, value);
-                modsDataModel.ModsData.First(x => x.Mod == modName).Url = Url;
+                modsDataModel.LocalModsData.First(x => x.Mod == modName).Url = Url;
             }
         }
 
@@ -57,7 +57,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set 
             { 
                 SetProperty(ref updated, value);
-                modsDataModel.ModsData.First(x => x.Mod == modName).Updated = Updated;
+                modsDataModel.LocalModsData.First(x => x.Mod == modName).Updated = Updated;
             }
         }
 
@@ -71,7 +71,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 SetProperty(ref original, value);
                 if (Original)
                 {
-                    modsDataModel.ModsData.First(x => x.Mod == modName).Original = "〇";
+                    modsDataModel.LocalModsData.First(x => x.Mod == modName).Original = "〇";
                     if (Array.Exists(innerData.modAssistantAllMods, x=>x.name==modName))
                     {
                         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -96,7 +96,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 }
                 else
                 {
-                    modsDataModel.ModsData.First(x => x.Mod == modName).Original = "×";
+                    modsDataModel.LocalModsData.First(x => x.Mod == modName).Original = "×";
                     ExistInMA = false;
                     MA = "×";
                 }
@@ -117,7 +117,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set 
             { 
                 SetProperty(ref latest, value);
-                modsDataModel.ModsData.First(x => x.Mod == modName).Latest = Latest;
+                modsDataModel.LocalModsData.First(x => x.Mod == modName).Latest = Latest;
             }
         }
 
@@ -128,7 +128,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set
             {
                 SetProperty(ref mA, value);
-                modsDataModel.ModsData.First(x => x.Mod == modName).MA = MA;
+                modsDataModel.LocalModsData.First(x => x.Mod == modName).MA = MA;
             }
         }
 
@@ -149,7 +149,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             set 
             { 
                 SetProperty(ref description, value);
-                modsDataModel.ModsData.First(x => x.Mod == modName).Description = Description;
+                modsDataModel.LocalModsData.First(x => x.Mod == modName).Description = Description;
             }
         }
 
@@ -165,9 +165,9 @@ namespace BSModManager.Models.ViewModelCommonProperty
         {
             // 何個目のCheckedか
             int count = 0;
-            int AllCheckedMod = modsDataModel.ModsData.Count(x => x.Checked == true);
+            int AllCheckedMod = modsDataModel.LocalModsData.Count(x => x.Checked == true);
 
-            foreach (var a in modsDataModel.ModsData)
+            foreach (var a in modsDataModel.LocalModsData)
             {
                 // Finishボタン押したとき
                 if (Position > AllCheckedMod)

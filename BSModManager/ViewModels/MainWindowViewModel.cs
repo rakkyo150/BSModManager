@@ -110,7 +110,7 @@ namespace BSModManager.ViewModels
         SettingsTabPropertyModel settingsTabPropertyModel;
         MainWindowPropertyModel mainWindowPropertyModel;
         UpdateTabPropertyModel updataTabPropertyModel;
-        ModsDataModel modsDataModel;
+        LocalModsDataModel modsDataModel;
         DataManager dataManager;
         ChangeModInfoPropertyModel changeModInfoPropertyModel;
         ModAssistantManager modAssistantManager;
@@ -132,7 +132,7 @@ namespace BSModManager.ViewModels
 
         public MainWindowViewModel(IRegionManager regionManager, SettingsTabPropertyModel stpm, IDialogService ds, VersionManager vm,
             MainWindowPropertyModel mwpm, UpdateTabPropertyModel utpm, DataManager dm, ChangeModInfoPropertyModel cmipm, 
-            ModAssistantManager mam, InnerData id,GitHubManager ghm,ModsDataModel mdm,UpdateMyselfConfirmPropertyModel umcpm,
+            ModAssistantManager mam, InnerData id,GitHubManager ghm,LocalModsDataModel mdm,UpdateMyselfConfirmPropertyModel umcpm,
             PastModsDataModel pmdm)
         {
             versionManager = vm;
@@ -303,7 +303,7 @@ namespace BSModManager.ViewModels
                                         updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                                     }
 
-                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
+                                    modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = new Version(temp.version),
@@ -330,7 +330,7 @@ namespace BSModManager.ViewModels
 
                                 if (response == null)
                                 {
-                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
+                                    modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = new Version("0.0.0"),
@@ -354,7 +354,7 @@ namespace BSModManager.ViewModels
                                         updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                                     }
 
-                                    modsDataModel.ModsData.Add(new ModsDataModel.ModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
+                                    modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel, mainWindowPropertyModel, dataManager)
                                     {
                                         Mod = previousData.Mod,
                                         Latest = gitHubManager.DetectVersion(response.TagName),
@@ -402,7 +402,7 @@ namespace BSModManager.ViewModels
                             Directory.CreateDirectory(dataDirectory);
                         }
                         string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-                        Task.Run(async()=>await dataManager.WriteCsv(modsDataCsvPath, modsDataModel.ModsData)).GetAwaiter().GetResult();
+                        Task.Run(async()=>await dataManager.WriteCsv(modsDataCsvPath, modsDataModel.LocalModsData)).GetAwaiter().GetResult();
                     }
                 }
             };

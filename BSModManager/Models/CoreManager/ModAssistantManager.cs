@@ -9,7 +9,7 @@ namespace BSModManager.Models.CoreManager
 {
     public class ModAssistantManager : DataManager
     {
-        public ModAssistantManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm,MainWindowPropertyModel mwpm ,ModsDataModel mdm) : base(id, stpm, umcpm,mwpm,mdm)
+        public ModAssistantManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm,MainWindowPropertyModel mwpm ,LocalModsDataModel mdm) : base(id, stpm, umcpm,mwpm,mdm)
         {
 
         }
@@ -21,7 +21,7 @@ namespace BSModManager.Models.CoreManager
             string gameVersion = GetGameVersion();
 
             // 一時的に1.21.0にしておく
-            string modAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion=1.21.0";
+            string modAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={gameVersion}";
 
             using (HttpClient httpClient = new HttpClient())
             {
@@ -30,7 +30,24 @@ namespace BSModManager.Models.CoreManager
                     var resp = await httpClient.GetStringAsync(modAssistantModInformationUrl);
                     modAssistantMod = JsonConvert.DeserializeObject<ModAssistantModInformation[]>(resp);
 
-                    // Console.WriteLine("Fisnish GetAllMods");
+                    Version retryGameVersion = new Version(gameVersion);
+
+                    while (modAssistantMod.Length==0)
+                    {
+                        if (retryGameVersion.Build > 0)
+                        {
+                            retryGameVersion = new Version(retryGameVersion.Major, retryGameVersion.Minor, retryGameVersion.Build - 1);
+                        }
+                        else
+                        {
+                            retryGameVersion = new Version(retryGameVersion.Major, retryGameVersion.Minor - 1, 9);
+                        }
+
+                        string retryModAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={retryGameVersion}";
+
+                        var retryResp = await httpClient.GetStringAsync(retryModAssistantModInformationUrl);
+                        modAssistantMod = JsonConvert.DeserializeObject<ModAssistantModInformation[]>(retryResp);
+                    }
 
                     foreach (var mod in modAssistantMod)
                     {

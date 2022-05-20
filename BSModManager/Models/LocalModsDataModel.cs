@@ -20,30 +20,30 @@ using static BSModManager.Models.UpdateTabPropertyModel;
 
 namespace BSModManager.Models
 {
-    public class ModsDataModel : BindableBase, IModsData
+    public class LocalModsDataModel : BindableBase, IModsData
     {
-        public ObservableCollection<ModData> ModsData = new ObservableCollection<ModData>();
+        public ObservableCollection<LocalModData> LocalModsData = new ObservableCollection<LocalModData>();
 
         public void AllCheckedOrUnchecked()
         {
-            Console.WriteLine(ModsData.Count);
+            Console.WriteLine(LocalModsData.Count);
 
             int i = 0;
-            if (ModsData.Count(x => x.Checked == true) * 2 > ModsData.Count)
+            if (LocalModsData.Count(x => x.Checked == true) * 2 > LocalModsData.Count)
             {
                 Console.WriteLine("to false");
-                foreach (var _ in ModsData)
+                foreach (var _ in LocalModsData)
                 {
-                    ModsData[i].Checked = false;
+                    LocalModsData[i].Checked = false;
                     i++;
                 }
             }
             else
             {
                 Console.WriteLine("to true");
-                foreach (var _ in ModsData)
+                foreach (var _ in LocalModsData)
                 {
-                    ModsData[i].Checked = true;
+                    LocalModsData[i].Checked = true;
                     i++;
                 }
             }
@@ -51,7 +51,7 @@ namespace BSModManager.Models
 
         public void ModRepositoryOpen()
         {
-            foreach (var a in ModsData)
+            foreach (var a in LocalModsData)
             {
                 if (a.Checked)
                 {
@@ -75,7 +75,7 @@ namespace BSModManager.Models
 
         // 変更通知イベントがないとUIに反映されない
         // https://yutori-techblog.com/innerclass-private-access
-        public class ModData : BindableBase, IDestructible
+        public class LocalModData : BindableBase, IDestructible
         {
             public SettingsTabPropertyModel settingTabPropertyModel;
             public MainWindowPropertyModel mainWindowPropertyModel;
@@ -86,7 +86,7 @@ namespace BSModManager.Models
             public CompositeDisposable disposables = new CompositeDisposable();
 
 
-            public ModData(SettingsTabPropertyModel stpm, MainWindowPropertyModel mwpm, DataManager dm)
+            public LocalModData(SettingsTabPropertyModel stpm, MainWindowPropertyModel mwpm, DataManager dm)
             {
                 settingTabPropertyModel = stpm;
                 mainWindowPropertyModel = mwpm;
