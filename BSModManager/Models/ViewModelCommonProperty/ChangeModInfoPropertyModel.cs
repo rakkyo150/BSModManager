@@ -264,8 +264,8 @@ namespace BSModManager.Models.ViewModelCommonProperty
             else
             {
                 Latest = new Version("0.0.0");
-                Updated = "?";
-                Description = "?";
+                Updated = Url=="" ? "?" : "---";
+                Description = Url == "" ? "?" : "---";
             }
         }
     }
