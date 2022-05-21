@@ -1,6 +1,4 @@
 ﻿using BSModManager.Models;
-using BSModManager.Models.CoreManager;
-using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
 using BSModManager.Views;
 using Prism.Ioc;
@@ -15,7 +13,7 @@ namespace BSModManager
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            FolderManager.FolderInitialize();
+            Folder.Instance.Initialize();
             base.OnStartup(e);
         }
 
@@ -27,21 +25,23 @@ namespace BSModManager
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
-            containerRegistry.RegisterSingleton<MainWindowPropertyModel>();
-            containerRegistry.RegisterSingleton<UpdateTabPropertyModel>();
-            containerRegistry.RegisterSingleton<SettingsTabPropertyModel>();
-            containerRegistry.RegisterSingleton<UpdateMyselfConfirmPropertyModel>();
-            containerRegistry.RegisterSingleton<ChangeModInfoPropertyModel>();
-            
-            containerRegistry.RegisterSingleton<ConfigFileManager>();
-            containerRegistry.RegisterSingleton<VersionManager>();
-            containerRegistry.RegisterSingleton<PastModsDataModel>();
-            containerRegistry.RegisterSingleton<RecommendModsDataModel>();
-            containerRegistry.RegisterSingleton<LocalModsDataModel>();
+            containerRegistry.RegisterSingleton<ChangeModInfoModel>();
 
-            containerRegistry.RegisterSingleton<InnerData>();
-            containerRegistry.RegisterSingleton<DataManager>();
-            containerRegistry.RegisterSingleton<GitHubManager>();
+            
+            containerRegistry.RegisterSingleton<PastMods>();
+            containerRegistry.RegisterSingleton<RecommendMods>();
+            containerRegistry.RegisterSingleton<LocalMods>();
+
+            containerRegistry.RegisterSingleton<LocalModSyncer>();
+            containerRegistry.RegisterSingleton<GitHubApi>();
+            containerRegistry.RegisterSingleton<ConfigFile>();
+            containerRegistry.RegisterSingleton<MAMods>();
+            containerRegistry.RegisterSingleton<ModCsv>();
+            containerRegistry.RegisterSingleton<MyselfUpdater>();
+            containerRegistry.RegisterSingleton<ModUpdater>();
+            containerRegistry.RegisterSingleton<Initializer>();
+            containerRegistry.RegisterSingleton<ModDisposer>();
+            containerRegistry.RegisterSingleton<SettingsVerifier>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();

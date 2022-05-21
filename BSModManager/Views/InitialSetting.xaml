@@ -54,7 +54,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Label Content="Install Directroy" Grid.Column="0"></Label>
+            <Label Content="MA Path" Grid.Column="0"></Label>
             <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Width="25" Grid.Column="1">
                 <TextBlock Text="{Binding VerifyMAExe.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyMAExeColor.Value}" Width="25" ></TextBlock>
             </Border>

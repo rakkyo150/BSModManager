@@ -1,7 +1,4 @@
 ﻿using BSModManager.Models;
-using BSModManager.Models.CoreManager;
-using BSModManager.Models.Structure;
-using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
 using Octokit;
 using Prism.Mvvm;
@@ -16,38 +13,38 @@ using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static BSModManager.Models.ModCsv;
 
 namespace BSModManager.ViewModels
 {
-    public class InitialSettingViewModel : BindableBase, IDialogAware,IDestructible
+    public class InitialSettingViewModel : BindableBase, IDialogAware, IDestructible
     {
-        // 別のクラスから呼んでもらう必要あり
-        SettingsTabPropertyModel settingsTabPropertyModel;
-
-        DataManager dataManager;
-
-        ModAssistantManager modAssistantManager;
-        InnerData innerData;
-        GitHubManager gitHubManager;
-        UpdateTabPropertyModel updateTabPropertyModel;
-        LocalModsDataModel modsDataModel;
-
-        MainWindowPropertyModel mainWindowPropertyModel;
+        SettingsVerifier settingsVerifier;
+        
+        LocalModSyncer localModSyncer;
+        GitHubApi gitHubApi;
+        LocalMods modsDataModel;
+        ModCsv modCsv;
+        Initializer initializer;
+        MAMods mAMod;
+        ConfigFile configFile;
 
         CompositeDisposable disposables { get; } = new CompositeDisposable();
-        
-        public ReadOnlyReactivePropertySlim<string> VerifyBSFolder { get; }
-        public ReadOnlyReactivePropertySlim<Brush> VerifyBSFolderColor { get; }
+
+        public ReactiveProperty<string> VerifyBSFolder { get; }
+        public ReactiveProperty<Brush> VerifyBSFolderColor { get; }
 
         public ReactiveProperty<string> BSFolderPath { get; }
 
         public ReactiveCommand SelectBSFolderCommand { get; } = new ReactiveCommand();
 
-        public ReadOnlyReactivePropertySlim<string> VerifyGitHubToken { get; }
-        public ReadOnlyReactivePropertySlim<Brush> VerifyGitHubTokenColor { get; }
+        public ReactiveProperty<string> VerifyGitHubToken { get; }
+        public ReactiveProperty<Brush> VerifyGitHubTokenColor { get; }
 
-        public ReadOnlyReactivePropertySlim<string> VerifyMAExe { get; }
-        public ReadOnlyReactivePropertySlim<Brush> VerifyMAExeColor { get; }
+        public ReactiveProperty<bool> VerifyBSFolderAndGitHubToken { get; }
+
+        public ReactiveProperty<string> VerifyMAExe { get; }
+        public ReactiveProperty<Brush> VerifyMAExeColor { get; }
 
         public ReactiveProperty<string> MAExePath { get; }
 
@@ -56,38 +53,105 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        public InitialSettingViewModel(SettingsTabPropertyModel stpm, DataManager dm,ModAssistantManager mam,InnerData id,MainWindowPropertyModel mwpm,GitHubManager ghm,UpdateTabPropertyModel mtpm,LocalModsDataModel mdm)
+        internal InitialSettingViewModel(LocalModSyncer dm, GitHubApi ghm, LocalMods mdm,ModCsv mc,Initializer i,MAMods mam,SettingsVerifier sv,ConfigFile cf)
         {
-            settingsTabPropertyModel = stpm;
-            dataManager = dm;
-            modAssistantManager = mam;
-            innerData = id;
-            mainWindowPropertyModel = mwpm;
-            gitHubManager = ghm;
-            updateTabPropertyModel = mtpm;
+            localModSyncer = dm;
+            gitHubApi = ghm;
             modsDataModel = mdm;
+            modCsv = mc;
+            initializer = i;
+            mAMod = mam;
+            settingsVerifier = sv;
+            configFile = cf;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            BSFolderPath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(disposables);
-            MAExePath = settingsTabPropertyModel.ToReactivePropertyAsSynchronized(x => x.MAExePath).AddTo(disposables);
+            BSFolderPath = Folder.Instance.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(disposables);
+            MAExePath = FilePath.Instance.ToReactivePropertyAsSynchronized(x => x.MAExePath).AddTo(disposables);
 
-            VerifyBSFolder = settingsTabPropertyModel.VerifyBSFolder.ToReadOnlyReactivePropertySlim().AddTo(disposables);
-            VerifyBSFolderColor = settingsTabPropertyModel.VerifyBSFolderColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            VerifyBSFolder = new ReactiveProperty<string>("〇").AddTo(disposables);
+            VerifyBSFolderColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(disposables);
+            VerifyGitHubToken = new ReactiveProperty<string>("〇").AddTo(disposables);
+            VerifyGitHubTokenColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(disposables);
+            VerifyBSFolderAndGitHubToken = new ReactiveProperty<bool>(true).AddTo(disposables);
+            VerifyMAExe = new ReactiveProperty<string>("〇").AddTo(disposables);
+            VerifyMAExeColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(disposables);
 
-            VerifyGitHubToken = settingsTabPropertyModel.VerifyGitHubToken.ToReadOnlyReactivePropertySlim().AddTo(disposables);
-            VerifyGitHubTokenColor = settingsTabPropertyModel.VerifyGitHubTokenColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            if (!settingsVerifier.BSFolder)
+            {
+                VerifyBSFolder.Value = "×";
+                VerifyBSFolderColor.Value = Brushes.Red;
+            }
+            if (!settingsVerifier.GitHubToken)
+            {
+                VerifyGitHubToken.Value = "×";
+                VerifyGitHubTokenColor.Value = Brushes.Red;
+            }
+            if (!settingsVerifier.MAExe)
+            {
+                VerifyMAExe.Value = "×";
+                VerifyMAExeColor.Value = Brushes.Red;
+            }
+            if (!settingsVerifier.BSFolderAndGitHubToken)
+            {
+                VerifyBSFolderAndGitHubToken.Value = false;
+            }
+            
+            settingsVerifier.PropertyChanged += (sender, e) =>
+            {
+                if (settingsVerifier.BSFolder)
+                {
+                    VerifyBSFolder.Value = "〇";
+                    VerifyBSFolderColor.Value = Brushes.Green;
+                }
+                else
+                {
+                    VerifyBSFolder.Value = "×";
+                    VerifyBSFolderColor.Value = Brushes.Red;
+                }
 
-            VerifyMAExe = settingsTabPropertyModel.VerifyMAExe.ToReadOnlyReactivePropertySlim().AddTo(disposables);
-            VerifyMAExeColor = settingsTabPropertyModel.VerifyMAExeColor.ToReadOnlyReactivePropertySlim().AddTo(disposables);
+                if (settingsVerifier.GitHubToken)
+                {
+                    VerifyGitHubToken.Value = "〇";
+                    VerifyGitHubTokenColor.Value = Brushes.Green;
+                }
+                else
+                {
+                    VerifyGitHubToken.Value = "×";
+                    VerifyGitHubTokenColor.Value = Brushes.Red;
+                }
 
-            SelectBSFolderCommand.Subscribe(_ => BSFolderPath.Value = FolderManager.SelectFolderCommand(BSFolderPath.Value)).AddTo(disposables);
-            SelectMAExeCommand.Subscribe(_ => MAExePath.Value = FilePath.SelectFile(MAExePath.Value)).AddTo(disposables);
+                VerifyBSFolderAndGitHubToken.Value = settingsVerifier.BSFolderAndGitHubToken;
 
-            SettingFinishCommand = settingsTabPropertyModel.VerifyBoth.ToReactiveCommand().WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK))).AddTo(disposables);
+                if (settingsVerifier.MAExe)
+                {
+                    VerifyMAExe.Value = "〇";
+                    VerifyMAExeColor.Value = Brushes.Green;
+                }
+                else
+                {
+                    VerifyMAExe.Value = "×";
+                    VerifyMAExeColor.Value = Brushes.Red;
+                }
+            };
+
+            SelectBSFolderCommand.Subscribe(() =>
+            {
+                Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
+                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+            }).AddTo(disposables);
+
+            SelectMAExeCommand.Subscribe(() =>
+            {
+                FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
+                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+            }).AddTo(disposables);
+            
+            SettingFinishCommand = VerifyBSFolderAndGitHubToken.ToReactiveCommand()
+                .WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK))).AddTo(disposables);
 
             VerifyGitHubTokenCommand.Subscribe((x) =>
             {
-                settingsTabPropertyModel.GitHubToken = ((PasswordBox)x).Password;
+                gitHubApi.GitHubToken = ((PasswordBox)x).Password;
             }).AddTo(disposables);
         }
 
@@ -99,27 +163,27 @@ namespace BSModManager.ViewModels
 
         public void OnDialogClosed()
         {
-            Task.Run(() => 
+            Task.Run(() =>
             {
-                mainWindowPropertyModel.Console = "Start Making Backup";
-                dataManager.Backup();
-                mainWindowPropertyModel.Console = "Finish Making Backup";
+                MainWindowLog.Instance.Debug = "Start Making Backup";
+                initializer.Backup();
+                MainWindowLog.Instance.Debug = "Finish Making Backup";
             }).GetAwaiter().GetResult();
-            Task.Run(() => { innerData.modAssistantAllMods = modAssistantManager.GetAllModAssistantModsAsync().Result; }).GetAwaiter().GetResult();
+            Task.Run(() => { mAMod.modAssistantAllMods = mAMod.GetAllAsync().Result; }).GetAwaiter().GetResult();
 
-            string dataDirectory = Path.Combine(FolderManager.dataFolder, dataManager.GetGameVersion());
+            string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-            List<ModInformationCsv> previousDataList;
+            List<ModCsvIndex> previousDataList;
             if (File.Exists(modsDataCsvPath))
             {
-                previousDataList = Task.Run(async () => await dataManager.ReadCsv(modsDataCsvPath)).GetAwaiter().GetResult();
+                previousDataList = Task.Run(async () => await modCsv.Read(modsDataCsvPath)).GetAwaiter().GetResult();
                 foreach (var previousData in previousDataList)
                 {
-                    if (Array.Exists(innerData.modAssistantAllMods, x => x.name == previousData.Mod))
+                    if (Array.Exists(mAMod.modAssistantAllMods, x => x.name == previousData.Mod))
                     {
                         if (previousData.Original)
                         {
-                            var temp = Array.Find(innerData.modAssistantAllMods, x => x.name == previousData.Mod);
+                            var temp = Array.Find(mAMod.modAssistantAllMods, x => x.name == previousData.Mod);
 
                             DateTime now = DateTime.Now;
                             DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
@@ -133,7 +197,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
+                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version(temp.version),
@@ -149,7 +213,7 @@ namespace BSModManager.ViewModels
                     {
                         Release response = null;
                         string original = null;
-                        Task.Run(async()=> { response = await gitHubManager.GetGitHubModLatestVersionAsync(previousData.Url); }).GetAwaiter().GetResult();
+                        Task.Run(async () => { response = await gitHubApi.GetModLatestVersionAsync(previousData.Url); }).GetAwaiter().GetResult();
 
                         if (!previousData.Original)
                         {
@@ -162,7 +226,7 @@ namespace BSModManager.ViewModels
 
                         if (response == null)
                         {
-                            modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
+                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version("0.0.0"),
@@ -186,10 +250,10 @@ namespace BSModManager.ViewModels
                                 updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.LocalModsData.Add(new LocalModsDataModel.LocalModData(settingsTabPropertyModel,mainWindowPropertyModel,dataManager)
+                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
                             {
                                 Mod = previousData.Mod,
-                                Latest = gitHubManager.DetectVersion(response.TagName),
+                                Latest = gitHubApi.DetectVersion(response.TagName),
                                 Updated = updated,
                                 Original = original,
                                 MA = "×",
@@ -200,22 +264,7 @@ namespace BSModManager.ViewModels
                     }
                 }
 
-                Task.Run(() => { dataManager.GetLocalModFilesInfo(); }).GetAwaiter().GetResult();
-
-                /*
-                アップデート時などに必要なら立ち上げるのがいいかも　
-                if (settingsTabPropertyModel.VerifyMAExe.Value == "〇")
-                {
-                    try
-                    {
-                        System.Diagnostics.Process.Start(settingsTabPropertyModel.MAExePath);
-                    }
-                    catch(Exception e)
-                    {
-                        mainWindowPropertyModel.Console = e.Message;
-                    }
-                }
-                */
+                Task.Run(() => { localModSyncer.Sync(); }).GetAwaiter().GetResult();
             }
         }
 

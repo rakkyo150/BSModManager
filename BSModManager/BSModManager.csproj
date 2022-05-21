@@ -59,30 +59,29 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Interfaces\IModsData.cs" />
-    <Compile Include="Models\ConfigFileManager.cs" />
-    <Compile Include="Models\CoreManager\DataManager.cs" />
-    <Compile Include="Models\CoreManager\GitHubManager.cs" />
-    <Compile Include="Models\CoreManager\InnerData.cs" />
-    <Compile Include="Models\CoreManager\ModAssistantManager.cs" />
-    <Compile Include="Models\CoreManager\Structure\ModInformationCsv.cs" />
-    <Compile Include="Models\CoreManager\Structure\MAModInformationCsv.cs" />
-    <Compile Include="Models\CoreManager\Structure\ModAssistantModInformation.cs" />
-    <Compile Include="Models\LocalModsDataModel.cs" />
-    <Compile Include="Models\PastModsDataModel.cs" />
-    <Compile Include="Models\RecommendModsDataModel.cs" />
-    <Compile Include="Models\ViewModelCommonProperty\ChangeModInfoPropertyModel.cs" />
-    <Compile Include="Models\ViewModelCommonProperty\UpdateTabPropertyModel.cs" />
-    <Compile Include="Models\ViewModelCommonProperty\MainWindowPropertyModel.cs" />
-    <Compile Include="Models\VersionManager.cs" />
-    <Compile Include="Models\ViewModelCommonProperty\SettingsTabPropertyModel.cs" />
-    <Compile Include="Models\ViewModelCommonProperty\UpdateMyselfConfirmPropertyModel.cs" />
+    <Compile Include="Models\ConfigFile.cs" />
+    <Compile Include="Models\LocalModSyncer.cs" />
+    <Compile Include="Models\Initializer.cs" />
+    <Compile Include="Models\ModDisposer.cs" />
+    <Compile Include="Models\GitHubApi.cs" />
+    <Compile Include="Models\Mods\MAMods.cs" />
+    <Compile Include="Models\ModCsv.cs" />
+    <Compile Include="Models\Mods\LocalMods.cs" />
+    <Compile Include="Models\ModUpdater.cs" />
+    <Compile Include="Models\Mods\PastMods.cs" />
+    <Compile Include="Models\Mods\RecommendMods.cs" />
+    <Compile Include="Models\MyselfUpdater.cs" />
+    <Compile Include="Models\SettingsVerifier.cs" />
+    <Compile Include="Models\ChangeModInfoModel.cs" />
+    <Compile Include="Static\GameVersion.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Static\FilePath.cs" />
-    <Compile Include="Static\FolderManager.cs" />
+    <Compile Include="Static\Folder.cs" />
+    <Compile Include="Static\MainWindowLog.cs" />
     <Compile Include="ViewModels\ChangeModInfoViewModel.cs" />
     <Compile Include="ViewModels\InitialSettingViewModel.cs" />
     <Compile Include="ViewModels\InstallTabViewModel.cs" />
@@ -212,5 +211,6 @@
   <ItemGroup>
     <Resource Include="Views\Resources\Execute.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

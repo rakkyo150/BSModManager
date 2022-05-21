@@ -1,4 +1,4 @@
-﻿using BSModManager.Models.ViewModelCommonProperty;
+﻿using BSModManager.Models;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
@@ -8,18 +8,18 @@ using System.Reactive.Disposables;
 
 namespace BSModManager.ViewModels
 {
-    public class UpdateMyselfConfirmViewModel : BindableBase,IDestructible
+    public class UpdateMyselfConfirmViewModel : BindableBase, IDestructible
     {
-        UpdateMyselfConfirmPropertyModel updateMyselfConfirmPropertyModel;
+        MyselfUpdater updater;
 
         CompositeDisposable disposables { get; } = new CompositeDisposable();
-        
+
         public ReadOnlyReactivePropertySlim<Version> LatestMyselfVersion { get; }
 
-        public UpdateMyselfConfirmViewModel(UpdateMyselfConfirmPropertyModel umcpm)
+        public UpdateMyselfConfirmViewModel(MyselfUpdater u)
         {
-            updateMyselfConfirmPropertyModel = umcpm;
-            LatestMyselfVersion = updateMyselfConfirmPropertyModel.ObserveProperty(x => x.LatestMyselfVersion).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            updater = u;
+            LatestMyselfVersion = updater.ObserveProperty(x => x.LatestMyselfVersion).ToReadOnlyReactivePropertySlim().AddTo(disposables);
         }
 
         public void Destroy()
