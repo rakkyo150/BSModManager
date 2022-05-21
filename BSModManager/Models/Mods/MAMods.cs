@@ -1,24 +1,20 @@
-﻿using BSModManager.Models.Structure;
-using BSModManager.Models.ViewModelCommonProperty;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace BSModManager.Models.CoreManager
+namespace BSModManager.Models
 {
-    public class ModAssistantManager : DataManager
+    public class MAMods
     {
-        public ModAssistantManager(InnerData id, SettingsTabPropertyModel stpm, UpdateMyselfConfirmPropertyModel umcpm,MainWindowPropertyModel mwpm ,LocalModsDataModel mdm) : base(id, stpm, umcpm,mwpm,mdm)
+        public MAModStructure[] modAssistantAllMods { get; set; }
+
+        public async Task<MAModStructure[]> GetAllAsync()
         {
+            MAModStructure[] modAssistantMod = null;
 
-        }
-
-        public async Task<ModAssistantModInformation[]> GetAllModAssistantModsAsync()
-        {
-            ModAssistantModInformation[] modAssistantMod = null;
-
-            string gameVersion = GetGameVersion();
+            string gameVersion = GameVersion.Version;
 
             // 一時的に1.21.0にしておく
             string modAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={gameVersion}";
@@ -28,11 +24,11 @@ namespace BSModManager.Models.CoreManager
                 try
                 {
                     var resp = await httpClient.GetStringAsync(modAssistantModInformationUrl);
-                    modAssistantMod = JsonConvert.DeserializeObject<ModAssistantModInformation[]>(resp);
+                    modAssistantMod = JsonConvert.DeserializeObject<MAModStructure[]>(resp);
 
                     Version retryGameVersion = new Version(gameVersion);
 
-                    while (modAssistantMod.Length==0)
+                    while (modAssistantMod.Length == 0)
                     {
                         if (retryGameVersion.Build > 0)
                         {
@@ -46,7 +42,7 @@ namespace BSModManager.Models.CoreManager
                         string retryModAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={retryGameVersion}";
 
                         var retryResp = await httpClient.GetStringAsync(retryModAssistantModInformationUrl);
-                        modAssistantMod = JsonConvert.DeserializeObject<ModAssistantModInformation[]>(retryResp);
+                        modAssistantMod = JsonConvert.DeserializeObject<MAModStructure[]>(retryResp);
                     }
 
                     foreach (var mod in modAssistantMod)
@@ -67,6 +63,53 @@ namespace BSModManager.Models.CoreManager
             }
 
             return modAssistantMod;
+        }
+
+        public class MAModStructure
+        {
+            public string name;
+            public string version;
+            public string gameVersion;
+            public string _id;
+            public string status;
+            public string authorId;
+            public string uploadedDate;
+            public string updatedDate;
+            public Author author;
+            public string description;
+            public string link;
+            public string category;
+            public DownloadLink[] downloads;
+            public bool required;
+            public Dependency[] dependencies;
+            public List<MAModStructure> Dependents = new List<MAModStructure>();
+
+            public class Author
+            {
+                public string _id;
+                public string username;
+                public string lastLogin;
+            }
+
+            public class DownloadLink
+            {
+                public string type;
+                public string url;
+                public FileHashes[] hashMd5;
+            }
+
+            public class FileHashes
+            {
+                public string hash;
+                public string file;
+            }
+
+            public class Dependency
+            {
+                public string name;
+                public string _id;
+                public MAModStructure Mod;
+            }
         }
     }
 }

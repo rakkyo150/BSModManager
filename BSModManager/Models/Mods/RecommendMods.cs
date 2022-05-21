@@ -1,16 +1,13 @@
 ﻿using BSModManager.Interfaces;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
-    public class RecommendModsDataModel : BindableBase, IModsData
+    public class RecommendMods : BindableBase, IModsData
     {
         public ObservableCollection<RecommendModData> RecommendModsData = new ObservableCollection<RecommendModData>();
 

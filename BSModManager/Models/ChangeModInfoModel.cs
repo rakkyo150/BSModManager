@@ -1,5 +1,4 @@
-﻿using BSModManager.Models.CoreManager;
-using BSModManager.Models.Structure;
+﻿using BSModManager.Static;
 using Octokit;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -7,26 +6,23 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using static BSModManager.Models.MAMods;
 
-namespace BSModManager.Models.ViewModelCommonProperty
+namespace BSModManager.Models
 {
-    public class ChangeModInfoPropertyModel : BindableBase
+    public class ChangeModInfoModel : BindableBase
     {
         IDialogService dialogService;
-        LocalModsDataModel modsDataModel;
-        UpdateTabPropertyModel updateTabPropertyModel;
-        MainWindowPropertyModel MainWindowPropertyModel;
-        GitHubManager gitHubManager;
-        InnerData innerData;
+        LocalMods modsDataModel;
+        GitHubApi gitHubManager;
+        MAMods mAMod;
 
-        public ChangeModInfoPropertyModel(IDialogService ds,LocalModsDataModel mdm, UpdateTabPropertyModel mtpm,MainWindowPropertyModel mwpm,GitHubManager ghm,InnerData id)
+        public ChangeModInfoModel(IDialogService ds, LocalMods mdm, GitHubApi ghm,MAMods mam)
         {
             dialogService = ds;
             modsDataModel = mdm;
-            updateTabPropertyModel = mtpm;
-            MainWindowPropertyModel = mwpm;
             gitHubManager = ghm;
-            innerData = id;
+            mAMod = mam;
         }
 
         private string modName;
@@ -54,8 +50,8 @@ namespace BSModManager.Models.ViewModelCommonProperty
         public string Updated
         {
             get { return updated; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref updated, value);
                 modsDataModel.LocalModsData.First(x => x.Mod == modName).Updated = Updated;
             }
@@ -72,11 +68,11 @@ namespace BSModManager.Models.ViewModelCommonProperty
                 if (Original)
                 {
                     modsDataModel.LocalModsData.First(x => x.Mod == modName).Original = "〇";
-                    if (Array.Exists(innerData.modAssistantAllMods, x=>x.name==modName))
+                    if (Array.Exists(mAMod.modAssistantAllMods, x => x.name == modName))
                     {
                         DateTimeOffset now = DateTimeOffset.UtcNow;
 
-                        ModAssistantModInformation[] a = innerData.modAssistantAllMods.Where(x => x.name == modName).ToArray();
+                        MAModStructure[] a = mAMod.modAssistantAllMods.Where(x => x.name == modName).ToArray();
                         ExistInMA = true;
                         Latest = new Version(a[0].version);
                         Url = a[0].link;
@@ -114,8 +110,8 @@ namespace BSModManager.Models.ViewModelCommonProperty
         public Version Latest
         {
             get { return latest; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref latest, value);
                 modsDataModel.LocalModsData.First(x => x.Mod == modName).Latest = Latest;
             }
@@ -146,8 +142,8 @@ namespace BSModManager.Models.ViewModelCommonProperty
         public string Description
         {
             get { return description; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref description, value);
                 modsDataModel.LocalModsData.First(x => x.Mod == modName).Description = Description;
             }
@@ -215,7 +211,7 @@ namespace BSModManager.Models.ViewModelCommonProperty
             NextOrFinish = "Next";
         }
 
-        public void SearchMod()
+        public void Search()
         {
             try
             {
@@ -229,19 +225,19 @@ namespace BSModManager.Models.ViewModelCommonProperty
             }
             catch (Exception ex)
             {
-                MainWindowPropertyModel.Console = "Google検索できませんでした";
+                MainWindowLog.Instance.Debug = "Google検索できませんでした";
             }
         }
 
-        public void GetModInfo()
+        public void GetInfo()
         {
             if (ExistInMA)
             {
                 return;
             }
-            
-            Release response  =null;
-            Task.Run(() => { response = gitHubManager.GetGitHubModLatestVersionAsync(Url).Result; }).GetAwaiter().GetResult();
+
+            Release response = null;
+            Task.Run(() => { response = gitHubManager.GetModLatestVersionAsync(Url).Result; }).GetAwaiter().GetResult();
             if (response != null)
             {
                 string releaseBody = response.Body;
@@ -252,19 +248,19 @@ namespace BSModManager.Models.ViewModelCommonProperty
 
                 if ((now - releaseCreatedAt).Days >= 1)
                 {
-                    Updated=(now - releaseCreatedAt).Days + "D ago";
+                    Updated = (now - releaseCreatedAt).Days + "D ago";
                 }
                 else
                 {
-                    Updated=(now - releaseCreatedAt).Hours + "H" + (now - releaseCreatedAt).Minutes + "m ago";
+                    Updated = (now - releaseCreatedAt).Hours + "H" + (now - releaseCreatedAt).Minutes + "m ago";
                 }
                 Console.WriteLine("リリースの説明");
-                Description=releaseBody;
+                Description = releaseBody;
             }
             else
             {
                 Latest = new Version("0.0.0");
-                Updated = Url=="" ? "?" : "---";
+                Updated = Url == "" ? "?" : "---";
                 Description = Url == "" ? "?" : "---";
             }
         }

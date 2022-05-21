@@ -59,7 +59,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="16"
-                    Text="{Binding BSFolderPath}" />
+                    Text="{Binding BSFolderPath.Value}" />
                 </DockPanel>
             </Border>
             <Button

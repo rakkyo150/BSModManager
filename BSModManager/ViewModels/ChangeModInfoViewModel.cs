@@ -1,4 +1,4 @@
-﻿using BSModManager.Models.ViewModelCommonProperty;
+﻿using BSModManager.Models;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
@@ -26,9 +26,9 @@ namespace BSModManager.ViewModels
         private bool canCloseDialog = false;
 
 
-        public ChangeModInfoPropertyModel changeModInfoPropertyModel;
+        public ChangeModInfoModel changeModInfoPropertyModel;
 
-        public ChangeModInfoViewModel(ChangeModInfoPropertyModel cmipm)
+        public ChangeModInfoViewModel(ChangeModInfoModel cmipm)
         {
             changeModInfoPropertyModel = cmipm;
 
@@ -47,14 +47,14 @@ namespace BSModManager.ViewModels
 
             SearchMod.Subscribe(() =>
             {
-                changeModInfoPropertyModel.SearchMod();
+                changeModInfoPropertyModel.Search();
             }).AddTo(disposables);
             ExitCommand.Subscribe(() =>
             {
                 // Exitするので
                 changeModInfoPropertyModel.Position = 1;
                 canCloseDialog = true;
-                changeModInfoPropertyModel.GetModInfo();
+                changeModInfoPropertyModel.GetInfo();
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
                 canCloseDialog = false;
                 if (changeModInfoPropertyModel.NextOrFinish == "Finish")
@@ -65,7 +65,7 @@ namespace BSModManager.ViewModels
             NextOrFinishCommand.Subscribe(() =>
             {
                 canCloseDialog = true;
-                changeModInfoPropertyModel.GetModInfo();
+                changeModInfoPropertyModel.GetInfo();
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
                 canCloseDialog = false;
                 changeModInfoPropertyModel.ChangeModInfo();

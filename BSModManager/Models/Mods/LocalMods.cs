@@ -1,26 +1,21 @@
 ﻿using BSModManager.Interfaces;
-using BSModManager.Models.CoreManager;
-using BSModManager.Models.ViewModelCommonProperty;
+using BSModManager.Static;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using static BSModManager.Models.UpdateTabPropertyModel;
 
 namespace BSModManager.Models
 {
-    public class LocalModsDataModel : BindableBase, IModsData
+    public class LocalMods : BindableBase, IModsData
     {
         public ObservableCollection<LocalModData> LocalModsData = new ObservableCollection<LocalModData>();
 
@@ -77,20 +72,16 @@ namespace BSModManager.Models
         // https://yutori-techblog.com/innerclass-private-access
         public class LocalModData : BindableBase, IDestructible
         {
-            public SettingsTabPropertyModel settingTabPropertyModel;
-            public MainWindowPropertyModel mainWindowPropertyModel;
-            public DataManager dataManager;
+            public LocalModSyncer localModSyncer;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 
             public CompositeDisposable disposables = new CompositeDisposable();
 
 
-            public LocalModData(SettingsTabPropertyModel stpm, MainWindowPropertyModel mwpm, DataManager dm)
+            public LocalModData(LocalModSyncer dm)
             {
-                settingTabPropertyModel = stpm;
-                mainWindowPropertyModel = mwpm;
-                dataManager = dm;
+                localModSyncer = dm;
 
                 UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables).AddTo(disposables);
             }
@@ -181,19 +172,19 @@ namespace BSModManager.Models
             public void Uninstall(string modName)
             {
                 string modFileName = modName + ".dll";
-                string modFilePath = Path.Combine(settingTabPropertyModel.BSFolderPath, "Plugins", modFileName);
+                string modFilePath = Path.Combine(Folder.Instance.BSFolderPath, "Plugins", modFileName);
 
                 if (MessageBoxResult.Yes == MessageBox.Show($"{modName}を削除します。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
                 {
                     if (File.Exists(modFilePath))
                     {
                         File.Delete(modFilePath);
-                        dataManager.GetLocalModFilesInfo();
-                        mainWindowPropertyModel.Console = $"Finish Deleting {modFilePath}";
+                        localModSyncer.Sync();
+                        MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
                     }
                     else
                     {
-                        mainWindowPropertyModel.Console = $"Fail to Delete {modFilePath}";
+                        MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath}";
                     }
                 }
             }

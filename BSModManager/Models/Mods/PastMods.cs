@@ -1,7 +1,4 @@
 ﻿using BSModManager.Interfaces;
-using BSModManager.Models.CoreManager;
-using BSModManager.Models.Structure;
-using BSModManager.Models.ViewModelCommonProperty;
 using BSModManager.Static;
 using Octokit;
 using Prism.Mvvm;
@@ -9,51 +6,50 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using static BSModManager.Models.ModCsv;
 
 namespace BSModManager.Models
 {
-    public class PastModsDataModel : BindableBase, IModsData
+    public class PastMods : BindableBase, IModsData
     {
-        public ObservableCollection<PastModData> PastModsData = new ObservableCollection<PastModData>();
+        internal ObservableCollection<PastModData> PastModsData = new ObservableCollection<PastModData>();
 
-        LocalModsDataModel currentModsDataModel;
-        InnerData innerData;
-        DataManager dataManager;
-        GitHubManager gitHubManager;
+        LocalMods currentModsDataModel;
+        GitHubApi gitHubManager;
+        ModCsv modCsv;
+        MAMods mAMod;
 
-        public PastModsDataModel(InnerData id, DataManager dm, GitHubManager ghm, LocalModsDataModel mdm)
+        public PastMods(GitHubApi ghm, LocalMods mdm,ModCsv mc,MAMods mam)
         {
-            innerData = id;
-            dataManager = dm;
             gitHubManager = ghm;
             currentModsDataModel = mdm;
+            modCsv = mc;
+            mAMod = mam;
         }
 
         public async Task Initialize()
         {
-            List<ModInformationCsv> previousDataList = new List<ModInformationCsv>();
+            List<ModCsvIndex> previousDataList = new List<ModCsvIndex>();
 
             // 現在のバージョンも含む
-            string[] AllPastVersion = Directory.GetDirectories(FolderManager.dataFolder, "*", SearchOption.TopDirectoryOnly);
+            string[] AllPastVersion = Directory.GetDirectories(Folder.Instance.dataFolder, "*", SearchOption.TopDirectoryOnly);
 
             foreach (string pastVersion in AllPastVersion)
             {
-                string dataDirectory = Path.Combine(FolderManager.dataFolder, pastVersion);
+                string dataDirectory = Path.Combine(Folder.Instance.dataFolder, pastVersion);
                 string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
 
                 if (!File.Exists(modsDataCsvPath)) continue;
 
-                List<ModInformationCsv> tempDataList = new List<ModInformationCsv>();
-                tempDataList = await dataManager.ReadCsv(modsDataCsvPath);
+                List<ModCsvIndex> tempDataList = new List<ModCsvIndex>();
+                tempDataList = await modCsv.Read(modsDataCsvPath);
 
                 var exceptDataList = tempDataList.Except(previousDataList);
 
-                foreach (ModInformationCsv a in exceptDataList)
+                foreach (ModCsvIndex a in exceptDataList)
                 {
                     bool existsModName = previousDataList.Any(x => x.Mod == a.Mod);
                     bool sameMA = previousDataList.Any(x => x.Ma == a.Ma);
@@ -72,7 +68,7 @@ namespace BSModManager.Models
                 }
             }
 
-            foreach (var modAssistantMod in innerData.modAssistantAllMods)
+            foreach (var modAssistantMod in mAMod.modAssistantAllMods)
             {
                 if (!previousDataList.Any(x => x.Mod == modAssistantMod.name)) continue;
                 if (!previousDataList.Find(x => x.Mod == modAssistantMod.name).Original) continue;
@@ -91,20 +87,20 @@ namespace BSModManager.Models
             }
 
             if (previousDataList.Count == 0) return;
-            
+
             foreach (var previousData in previousDataList)
             {
                 if (previousData.Ma)
                 {
-                    bool existsInNowMa = Array.Exists(innerData.modAssistantAllMods, x => x.name == previousData.Mod);
+                    bool existsInNowMa = Array.Exists(mAMod.modAssistantAllMods, x => x.name == previousData.Mod);
 
                     DateTime now = DateTime.Now;
-                    DateTime mAUpdatedAt = existsInNowMa ? 
-                        DateTime.Parse(innerData.modAssistantAllMods.First(x=>x.name==previousData.Mod).updatedDate) : DateTime.MaxValue;
+                    DateTime mAUpdatedAt = existsInNowMa ?
+                        DateTime.Parse(mAMod.modAssistantAllMods.First(x => x.name == previousData.Mod).updatedDate) : DateTime.MaxValue;
                     string updated = "?";
-                    
+
                     string description = existsInNowMa ?
-                       innerData.modAssistantAllMods.First(x => x.name == previousData.Mod).description : "?";
+                       mAMod.modAssistantAllMods.First(x => x.name == previousData.Mod).description : "?";
 
                     if (mAUpdatedAt != DateTime.MaxValue)
                     {
@@ -112,7 +108,7 @@ namespace BSModManager.Models
                         (now - mAUpdatedAt).Days + "D ago" : (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                     }
 
-                    PastModsData.Add(new PastModsDataModel.PastModData()
+                    PastModsData.Add(new PastMods.PastModData()
                     {
                         Mod = previousData.Mod,
                         Latest = new Version(previousData.LatestVersion),
@@ -127,16 +123,16 @@ namespace BSModManager.Models
                 }
 
                 Release response = null;
-                response = await gitHubManager.GetGitHubModLatestVersionAsync(previousData.Url);
+                response = await gitHubManager.GetModLatestVersionAsync(previousData.Url);
                 string original = previousData.Original ? "〇" : "×";
 
                 if (response == null)
                 {
-                    PastModsData.Add(new PastModsDataModel.PastModData()
+                    PastModsData.Add(new PastMods.PastModData()
                     {
                         Mod = previousData.Mod,
                         Latest = new Version("0.0.0"),
-                        Updated = previousData.Url=="" ? "?" : "---",
+                        Updated = previousData.Url == "" ? "?" : "---",
                         Original = original,
                         MA = "×",
                         Description = previousData.Url == "" ? "?" : "---",
@@ -156,7 +152,7 @@ namespace BSModManager.Models
                         updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                     }
 
-                    PastModsData.Add(new PastModsDataModel.PastModData()
+                    PastModsData.Add(new PastMods.PastModData()
                     {
                         Mod = previousData.Mod,
                         Latest = gitHubManager.DetectVersion(response.TagName),
