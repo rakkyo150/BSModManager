@@ -157,6 +157,7 @@ namespace BSModManager.Models
             get { return position; }
             set { SetProperty(ref position, value); }
         }
+        
         public void ChangeModInfo()
         {
             // 何個目のCheckedか

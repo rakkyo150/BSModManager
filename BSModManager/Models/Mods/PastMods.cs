@@ -2,169 +2,26 @@
 using BSModManager.Static;
 using Octokit;
 using Prism.Mvvm;
+using Prism.Navigation;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using static BSModManager.Models.ModCsv;
 
 namespace BSModManager.Models
 {
-    public class PastMods : BindableBase, IModsData
+    public class PastMods : BindableBase, IMods
     {
-        internal ObservableCollection<PastModData> PastModsData = new ObservableCollection<PastModData>();
-
-        LocalMods currentModsDataModel;
-        GitHubApi gitHubManager;
-        ModCsv modCsv;
-        MAMods mAMod;
-
-        public PastMods(GitHubApi ghm, LocalMods mdm,ModCsv mc,MAMods mam)
-        {
-            gitHubManager = ghm;
-            currentModsDataModel = mdm;
-            modCsv = mc;
-            mAMod = mam;
-        }
-
-        public async Task Initialize()
-        {
-            List<ModCsvIndex> previousDataList = new List<ModCsvIndex>();
-
-            // 現在のバージョンも含む
-            string[] AllPastVersion = Directory.GetDirectories(Folder.Instance.dataFolder, "*", SearchOption.TopDirectoryOnly);
-
-            foreach (string pastVersion in AllPastVersion)
-            {
-                string dataDirectory = Path.Combine(Folder.Instance.dataFolder, pastVersion);
-                string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-
-                if (!File.Exists(modsDataCsvPath)) continue;
-
-                List<ModCsvIndex> tempDataList = new List<ModCsvIndex>();
-                tempDataList = await modCsv.Read(modsDataCsvPath);
-
-                var exceptDataList = tempDataList.Except(previousDataList);
-
-                foreach (ModCsvIndex a in exceptDataList)
-                {
-                    bool existsModName = previousDataList.Any(x => x.Mod == a.Mod);
-                    bool sameMA = previousDataList.Any(x => x.Ma == a.Ma);
-                    bool nowMA = true;
-                    if (existsModName) nowMA = previousDataList.Find(x => x.Mod == a.Mod).Ma;
-
-                    if (existsModName && (sameMA || nowMA == false)) continue;
-                    if (existsModName && nowMA == true && !sameMA)
-                    {
-                        previousDataList.Find(x => x.Mod == a.Mod).Ma = a.Ma;
-                        previousDataList.Find(x => x.Mod == a.Mod).Url = a.Url;
-                        continue;
-                    }
-
-                    previousDataList.Add(a);
-                }
-            }
-
-            foreach (var modAssistantMod in mAMod.modAssistantAllMods)
-            {
-                if (!previousDataList.Any(x => x.Mod == modAssistantMod.name)) continue;
-                if (!previousDataList.Find(x => x.Mod == modAssistantMod.name).Original) continue;
-
-                previousDataList.Find(x => x.Mod == modAssistantMod.name).Ma = true;
-                previousDataList.Find(x => x.Mod == modAssistantMod.name).LatestVersion = modAssistantMod.version;
-                previousDataList.Find(x => x.Mod == modAssistantMod.name).Url = modAssistantMod.link;
-            }
-
-            foreach (var localMod in currentModsDataModel.LocalModsData)
-            {
-                if (!previousDataList.Any(x => x.Mod == localMod.Mod)) continue;
-                if (!previousDataList.Any(x => x.Url == localMod.Url)) continue;
-
-                previousDataList.Remove(previousDataList.Find(x => x.Mod == localMod.Mod));
-            }
-
-            if (previousDataList.Count == 0) return;
-
-            foreach (var previousData in previousDataList)
-            {
-                if (previousData.Ma)
-                {
-                    bool existsInNowMa = Array.Exists(mAMod.modAssistantAllMods, x => x.name == previousData.Mod);
-
-                    DateTime now = DateTime.Now;
-                    DateTime mAUpdatedAt = existsInNowMa ?
-                        DateTime.Parse(mAMod.modAssistantAllMods.First(x => x.name == previousData.Mod).updatedDate) : DateTime.MaxValue;
-                    string updated = "?";
-
-                    string description = existsInNowMa ?
-                       mAMod.modAssistantAllMods.First(x => x.name == previousData.Mod).description : "?";
-
-                    if (mAUpdatedAt != DateTime.MaxValue)
-                    {
-                        updated = (now - mAUpdatedAt).Days >= 1 ?
-                        (now - mAUpdatedAt).Days + "D ago" : (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
-                    }
-
-                    PastModsData.Add(new PastMods.PastModData()
-                    {
-                        Mod = previousData.Mod,
-                        Latest = new Version(previousData.LatestVersion),
-                        Updated = updated,
-                        Original = "〇",
-                        MA = "〇",
-                        Description = description,
-                        Url = previousData.Url
-                    });
-
-                    continue;
-                }
-
-                Release response = null;
-                response = await gitHubManager.GetModLatestVersionAsync(previousData.Url);
-                string original = previousData.Original ? "〇" : "×";
-
-                if (response == null)
-                {
-                    PastModsData.Add(new PastMods.PastModData()
-                    {
-                        Mod = previousData.Mod,
-                        Latest = new Version("0.0.0"),
-                        Updated = previousData.Url == "" ? "?" : "---",
-                        Original = original,
-                        MA = "×",
-                        Description = previousData.Url == "" ? "?" : "---",
-                        Url = previousData.Url
-                    });
-                }
-                else
-                {
-                    DateTime now = DateTime.Now;
-                    string updated = null;
-                    if ((now - response.CreatedAt).Days >= 1)
-                    {
-                        updated = (now - response.CreatedAt).Days + "D ago";
-                    }
-                    else
-                    {
-                        updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
-                    }
-
-                    PastModsData.Add(new PastMods.PastModData()
-                    {
-                        Mod = previousData.Mod,
-                        Latest = gitHubManager.DetectVersion(response.TagName),
-                        Updated = updated,
-                        Original = original,
-                        MA = "×",
-                        Description = response.Body,
-                        Url = previousData.Url
-                    });
-                }
-            }
-        }
+        internal ObservableCollection<IModData> PastModsData = new ObservableCollection<IModData>();
 
         public void AllCheckedOrUnchecked()
         {
@@ -215,34 +72,112 @@ namespace BSModManager.Models
             }
         }
 
-        public class PastModData : BindableBase
+        public void Update(IModData modData)
         {
-            private bool @checked = false;
+            if(!ExistsSameData(modData))
+            {
+                Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
+                Add(modData);
+                return;
+            }
+
+            Remove(modData);
+            PastModsData.Add(modData);
+        }
+
+        public void Add(IModData modData)
+        {
+            if (ExistsSameData(modData))
+            {
+                Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
+                Update(modData);
+                return;
+            }
+
+            PastModsData.Add(modData);
+        }
+
+        public void Remove(IModData modData)
+        {
+            if (!ExistsSameData(modData))
+            {
+                Console.WriteLine($"{modData}のデータが存在しないため削除できませんでした");
+                return;
+            }
+
+            PastModsData.Remove(PastModsData.First(x => x.Mod == modData.Mod));
+        }
+
+        private bool ExistsSameData(IModData modData)
+        {
+            return PastModsData.Any(x => x.Mod == modData.Mod) && PastModsData.Any(x => x.Original == modData.Original);
+        }
+
+        public IEnumerable<IModData> ReturnCheckedModsData()
+        {
+            return PastModsData.Where(x => x.Checked == true);
+        }
+
+        public class PastModData : BindableBase,IModData,IDestructible
+        {
+            private bool c = false;
             private string mod = "";
+            private Version installed = new Version("0.0.0");
             private Version latest = new Version("0.0.0");
             private string updated = "?";
             private string original = "〇";
             private string mA = "×";
             private string description = "?";
+            private Brush installedColor = Brushes.Green;
             private string url = "";
 
+            Syncer syncer;
+
+            public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
+
+            public CompositeDisposable disposables = new CompositeDisposable();
+
+            public PastModData(Syncer s)
+            {
+                syncer=s;
+
+                UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables);
+            }
+            
             public bool Checked
             {
-                get { return @checked; }
-                set { SetProperty(ref @checked, value); }
+                get { return c; }
+                set { SetProperty(ref c, value); }
             }
             public string Mod
             {
                 get { return mod; }
                 set { SetProperty(ref mod, value); }
             }
+            public Version Installed
+            {
+                get { return installed; }
+                set
+                {
+                    SetProperty(ref installed, new Version(value.Major, value.Minor, value.Build));
+                    if (Installed == Latest) InstalledColor = Brushes.Green;
+                    else if (Installed < Latest) InstalledColor = Brushes.Red;
+                    else if (Installed > Latest) InstalledColor = Brushes.Orange;
 
+                    if (Latest == new Version("0.0.0")) InstalledColor = Brushes.Blue;
+                }
+            }
             public Version Latest
             {
                 get { return latest; }
                 set
                 {
                     SetProperty(ref latest, value);
+                    if (Installed == Latest) InstalledColor = Brushes.Green;
+                    else if (Installed < Latest) InstalledColor = Brushes.Red;
+                    else if (Installed > Latest) InstalledColor = Brushes.Orange;
+
+                    if (Latest == new Version("0.0.0")) InstalledColor = Brushes.Blue;
                 }
             }
             public string Original
@@ -269,6 +204,35 @@ namespace BSModManager.Models
             {
                 get { return url; }
                 set { SetProperty(ref url, value); }
+            }
+            public Brush InstalledColor
+            {
+                get { return installedColor; }
+                set { SetProperty(ref installedColor, value); }
+            }
+
+            public void Uninstall(string modName)
+            {
+                string modFileName = modName + ".dll";
+                string modFilePath = Path.Combine(Folder.Instance.BSFolderPath, "Plugins", modFileName);
+
+                if (MessageBoxResult.Yes == MessageBox.Show($"{modName}を削除します。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
+                {
+                    if (File.Exists(modFilePath))
+                    {
+                        File.Delete(modFilePath);
+                        syncer.Sync();
+                        MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
+                    }
+                    else
+                    {
+                        MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath}";
+                    }
+                }
+            }
+            public void Destroy()
+            {
+                disposables.Dispose();
             }
         }
     }

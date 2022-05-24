@@ -5,6 +5,7 @@ using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -15,9 +16,9 @@ using System.Windows.Media;
 
 namespace BSModManager.Models
 {
-    public class LocalMods : BindableBase, IModsData
+    public class LocalMods : BindableBase, IMods
     {
-        public ObservableCollection<LocalModData> LocalModsData = new ObservableCollection<LocalModData>();
+        public ObservableCollection<IModData> LocalModsData = new ObservableCollection<IModData>();
 
         public void AllCheckedOrUnchecked()
         {
@@ -68,18 +69,64 @@ namespace BSModManager.Models
             }
         }
 
+        public void Update(IModData modData)
+        {
+            if (!ExisitsSameData(modData))
+            {
+                Console.WriteLine($"{modData}はUpdateされる予定でしたがAddに変更されます");
+                Add(modData);
+                return;
+            }
+
+            Remove(modData);
+            LocalModsData.Add(modData);
+        }
+
+        public void Add(IModData modData)
+        {
+            if (ExisitsSameData(modData))
+            {
+                Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
+                Update(modData);
+                return;
+            }
+
+            LocalModsData.Add(modData);
+        }
+
+        private bool ExisitsSameData(IModData modData)
+        {
+            return LocalModsData.Any(x => x.Mod == modData.Mod) && LocalModsData.Any(x => x.Original == modData.Original);
+        }
+
+        public void Remove(IModData modData)
+        {
+            if (!ExisitsSameData(modData))
+            {
+                Console.WriteLine($"{modData}のデータが存在しないため削除できませんでした");
+                return;
+            }
+
+            LocalModsData.Remove(LocalModsData.First(x => x.Mod == modData.Mod));
+        }
+
+        public IEnumerable<IModData> ReturnCheckedModsData()
+        {
+            return LocalModsData.Where(x => x.Checked == true);
+        }
+
         // 変更通知イベントがないとUIに反映されない
         // https://yutori-techblog.com/innerclass-private-access
-        public class LocalModData : BindableBase, IDestructible
+        public class LocalModData : BindableBase, IDestructible, IModData
         {
-            public LocalModSyncer localModSyncer;
+            public Syncer localModSyncer;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 
             public CompositeDisposable disposables = new CompositeDisposable();
 
 
-            public LocalModData(LocalModSyncer dm)
+            public LocalModData(Syncer dm)
             {
                 localModSyncer = dm;
 

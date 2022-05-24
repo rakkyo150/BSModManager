@@ -58,12 +58,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Interfaces\IModsData.cs" />
+    <Compile Include="Interfaces\IMods.cs" />
+    <Compile Include="Interfaces\IModData.cs" />
     <Compile Include="Models\ConfigFile.cs" />
-    <Compile Include="Models\LocalModSyncer.cs" />
+    <Compile Include="Models\LocalModsDataFetcher.cs" />
+    <Compile Include="Models\PastModsDataFetcher.cs" />
+    <Compile Include="Models\Syncer.cs" />
     <Compile Include="Models\Initializer.cs" />
     <Compile Include="Models\ModDisposer.cs" />
     <Compile Include="Models\GitHubApi.cs" />
+    <Compile Include="Models\ModInstaller.cs" />
     <Compile Include="Models\Mods\MAMods.cs" />
     <Compile Include="Models\ModCsv.cs" />
     <Compile Include="Models\Mods\LocalMods.cs" />

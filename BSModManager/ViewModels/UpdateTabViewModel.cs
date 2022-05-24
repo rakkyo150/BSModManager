@@ -1,4 +1,5 @@
-﻿using BSModManager.Models;
+﻿using BSModManager.Interfaces;
+using BSModManager.Models;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
@@ -9,7 +10,7 @@ namespace BSModManager.ViewModels
     {
         LocalMods modsDataModel;
 
-        public ObservableCollection<LocalMods.LocalModData> ModsData { get; }
+        public ObservableCollection<IModData> ModsData { get; }
 
         public UpdateTabViewModel(LocalMods mdm)
         {

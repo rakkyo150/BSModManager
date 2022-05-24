@@ -1,4 +1,5 @@
-﻿using BSModManager.Models;
+﻿using BSModManager.Interfaces;
+using BSModManager.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
@@ -7,8 +8,8 @@ namespace BSModManager.ViewModels
 {
     public class InstallTabViewModel : BindableBase
     {
-        public ObservableCollection<PastMods.PastModData> PastModsData { get; }
-        public ObservableCollection<RecommendMods.RecommendModData> RecommendModsData { get; }
+        public ObservableCollection<IModData> PastModsData { get; }
+        public ObservableCollection<IModData> RecommendModsData { get; }
 
         public DelegateCommand LoadedCommand { get; }
 
