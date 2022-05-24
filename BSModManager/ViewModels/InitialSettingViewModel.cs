@@ -21,13 +21,13 @@ namespace BSModManager.ViewModels
     {
         SettingsVerifier settingsVerifier;
 
-        LocalModsDataSyncer localModSyncer;
         GitHubApi gitHubApi;
         LocalMods modsDataModel;
         ModCsvHandler modCsv;
         InitialDirectorySetup initializer;
         MAMods mAMod;
         ConfigFileHandler configFile;
+        Refresher refresher;
 
         CompositeDisposable disposables { get; } = new CompositeDisposable();
 
@@ -53,10 +53,10 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(LocalModsDataSyncer dm, GitHubApi ghm, LocalMods mdm, ModCsvHandler mc,
+        internal InitialSettingViewModel(Refresher r,GitHubApi ghm, LocalMods mdm, ModCsvHandler mc,
             InitialDirectorySetup i, MAMods mam, SettingsVerifier sv, ConfigFileHandler cf)
         {
-            localModSyncer = dm;
+            refresher = r;
             gitHubApi = ghm;
             modsDataModel = mdm;
             modCsv = mc;
@@ -198,7 +198,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
+                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version(temp.version),
@@ -227,7 +227,7 @@ namespace BSModManager.ViewModels
 
                         if (response == null)
                         {
-                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
+                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version("0.0.0"),
@@ -251,7 +251,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
+                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                             {
                                 Mod = previousData.Mod,
                                 Latest = gitHubApi.DetectVersion(response.TagName),
@@ -265,7 +265,7 @@ namespace BSModManager.ViewModels
                     }
                 }
 
-                Task.Run(() => { localModSyncer.Sync(); }).GetAwaiter().GetResult();
+                Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
             }
         }
 

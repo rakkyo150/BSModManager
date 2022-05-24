@@ -32,7 +32,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<RecommendMods>();
             containerRegistry.RegisterSingleton<LocalMods>();
 
-            containerRegistry.RegisterSingleton<LocalModsDataSyncer>();
+            containerRegistry.RegisterSingleton<Refresher>();
             containerRegistry.RegisterSingleton<ModInstaller>();
             containerRegistry.RegisterSingleton<GitHubApi>();
             containerRegistry.RegisterSingleton<ConfigFileHandler>();
@@ -43,8 +43,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<InitialDirectorySetup>();
             containerRegistry.RegisterSingleton<ModDisposer>();
             containerRegistry.RegisterSingleton<SettingsVerifier>();
-            containerRegistry.RegisterSingleton<PastModsDataHandler>();
-            containerRegistry.RegisterSingleton<PreviousLocalModsDataFetcher>();
+            containerRegistry.RegisterSingleton<PreviousLocalModsDataGetter>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();

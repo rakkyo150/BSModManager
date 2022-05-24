@@ -8,27 +8,27 @@ using static BSModManager.Models.ModCsvHandler;
 
 namespace BSModManager.Models
 {
-    public class PreviousLocalModsDataFetcher
+    public class PreviousLocalModsDataGetter
     {
         LocalMods localMods;
         GitHubApi gitHubApi;
         MAMods mAMods;
         ModCsvHandler modCsv;
-        LocalModsDataSyncer syncer;
+        Refresher refresher;
 
         DateTime now = DateTime.Now;
         string updated = "";
 
-        public PreviousLocalModsDataFetcher(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc, LocalModsDataSyncer s)
+        public PreviousLocalModsDataGetter(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc,Refresher r)
         {
             localMods = lm;
             gitHubApi = gha;
             mAMods = mam;
             modCsv = mc;
-            syncer = s;
+            refresher = r;
         }
 
-        internal async Task FetchData()
+        internal async Task GetData()
         {
             string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
@@ -55,7 +55,7 @@ namespace BSModManager.Models
                         updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                     }
 
-                    localMods.LocalModsData.Add(new LocalMods.LocalModData(syncer)
+                    localMods.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version(temp.version),
@@ -78,7 +78,7 @@ namespace BSModManager.Models
 
                 if (response == null)
                 {
-                    localMods.LocalModsData.Add(new LocalMods.LocalModData(syncer)
+                    localMods.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version("0.0.0"),
@@ -101,7 +101,7 @@ namespace BSModManager.Models
                     updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                 }
 
-                localMods.LocalModsData.Add(new LocalMods.LocalModData(syncer)
+                localMods.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                 {
                     Mod = previousData.Mod,
                     Latest = gitHubApi.DetectVersion(response.TagName),

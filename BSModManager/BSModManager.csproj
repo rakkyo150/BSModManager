@@ -61,9 +61,7 @@
     <Compile Include="Interfaces\IMods.cs" />
     <Compile Include="Interfaces\IModData.cs" />
     <Compile Include="Models\ConfigFileHandler.cs" />
-    <Compile Include="Models\PreviousLocalModsDataFetcher.cs" />
-    <Compile Include="Models\PastModsDataHandler.cs" />
-    <Compile Include="Models\LocalModsDataSyncer.cs" />
+    <Compile Include="Models\PreviousLocalModsDataGetter.cs" />
     <Compile Include="Models\InitialDirectorySetup.cs" />
     <Compile Include="Models\ModDisposer.cs" />
     <Compile Include="Models\GitHubApi.cs" />
@@ -75,6 +73,7 @@
     <Compile Include="Models\Mods\PastMods.cs" />
     <Compile Include="Models\Mods\RecommendMods.cs" />
     <Compile Include="Models\MyselfUpdater.cs" />
+    <Compile Include="Models\Refresher.cs" />
     <Compile Include="Models\SettingsVerifier.cs" />
     <Compile Include="Models\ChangeModInfoModel.cs" />
     <Compile Include="Static\GameVersion.cs" />
