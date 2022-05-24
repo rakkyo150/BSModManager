@@ -117,12 +117,12 @@ namespace BSModManager.ViewModels
         GitHubApi gitHubApi;
         PastMods pastMods;
         PastModsDataFetcher pastModsDataFetcher;
-        ModCsv modCsv;
-        Initializer initializer;
+        ModCsvHandler modCsv;
+        InitialDirectorySetup initializer;
         MyselfUpdater mySelfUpdater;
         ModUpdater modUpdater;
         MAMods mAMod;
-        ConfigFile configFile;
+        ConfigFileHandler configFile;
         SettingsVerifier settingsVerifier;
         ModInstaller modInstaller;
         LocalModsDataFetcher localModsDataFetcher;
@@ -153,8 +153,8 @@ namespace BSModManager.ViewModels
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
             Syncer dm, ChangeModInfoModel cmipm, ModInstaller mi, PastModsDataFetcher pmdf,
-            GitHubApi gha, LocalMods lmdm, ConfigFile cf, SettingsVerifier sv, LocalModsDataFetcher lmdf,
-            PastMods pmdm, ModCsv mc, Initializer i, MyselfUpdater u, ModUpdater mu, MAMods mam)
+            GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, LocalModsDataFetcher lmdf,
+            PastMods pmdm, ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
             localMods = lmdm;
             syncer = dm;

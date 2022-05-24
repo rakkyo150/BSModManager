@@ -35,12 +35,12 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<Syncer>();
             containerRegistry.RegisterSingleton<ModInstaller>();
             containerRegistry.RegisterSingleton<GitHubApi>();
-            containerRegistry.RegisterSingleton<ConfigFile>();
+            containerRegistry.RegisterSingleton<ConfigFileHandler>();
             containerRegistry.RegisterSingleton<MAMods>();
-            containerRegistry.RegisterSingleton<ModCsv>();
+            containerRegistry.RegisterSingleton<ModCsvHandler>();
             containerRegistry.RegisterSingleton<MyselfUpdater>();
             containerRegistry.RegisterSingleton<ModUpdater>();
-            containerRegistry.RegisterSingleton<Initializer>();
+            containerRegistry.RegisterSingleton<InitialDirectorySetup>();
             containerRegistry.RegisterSingleton<ModDisposer>();
             containerRegistry.RegisterSingleton<SettingsVerifier>();
             containerRegistry.RegisterSingleton<PastModsDataFetcher>();

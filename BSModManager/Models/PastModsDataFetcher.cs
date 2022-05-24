@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static BSModManager.Models.ModCsv;
+using static BSModManager.Models.ModCsvHandler;
 
 namespace BSModManager.Models
 {
@@ -14,11 +14,11 @@ namespace BSModManager.Models
         MAMods mAMods;
         LocalMods localMods;
         PastMods pastMods;
-        ModCsv modCsv;
+        ModCsvHandler modCsv;
         Syncer syncer;
         GitHubApi gitHubApi;
 
-        public PastModsDataFetcher(MAMods mam, LocalMods lm, PastMods pm, ModCsv mc, Syncer s, GitHubApi gha)
+        public PastModsDataFetcher(MAMods mam, LocalMods lm, PastMods pm, ModCsvHandler mc, Syncer s, GitHubApi gha)
         {
             mAMods = mam;
             localMods = lm;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
-    public class ModCsv
+    public class ModCsvHandler
     {
         public async Task Write(string csvPath, IEnumerable<IModData> e)
         {

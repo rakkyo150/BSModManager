@@ -46,52 +46,51 @@ namespace BSModManager.Models
 
             myselfUpdater.LatestMyselfVersion = DetectVersion((await GetModLatestVersionAsync(url)).TagName);
 
-            if (myselfUpdater.LatestMyselfVersion > currentVersion)
+            if (myselfUpdater.LatestMyselfVersion <= currentVersion)
             {
-                destDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, myselfUpdater.LatestMyselfVersion.ToString());
-                if (!Directory.Exists(destDirFullPath))
-                {
-                    Directory.CreateDirectory(destDirFullPath);
-                }
-
-                await DownloadAsync(url, currentVersion, destDirFullPath);
-
-                string zipFileName = Path.Combine(destDirFullPath, "BSModManager.zip");
-                try
-                {
-                    using (var fs = File.Open(zipFileName, System.IO.FileMode.Open))
-                    using (var zip = new ZipArchive(fs))
-                    {
-                        foreach (var file in zip.Entries)
-                        {
-                            var installPath = Path.Combine(destDirFullPath, file.FullName);
-                            if (File.Exists(installPath))
-                            {
-                                File.Delete(installPath);
-                            }
-                        }
-                        zip.ExtractToDirectory(destDirFullPath);
-                    }
-                    File.Delete(zipFileName);
-
-                    string unzipPath = Path.Combine(destDirFullPath, "BSModManager");
-                    if (Directory.Exists(unzipPath))
-                    {
-                        Folder.Instance.Copy(unzipPath, destDirFullPath, true);
-                        Directory.Delete(unzipPath, true);
-                    }
-
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"{e}");
-                    return false;
-                }
+                Console.WriteLine("更新版はみつかりませんでした");
+                return false;
             }
 
-            Console.WriteLine("更新版はみつかりませんでした");
-            return false;
+            destDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, myselfUpdater.LatestMyselfVersion.ToString());
+            
+            if (!Directory.Exists(destDirFullPath))
+            {
+                Directory.CreateDirectory(destDirFullPath);
+            }
+
+            await DownloadAsync(url, currentVersion, destDirFullPath);
+
+            string zipFileName = Path.Combine(destDirFullPath, "BSModManager.zip");
+            try
+            {
+                using (var fs = File.Open(zipFileName, System.IO.FileMode.Open))
+                using (var zip = new ZipArchive(fs))
+                {
+                    foreach (var file in zip.Entries)
+                    {
+                        var installPath = Path.Combine(destDirFullPath, file.FullName);
+                        if (!File.Exists(installPath)) continue;
+                                
+                        File.Delete(installPath);
+                    }
+                    zip.ExtractToDirectory(destDirFullPath);
+                }
+                File.Delete(zipFileName);
+
+                string unzipPath = Path.Combine(destDirFullPath, "BSModManager");
+
+                if (!Directory.Exists(unzipPath)) return false;
+
+                Folder.Instance.Copy(unzipPath, destDirFullPath, true);
+                Directory.Delete(unzipPath, true);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e}");
+                return false;
+            }
         }
 
         public async Task DownloadAsync(string url, Version currentVersion, string destDirFullPath)
@@ -128,31 +127,30 @@ namespace BSModManager.Models
                     throw new Exception("バージョン情報の取得に失敗");
                 }
 
-                if (latestVersion > currentVersion)
+                if (latestVersion <= currentVersion) return;
+
+                Console.WriteLine("****************************************************");
+                Console.WriteLine($"{owner}/{name}の最新バージョン:{latestVersion}が見つかりました");
+
+                Console.WriteLine("----------------------------------------------------");
+                if ((now - releaseCreatedAt).Days >= 1)
                 {
-                    Console.WriteLine("****************************************************");
-                    Console.WriteLine($"{owner}/{name}の最新バージョン:{latestVersion}が見つかりました");
-
-                    Console.WriteLine("----------------------------------------------------");
-                    if ((now - releaseCreatedAt).Days >= 1)
-                    {
-                        Console.WriteLine((now - releaseCreatedAt).Days + "日前にリリース");
-                    }
-                    else
-                    {
-                        Console.WriteLine((now - releaseCreatedAt).Hours + "時間" + (now - releaseCreatedAt).Minutes + "分前にリリース");
-                    }
-                    Console.WriteLine("リリースの説明");
-                    Console.WriteLine(releaseBody);
-                    Console.WriteLine("----------------------------------------------------");
+                    Console.WriteLine((now - releaseCreatedAt).Days + "日前にリリース");
+                }
+                else
+                {
+                    Console.WriteLine((now - releaseCreatedAt).Hours + "時間" + (now - releaseCreatedAt).Minutes + "分前にリリース");
+                }
+                Console.WriteLine("リリースの説明");
+                Console.WriteLine(releaseBody);
+                Console.WriteLine("----------------------------------------------------");
 
 
-                    foreach (var item in response.Assets)
-                    {
-                        Console.WriteLine("ダウンロード中");
-                        await DownloadHelperAsync(item.BrowserDownloadUrl, item.Name, destDirFullPath);
-                        Console.WriteLine("ダウンロード成功！");
-                    }
+                foreach (var item in response.Assets)
+                {
+                    Console.WriteLine("ダウンロード中");
+                    await DownloadHelperAsync(item.BrowserDownloadUrl, item.Name, destDirFullPath);
+                    Console.WriteLine("ダウンロード成功！");
                 }
             }
             catch (Exception ex)

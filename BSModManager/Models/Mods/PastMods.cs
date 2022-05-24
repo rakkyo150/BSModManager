@@ -33,15 +33,14 @@ namespace BSModManager.Models
                     PastModsData[i].Checked = false;
                     i++;
                 }
+                return;
             }
-            else
+
+            Console.WriteLine("to true");
+            foreach (var _ in PastModsData)
             {
-                Console.WriteLine("to true");
-                foreach (var _ in PastModsData)
-                {
-                    PastModsData[i].Checked = true;
-                    i++;
-                }
+                PastModsData[i].Checked = true;
+                i++;
             }
         }
 
@@ -49,22 +48,21 @@ namespace BSModManager.Models
         {
             foreach (var a in PastModsData)
             {
-                if (a.Checked)
+                if (!a.Checked) continue;
+
+                try
                 {
-                    try
+                    string searchUrl = a.Url;
+                    ProcessStartInfo pi = new ProcessStartInfo()
                     {
-                        string searchUrl = a.Url;
-                        ProcessStartInfo pi = new ProcessStartInfo()
-                        {
-                            FileName = searchUrl,
-                            UseShellExecute = true,
-                        };
-                        Process.Start(pi);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
-                    }
+                        FileName = searchUrl,
+                        UseShellExecute = true,
+                    };
+                    Process.Start(pi);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
                 }
             }
         }
@@ -215,16 +213,15 @@ namespace BSModManager.Models
 
                 if (MessageBoxResult.Yes == MessageBox.Show($"{modName}を削除します。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
                 {
-                    if (File.Exists(modFilePath))
-                    {
-                        File.Delete(modFilePath);
-                        syncer.Sync();
-                        MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
-                    }
-                    else
+                    if (!File.Exists(modFilePath))
                     {
                         MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath}";
+                        return;
                     }
+
+                    File.Delete(modFilePath);
+                    syncer.Sync();
+                    MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
                 }
             }
             public void Destroy()
