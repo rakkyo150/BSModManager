@@ -9,17 +9,13 @@ namespace BSModManager.Models
 {
     public class Syncer
     {
-        PastMods pastMods;
-        RecommendMods recommendMods;
         LocalMods localMods;
         MAMods mAMod;
 
-        public Syncer(LocalMods mdm, MAMods mam, PastMods pm, RecommendMods rm)
+        public Syncer(LocalMods mdm, MAMods mam)
         {
             localMods = mdm;
             mAMod = mam;
-            pastMods = pm;
-            recommendMods = rm;
         }
 
         // インストールタブの動機も行う

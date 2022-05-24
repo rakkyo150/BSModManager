@@ -68,27 +68,7 @@ namespace BSModManager.Models
                 if (Original)
                 {
                     modsDataModel.LocalModsData.First(x => x.Mod == modName).Original = "〇";
-                    if (Array.Exists(mAMod.modAssistantAllMods, x => x.name == modName))
-                    {
-                        DateTimeOffset now = DateTimeOffset.UtcNow;
-
-                        MAModStructure[] a = mAMod.modAssistantAllMods.Where(x => x.name == modName).ToArray();
-                        ExistInMA = true;
-                        Latest = new Version(a[0].version);
-                        Url = a[0].link;
-                        MA = "〇";
-                        Description = a[0].description;
-
-                        DateTime mAUpdatedAt = DateTime.Parse(a[0].updatedDate);
-                        if ((now - mAUpdatedAt).Days >= 1)
-                        {
-                            Updated = (now - mAUpdatedAt).Days + "D ago";
-                        }
-                        else
-                        {
-                            Updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
-                        }
-                    }
+                    SetModDataForMA();
                 }
                 else
                 {
@@ -172,38 +152,37 @@ namespace BSModManager.Models
                     break;
                 }
 
-                if (a.Checked)
+                if (!a.Checked) continue;
+
+                count++;
+
+                if (count == AllCheckedMod)
                 {
-                    count++;
+                    NextOrFinish = "Finish";
+                }
 
-                    if (count == AllCheckedMod)
+                if (count == Position)
+                {
+                    modName = a.Mod;
+
+                    ModNameAndProgress = a.Mod + "(" + Position.ToString()
+                    + "/" + AllCheckedMod.ToString() + ")";
+                    Url = a.Url;
+                    if (a.Original == "?" || a.Original == "〇")
                     {
-                        NextOrFinish = "Finish";
+                        Original = true;
+                    }
+                    else
+                    {
+                        Original = false;
                     }
 
-                    if (count == Position)
-                    {
-                        modName = a.Mod;
+                    Position++;
 
-                        ModNameAndProgress = a.Mod + "(" + Position.ToString()
-                        + "/" + AllCheckedMod.ToString() + ")";
-                        Url = a.Url;
-                        if (a.Original == "?" || a.Original == "〇")
-                        {
-                            Original = true;
-                        }
-                        else
-                        {
-                            Original = false;
-                        }
-
-                        Position++;
-
-                        // ここで表示されるViewでNext/Finishボタンを押すとChangeModInfoが再帰的に呼び出される
-                        // Exitの場合は再帰的な呼び出しはない
-                        dialogService.ShowDialog("ChangeModInfo");
-                        break;
-                    }
+                    // ここで表示されるViewでNext/Finishボタンを押すとChangeModInfoが再帰的に呼び出される
+                    // Exitの場合は再帰的な呼び出しはない
+                    dialogService.ShowDialog("ChangeModInfo");
+                    break;
                 }
             }
 
@@ -232,10 +211,7 @@ namespace BSModManager.Models
 
         public void GetInfo()
         {
-            if (ExistInMA)
-            {
-                return;
-            }
+            if (ExistInMA)  return;
 
             Release response = null;
             Task.Run(() => { response = gitHubManager.GetModLatestVersionAsync(Url).Result; }).GetAwaiter().GetResult();
@@ -264,6 +240,35 @@ namespace BSModManager.Models
                 Updated = Url == "" ? "?" : "---";
                 Description = Url == "" ? "?" : "---";
             }
+        }
+
+        private void SetModDataForMA()
+        {
+            if (!ExistsModDataInMA()) return;
+
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+
+            MAModStructure[] a = mAMod.modAssistantAllMods.Where(x => x.name == modName).ToArray();
+            ExistInMA = true;
+            Latest = new Version(a[0].version);
+            Url = a[0].link;
+            MA = "〇";
+            Description = a[0].description;
+
+            DateTime mAUpdatedAt = DateTime.Parse(a[0].updatedDate);
+            if ((now - mAUpdatedAt).Days >= 1)
+            {
+                Updated = (now - mAUpdatedAt).Days + "D ago";
+            }
+            else
+            {
+                Updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
+            }
+        }
+
+        private bool ExistsModDataInMA()
+        {
+            return Array.Exists(mAMod.modAssistantAllMods, x => x.name == modName);
         }
     }
 }

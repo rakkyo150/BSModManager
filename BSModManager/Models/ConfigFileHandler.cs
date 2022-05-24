@@ -6,7 +6,7 @@ using System.IO;
 
 namespace BSModManager.Models
 {
-    public class ConfigFile
+    public class ConfigFileHandler
     {
         public Dictionary<string, string> Load()
         {

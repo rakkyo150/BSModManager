@@ -5,7 +5,7 @@ using System.IO.Compression;
 
 namespace BSModManager.Models
 {
-    public class Initializer
+    public class InitialDirectorySetup
     {
         public void Backup()
         {
@@ -49,10 +49,9 @@ namespace BSModManager.Models
                 CleanModsTemp(directoryPath);
             }
 
-            if (path != Folder.Instance.tmpFolder)
-            {
-                Directory.Delete(path, false);
-            }
+            if (path == Folder.Instance.tmpFolder) return;
+
+            Directory.Delete(path, false);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace BSModManager.ViewModels
 {
     public class SettingsTabViewModel : BindableBase, IDestructible
     {
-        ConfigFile configFile;
+        ConfigFileHandler configFile;
         GitHubApi gitHubApi;
         SettingsVerifier settingsVerifier;
 
@@ -43,7 +43,7 @@ namespace BSModManager.ViewModels
         public ReactiveProperty<Brush> VerifyMAExeColor { get; } = new ReactiveProperty<Brush>(Brushes.Green);
 
         // IContainerProviderをDIしてResolveで取ってきてもOK
-        public SettingsTabViewModel(ConfigFile cf, GitHubApi gha, SettingsVerifier sv)
+        public SettingsTabViewModel(ConfigFileHandler cf, GitHubApi gha, SettingsVerifier sv)
         {
             configFile = cf;
             gitHubApi = gha;

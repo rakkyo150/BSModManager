@@ -13,7 +13,7 @@ using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
-using static BSModManager.Models.ModCsv;
+using static BSModManager.Models.ModCsvHandler;
 
 namespace BSModManager.ViewModels
 {
@@ -24,10 +24,10 @@ namespace BSModManager.ViewModels
         Syncer localModSyncer;
         GitHubApi gitHubApi;
         LocalMods modsDataModel;
-        ModCsv modCsv;
-        Initializer initializer;
+        ModCsvHandler modCsv;
+        InitialDirectorySetup initializer;
         MAMods mAMod;
-        ConfigFile configFile;
+        ConfigFileHandler configFile;
 
         CompositeDisposable disposables { get; } = new CompositeDisposable();
 
@@ -53,7 +53,7 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(Syncer dm, GitHubApi ghm, LocalMods mdm, ModCsv mc, Initializer i, MAMods mam, SettingsVerifier sv, ConfigFile cf)
+        internal InitialSettingViewModel(Syncer dm, GitHubApi ghm, LocalMods mdm, ModCsvHandler mc, InitialDirectorySetup i, MAMods mam, SettingsVerifier sv, ConfigFileHandler cf)
         {
             localModSyncer = dm;
             gitHubApi = ghm;
