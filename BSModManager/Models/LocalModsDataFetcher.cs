@@ -3,8 +3,6 @@ using Octokit;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using static BSModManager.Models.ModCsv;
 
@@ -18,7 +16,7 @@ namespace BSModManager.Models
         ModCsv modCsv;
         Syncer syncer;
 
-        public LocalModsDataFetcher(LocalMods lm,GitHubApi gha,MAMods mam,ModCsv mc,Syncer s)
+        public LocalModsDataFetcher(LocalMods lm, GitHubApi gha, MAMods mam, ModCsv mc, Syncer s)
         {
             localMods = lm;
             gitHubApi = gha;
@@ -26,7 +24,7 @@ namespace BSModManager.Models
             modCsv = mc;
             syncer = s;
         }
-        
+
         internal async Task FetchData()
         {
             string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);

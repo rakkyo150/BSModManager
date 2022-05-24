@@ -1,6 +1,5 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Static;
-using Octokit;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
@@ -12,10 +11,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using static BSModManager.Models.ModCsv;
 
 namespace BSModManager.Models
 {
@@ -74,7 +71,7 @@ namespace BSModManager.Models
 
         public void Update(IModData modData)
         {
-            if(!ExistsSameData(modData))
+            if (!ExistsSameData(modData))
             {
                 Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
                 Add(modData);
@@ -118,7 +115,7 @@ namespace BSModManager.Models
             return PastModsData.Where(x => x.Checked == true);
         }
 
-        public class PastModData : BindableBase,IModData,IDestructible
+        public class PastModData : BindableBase, IModData, IDestructible
         {
             private bool c = false;
             private string mod = "";
@@ -139,11 +136,11 @@ namespace BSModManager.Models
 
             public PastModData(Syncer s)
             {
-                syncer=s;
+                syncer = s;
 
                 UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables);
             }
-            
+
             public bool Checked
             {
                 get { return c; }

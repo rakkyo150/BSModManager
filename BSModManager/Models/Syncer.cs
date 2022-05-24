@@ -1,14 +1,9 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Static;
-using CsvHelper;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace BSModManager.Models
 {
@@ -19,7 +14,7 @@ namespace BSModManager.Models
         LocalMods localMods;
         MAMods mAMod;
 
-        public Syncer(LocalMods mdm,MAMods mam,PastMods pm,RecommendMods rm)
+        public Syncer(LocalMods mdm, MAMods mam, PastMods pm, RecommendMods rm)
         {
             localMods = mdm;
             mAMod = mam;
@@ -63,7 +58,7 @@ namespace BSModManager.Models
                     localModNameAndVersionDic.Add(f.Name.Replace(".dll", ""), installedModVersion);
                 }
             }
-            
+
             if (pendingFilesName != null)
             {
                 foreach (System.IO.FileInfo pendingF in pendingFilesName)

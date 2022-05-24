@@ -1,18 +1,12 @@
-﻿using BSModManager.Static;
-using Octokit;
-using Prism.Mvvm;
+﻿using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace BSModManager.Models
 {
-    public class MyselfUpdater: BindableBase
-    {       
+    public class MyselfUpdater : BindableBase
+    {
         private Version latestMyselfVersion = new Version("0.0.0");
         public Version LatestMyselfVersion
         {

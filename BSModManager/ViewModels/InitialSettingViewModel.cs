@@ -20,7 +20,7 @@ namespace BSModManager.ViewModels
     public class InitialSettingViewModel : BindableBase, IDialogAware, IDestructible
     {
         SettingsVerifier settingsVerifier;
-        
+
         Syncer localModSyncer;
         GitHubApi gitHubApi;
         LocalMods modsDataModel;
@@ -53,7 +53,7 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(Syncer dm, GitHubApi ghm, LocalMods mdm,ModCsv mc,Initializer i,MAMods mam,SettingsVerifier sv,ConfigFile cf)
+        internal InitialSettingViewModel(Syncer dm, GitHubApi ghm, LocalMods mdm, ModCsv mc, Initializer i, MAMods mam, SettingsVerifier sv, ConfigFile cf)
         {
             localModSyncer = dm;
             gitHubApi = ghm;
@@ -95,7 +95,7 @@ namespace BSModManager.ViewModels
             {
                 VerifyBSFolderAndGitHubToken.Value = false;
             }
-            
+
             settingsVerifier.PropertyChanged += (sender, e) =>
             {
                 if (settingsVerifier.BSFolder)
@@ -145,7 +145,7 @@ namespace BSModManager.ViewModels
                 FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
                 configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
             }).AddTo(disposables);
-            
+
             SettingFinishCommand = VerifyBSFolderAndGitHubToken.ToReactiveCommand()
                 .WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK))).AddTo(disposables);
 
