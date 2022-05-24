@@ -11,7 +11,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace BSModManager.Models
@@ -19,6 +21,11 @@ namespace BSModManager.Models
     public class PastMods : BindableBase, IMods
     {
         internal ObservableCollection<IModData> PastModsData = new ObservableCollection<IModData>();
+        
+        public PastMods()
+        {
+            BindingOperations.EnableCollectionSynchronization(PastModsData, new object());
+        }
 
         public void AllCheckedOrUnchecked()
         {
@@ -126,13 +133,14 @@ namespace BSModManager.Models
             private Brush installedColor = Brushes.Green;
             private string url = "";
 
-            Syncer syncer;
+            LocalModsDataSyncer syncer;
+            PastModsDataHandler pastModsDataHandler;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 
             public CompositeDisposable disposables = new CompositeDisposable();
 
-            public PastModData(Syncer s)
+            public PastModData(LocalModsDataSyncer s)
             {
                 syncer = s;
 
@@ -210,16 +218,26 @@ namespace BSModManager.Models
             {
                 string modFileName = modName + ".dll";
                 string modFilePath = Path.Combine(Folder.Instance.BSFolderPath, "Plugins", modFileName);
+                string modPendingFilePath = Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins", modFileName);
 
                 if (MessageBoxResult.Yes == MessageBox.Show($"{modName}を削除します。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
                 {
-                    if (!File.Exists(modFilePath))
+                    if (!File.Exists(modFilePath) && !File.Exists(modPendingFilePath))
                     {
-                        MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath}";
+                        MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath} or {modPendingFilePath}";
                         return;
                     }
 
-                    File.Delete(modFilePath);
+                    if (File.Exists(modFilePath))
+                    {
+                        File.Delete(modFilePath);
+                    }
+
+                    if (File.Exists(modPendingFilePath))
+                    {
+                        File.Delete(modPendingFilePath);
+                    }
+
                     syncer.Sync();
                     MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
                 }

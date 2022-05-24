@@ -61,9 +61,9 @@
     <Compile Include="Interfaces\IMods.cs" />
     <Compile Include="Interfaces\IModData.cs" />
     <Compile Include="Models\ConfigFileHandler.cs" />
-    <Compile Include="Models\LocalModsDataFetcher.cs" />
-    <Compile Include="Models\PastModsDataFetcher.cs" />
-    <Compile Include="Models\Syncer.cs" />
+    <Compile Include="Models\PreviousLocalModsDataFetcher.cs" />
+    <Compile Include="Models\PastModsDataHandler.cs" />
+    <Compile Include="Models\LocalModsDataSyncer.cs" />
     <Compile Include="Models\InitialDirectorySetup.cs" />
     <Compile Include="Models\ModDisposer.cs" />
     <Compile Include="Models\GitHubApi.cs" />

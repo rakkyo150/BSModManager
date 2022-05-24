@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace BSModManager.Models
 {
-    public class Syncer
+    public class LocalModsDataSyncer
     {
         LocalMods localMods;
         MAMods mAMod;
 
-        public Syncer(LocalMods mdm, MAMods mam)
+        public LocalModsDataSyncer(LocalMods mdm, MAMods mam)
         {
             localMods = mdm;
             mAMod = mam;
@@ -79,17 +79,15 @@ namespace BSModManager.Models
 
             foreach (KeyValuePair<string, Version> localModNameAndVersion in localModNameAndVersionDic)
             {
-                if (!ExistsDataInLocalMods(localModNameAndVersion))
+                if (ExistsDataInLocalModsData(localModNameAndVersion))
                 {
-                    localMods.Add(new LocalMods.LocalModData(this)
+                    localMods.Update(new LocalMods.LocalModData(this)
                     {
                         Mod = localModNameAndVersion.Key,
                         Installed = localModNameAndVersion.Value
                     });
-
-                    continue;
                 }
-
+                
                 if (!ExistsDataInMAMod(localModNameAndVersion))
                 {
                     localMods.Add(new LocalMods.LocalModData(this)
@@ -133,7 +131,7 @@ namespace BSModManager.Models
             List<IModData> removeList = new List<IModData>();
             foreach (var data in localMods.LocalModsData)
             {
-                if (RemovedFromLocal(filesName, data))
+                if (RemovedFromLocal(localModNameAndVersionDic, data))
                 {
                     removeList.Add(data);
                 }
@@ -149,15 +147,17 @@ namespace BSModManager.Models
 
         private void RemoveFromLocalMods(List<IModData> removeList)
         {
+            if (removeList.Count == 0) return;
+            
             foreach (var removeData in removeList)
             {
                 localMods.Remove(removeData);
             }
         }
 
-        private static bool RemovedFromLocal(IEnumerable<FileInfo> filesName, IModData data)
+        private static bool RemovedFromLocal(Dictionary<string,Version> localModNameAndVersionDic, IModData data)
         {
-            return !filesName.Any(x => x.Name.Replace(".dll", "") == data.Mod);
+            return !localModNameAndVersionDic.Keys.Any(x => x.Replace(".dll", "") == data.Mod);
         }
 
         private bool ExistsDataInMAMod(KeyValuePair<string, Version> modNameAndVersion)
@@ -165,7 +165,7 @@ namespace BSModManager.Models
             return Array.Exists(mAMod.modAssistantAllMods, x => x.name == modNameAndVersion.Key);
         }
 
-        private bool ExistsDataInLocalMods(KeyValuePair<string, Version> modNameAndVersion)
+        private bool ExistsDataInLocalModsData(KeyValuePair<string, Version> modNameAndVersion)
         {
             return localMods.LocalModsData.Any(x => x.Mod == modNameAndVersion.Key);
         }

@@ -21,7 +21,7 @@ namespace BSModManager.ViewModels
     {
         SettingsVerifier settingsVerifier;
 
-        Syncer localModSyncer;
+        LocalModsDataSyncer localModSyncer;
         GitHubApi gitHubApi;
         LocalMods modsDataModel;
         ModCsvHandler modCsv;
@@ -53,7 +53,8 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(Syncer dm, GitHubApi ghm, LocalMods mdm, ModCsvHandler mc, InitialDirectorySetup i, MAMods mam, SettingsVerifier sv, ConfigFileHandler cf)
+        internal InitialSettingViewModel(LocalModsDataSyncer dm, GitHubApi ghm, LocalMods mdm, ModCsvHandler mc,
+            InitialDirectorySetup i, MAMods mam, SettingsVerifier sv, ConfigFileHandler cf)
         {
             localModSyncer = dm;
             gitHubApi = ghm;

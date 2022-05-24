@@ -8,18 +8,18 @@ using static BSModManager.Models.ModCsvHandler;
 
 namespace BSModManager.Models
 {
-    public class LocalModsDataFetcher
+    public class PreviousLocalModsDataFetcher
     {
         LocalMods localMods;
         GitHubApi gitHubApi;
         MAMods mAMods;
         ModCsvHandler modCsv;
-        Syncer syncer;
+        LocalModsDataSyncer syncer;
 
         DateTime now = DateTime.Now;
         string updated = "";
 
-        public LocalModsDataFetcher(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc, Syncer s)
+        public PreviousLocalModsDataFetcher(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc, LocalModsDataSyncer s)
         {
             localMods = lm;
             gitHubApi = gha;
