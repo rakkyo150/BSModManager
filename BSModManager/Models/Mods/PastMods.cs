@@ -133,16 +133,15 @@ namespace BSModManager.Models
             private Brush installedColor = Brushes.Green;
             private string url = "";
 
-            LocalModsDataSyncer syncer;
-            PastModsDataHandler pastModsDataHandler;
+            Refresher refresher;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 
             public CompositeDisposable disposables = new CompositeDisposable();
 
-            public PastModData(LocalModsDataSyncer s)
+            public PastModData(Refresher r)
             {
-                syncer = s;
+                refresher=r;
 
                 UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables);
             }
@@ -238,7 +237,7 @@ namespace BSModManager.Models
                         File.Delete(modPendingFilePath);
                     }
 
-                    syncer.Sync();
+                    Task.Run(()=>refresher.Refresh()).GetAwaiter().GetResult();
                     MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
                 }
             }

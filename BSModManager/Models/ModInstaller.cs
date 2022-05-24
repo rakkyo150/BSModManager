@@ -13,16 +13,14 @@ namespace BSModManager.Models
         LocalMods localModsDataModel;
         GitHubApi gitHubApi;
         ModDisposer modDisposer;
-        LocalModsDataSyncer syncer;
-        PastModsDataHandler pastModsDataHandler;
+        Refresher refresher;
 
-        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md, LocalModsDataSyncer lms,PastModsDataHandler pmdh)
+        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
             modDisposer = md;
-            syncer = lms;
-            pastModsDataHandler = pmdh;
+            refresher = r;
         }
 
         public void Install(IMods sourceModData)
@@ -55,8 +53,7 @@ namespace BSModManager.Models
                 }
             }
 
-            syncer.Sync();
-            Task.Run(()=>pastModsDataHandler.FetchAndSync()).GetAwaiter().GetResult();
+            Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
 
             if (openMA)
             {

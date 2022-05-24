@@ -118,16 +118,16 @@ namespace BSModManager.Models
         // https://yutori-techblog.com/innerclass-private-access
         public class LocalModData : BindableBase, IDestructible, IModData
         {
-            public LocalModsDataSyncer localModSyncer;
+            Refresher refresher;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 
             public CompositeDisposable disposables = new CompositeDisposable();
 
 
-            public LocalModData(LocalModsDataSyncer dm)
+            public LocalModData(Refresher r)
             {
-                localModSyncer = dm;
+                refresher = r ;
 
                 UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables).AddTo(disposables);
             }
@@ -239,7 +239,7 @@ namespace BSModManager.Models
                         File.Delete(modPendingFilePath);
                     }
 
-                    localModSyncer.Sync();
+                    Task.Run(()=>refresher.Refresh()).GetAwaiter().GetResult();
                     MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
                 }
             }

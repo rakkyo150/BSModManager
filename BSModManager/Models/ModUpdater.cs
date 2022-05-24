@@ -10,14 +10,14 @@ namespace BSModManager.Models
         LocalMods localModsDataModel;
         GitHubApi gitHubApi;
         ModDisposer modDisposer;
-        LocalModsDataSyncer localModSyncer;
+        Refresher refresher;
 
-        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md, LocalModsDataSyncer lms)
+        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
             modDisposer = md;
-            localModSyncer = lms;
+            refresher = r;
         }
 
         public void Update()
@@ -46,7 +46,7 @@ namespace BSModManager.Models
                 }
             }
 
-            localModSyncer.Sync();
+            Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
 
             if (openMA)
             {
