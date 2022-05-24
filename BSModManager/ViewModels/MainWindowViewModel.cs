@@ -25,11 +25,8 @@ namespace BSModManager.ViewModels
     {
         CompositeDisposable disposables { get; } = new CompositeDisposable();
 
-        // プロパティにしないとバインドされない
-        public ReactiveCommand AllCheckedButtonCommand { get; } = new ReactiveCommand();
-
         // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-        public ReadOnlyReactivePropertySlim<string> Console { get; }
+        public ReadOnlyReactivePropertySlim<string> Debug { get; }
 
         private string title = "BSModManager";
         public string Title
@@ -64,6 +61,13 @@ namespace BSModManager.ViewModels
         {
             get { return showInstallTabViewEnable; }
             set { SetProperty(ref showInstallTabViewEnable, value); }
+        }
+
+        private bool showUpdateTabViewEnable = true;
+        public bool ShowUpdateTabViewEnable
+        {
+            get { return showUpdateTabViewEnable; }
+            set { SetProperty(ref showUpdateTabViewEnable, value); }
         }
 
         private bool showSettingsTabViewEnable = true;
@@ -109,11 +113,12 @@ namespace BSModManager.ViewModels
         }
 
         IDialogService dialogService;
-        LocalMods localModsDataModel;
-        LocalModSyncer localModSyncer;
+        LocalMods localMods;
+        Syncer syncer;
         ChangeModInfoModel changeModInfoPropertyModel;
         GitHubApi gitHubApi;
-        PastMods pastModsDataModel;
+        PastMods pastMods;
+        PastModsDataFetcher pastModsDataFetcher;
         ModCsv modCsv;
         Initializer initializer;
         MyselfUpdater mySelfUpdater;
@@ -121,28 +126,45 @@ namespace BSModManager.ViewModels
         MAMods mAMod;
         ConfigFile configFile;
         SettingsVerifier settingsVerifier;
+        ModInstaller modInstaller;
+        LocalModsDataFetcher localModsDataFetcher;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowInstallTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
         public DelegateCommand<string> UpdateOrInstallButtonCommand { get; private set; }
+        
+        private DelegateCommand allCheckedButtonCommand;
+        public DelegateCommand AllCheckedButtonCommand 
+        {
+            get { return allCheckedButtonCommand; }
+            private set { SetProperty(ref allCheckedButtonCommand, value); } 
+        }
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
-        public DelegateCommand ModRepositoryButtonCommand { get; private set; }
+
+        private DelegateCommand modRepositoryButtonCommand;
+        public DelegateCommand ModRepositoryButtonCommand 
+        {
+            get { return modRepositoryButtonCommand; }
+            private set { SetProperty(ref modRepositoryButtonCommand, value); }
+        }
         public DelegateCommand RefreshButtonCommand { get; private set; }
         public DelegateCommand LoadedCommand { get; }
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            LocalModSyncer dm, ChangeModInfoModel cmipm,
-            GitHubApi gha, LocalMods lmdm, ConfigFile cf,SettingsVerifier sv,
+            Syncer dm, ChangeModInfoModel cmipm,ModInstaller mi,PastModsDataFetcher pmdf,
+            GitHubApi gha, LocalMods lmdm, ConfigFile cf,SettingsVerifier sv,LocalModsDataFetcher lmdf,
             PastMods pmdm, ModCsv mc,Initializer i,MyselfUpdater u,ModUpdater mu,MAMods mam)
         {
-            localModsDataModel = lmdm;
-            localModSyncer = dm;
+            localMods = lmdm;
+            syncer = dm;
             changeModInfoPropertyModel = cmipm;
             gitHubApi = gha;
-            pastModsDataModel = pmdm;
+            pastMods = pmdm;
+            pastModsDataFetcher = pmdf;
+            localModsDataFetcher = lmdf;
             modCsv = mc;
             initializer = i;
             mySelfUpdater = u;
@@ -150,6 +172,7 @@ namespace BSModManager.ViewModels
             mAMod = mam;
             configFile = cf;
             settingsVerifier = sv;
+            modInstaller = mi;
 
             dialogService = ds;
 
@@ -158,7 +181,7 @@ namespace BSModManager.ViewModels
             System.Windows.Application.Current.MainWindow.Closing += new CancelEventHandler(ClosingCommand);
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            this.Console = MainWindowLog.Instance.ObserveProperty(x => x.Debug).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            this.Debug = MainWindowLog.Instance.ObserveProperty(x => x.Debug).ToReadOnlyReactivePropertySlim().AddTo(disposables);
 
             Folder.Instance.PropertyChanged += (sender, e) =>
             {
@@ -171,43 +194,11 @@ namespace BSModManager.ViewModels
 
             RegionManager = regionManager;
             RegionManager.RegisterViewWithRegion("ContentRegion", typeof(UpdateTab));
-            ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
-              {
-                  MainWindowLog.Instance.Debug = "Update";
-                  UpdateOrInstall = "Update";
-                  UpdateOrInstallButtonEnable = true;
-                  ModRepositoryButtonEnable = true;
-                  ChangeModInfoButtonEnable = true;
-                  AllCheckedButtonEnable = true;
-                  RefreshButtonEnable = true;
-                  RegionManager.RequestNavigate("ContentRegion", x);
-              });
-            ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
-            {
-                MainWindowLog.Instance.Debug = "Install";
-                UpdateOrInstall = "Install";
-                UpdateOrInstallButtonEnable = true;
-                ModRepositoryButtonEnable = true;
-                ChangeModInfoButtonEnable = false;
-                AllCheckedButtonEnable = true;
-                RefreshButtonEnable = true;
-                RegionManager.RequestNavigate("ContentRegion", x);
-            });
-            ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
-              {
-                  MainWindowLog.Instance.Debug = "Settings";
-                  UpdateOrInstallButtonEnable = false;
-                  ModRepositoryButtonEnable = false;
-                  ChangeModInfoButtonEnable = false;
-                  AllCheckedButtonEnable = false;
-                  RefreshButtonEnable = false;
-                  RegionManager.RequestNavigate("ContentRegion", x);
-              });
 
-            AllCheckedButtonCommand.Subscribe(_ =>
-            {
-                localModsDataModel.AllCheckedOrUnchecked();
-            }).AddTo(disposables);
+            AllCheckedButtonCommand = new DelegateCommand(() =>
+              {
+                  localMods.AllCheckedOrUnchecked();
+              });
 
             UpdateOrInstallButtonCommand = new DelegateCommand<string>((x) =>
               {
@@ -218,7 +209,8 @@ namespace BSModManager.ViewModels
                   }
                   else
                   {
-
+                      Console.WriteLine("test");
+                      modInstaller.Install(pastMods);
                   }
               });
 
@@ -229,13 +221,55 @@ namespace BSModManager.ViewModels
 
             ModRepositoryButtonCommand = new DelegateCommand(() =>
               {
-                  localModsDataModel.ModRepositoryOpen();
+                  localMods.ModRepositoryOpen();
               });
 
             RefreshButtonCommand = new DelegateCommand(() =>
               {
-                  localModSyncer.Sync();
+                  syncer.Sync();
               });
+
+            ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                AllCheckedButtonCommand = new DelegateCommand(() =>
+                {
+                    localMods.AllCheckedOrUnchecked();
+                });
+                ModRepositoryButtonCommand = new DelegateCommand(() =>
+                {
+                    localMods.ModRepositoryOpen(); ;
+                });
+                MainWindowLog.Instance.Debug = "Update";
+                UpdateOrInstall = "Update";
+                AllButtonEnable();
+                RegionManager.RequestNavigate("ContentRegion", x);
+            });
+            
+            ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                AllCheckedButtonCommand = new DelegateCommand(() =>
+                {
+                    pastMods.AllCheckedOrUnchecked();
+                });
+                ModRepositoryButtonCommand = new DelegateCommand(() =>
+                {
+                    pastMods.ModRepositoryOpen(); ;
+                });
+                MainWindowLog.Instance.Debug = "Install";
+                UpdateOrInstall = "Install";
+                AllButtonEnable();
+                RegionManager.RequestNavigate("ContentRegion", x);
+            });
+
+            ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                MainWindowLog.Instance.Debug = "Settings";
+                AllButtonDisable();
+                ShowInstallTabViewEnable = true;
+                ShowSettingsTabViewEnable = true;
+                ShowUpdateTabViewEnable = true;
+                RegionManager.RequestNavigate("ContentRegion", x);
+            });
 
             Dictionary<string, string> tempDictionary = configFile.Load();
             if (tempDictionary["BSFolderPath"] != null && tempDictionary["GitHubToken"] != null)
@@ -249,13 +283,7 @@ namespace BSModManager.ViewModels
             {
                 MainWindowLog.Instance.Debug = "Start Initializing";
 
-                ShowInstallTabViewEnable = false;
-                ShowSettingsTabViewEnable = false;
-                UpdateOrInstallButtonEnable = false;
-                ModRepositoryButtonEnable = false;
-                ChangeModInfoButtonEnable = false;
-                AllCheckedButtonEnable = false;
-                RefreshButtonEnable = false;
+                AllButtonDisable();
 
                 MainWindowLog.Instance.Debug = "Check Myself Latest Version";
                 bool update = await gitHubApi.CheckNewVersionAndDowonload();
@@ -290,113 +318,16 @@ namespace BSModManager.ViewModels
                     await Task.Run(() => { initializer.CleanModsTemp(Folder.Instance.tmpFolder); });
                     MainWindowLog.Instance.Debug = "Finish Cleanup ModsTemp";
 
-                    // ModAssistantのPopulateModsListを使った方がいい
                     mAMod.modAssistantAllMods = await mAMod.GetAllAsync();
 
-                    string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
-                    string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-                    List<ModCsvIndex> previousDataList;
-                    if (File.Exists(modsDataCsvPath))
-                    {
-                        previousDataList = await modCsv.Read(modsDataCsvPath);
-                        foreach (var previousData in previousDataList)
-                        {
-                            if (Array.Exists(mAMod.modAssistantAllMods, x => x.name == previousData.Mod))
-                            {
-                                if (previousData.Original)
-                                {
-                                    var temp = Array.Find(mAMod.modAssistantAllMods, x => x.name == previousData.Mod);
+                    await localModsDataFetcher.FetchData();
 
-                                    DateTime now = DateTime.Now;
-                                    DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
-                                    string updated = null;
-                                    if ((now - mAUpdatedAt).Days >= 1)
-                                    {
-                                        updated = (now - mAUpdatedAt).Days + "D ago";
-                                    }
-                                    else
-                                    {
-                                        updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
-                                    }
-
-                                    localModsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
-                                    {
-                                        Mod = previousData.Mod,
-                                        Latest = new Version(temp.version),
-                                        Updated = updated,
-                                        Original = "〇",
-                                        MA = "〇",
-                                        Description = temp.description,
-                                        Url = temp.link
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                Release response = await gitHubApi.GetModLatestVersionAsync(previousData.Url);
-                                string original = null;
-                                if (!previousData.Original)
-                                {
-                                    original = "×";
-                                }
-                                else
-                                {
-                                    original = "〇";
-                                }
-
-                                if (response == null)
-                                {
-                                    localModsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
-                                    {
-                                        Mod = previousData.Mod,
-                                        Latest = new Version("0.0.0"),
-                                        Updated = previousData.Url == "" ? "?" : "---",
-                                        Original = original,
-                                        MA = "×",
-                                        Description = previousData.Url == "" ? "?" : "---",
-                                        Url = previousData.Url
-                                    });
-                                }
-                                else
-                                {
-                                    DateTime now = DateTime.Now;
-                                    string updated = null;
-                                    if ((now - response.CreatedAt).Days >= 1)
-                                    {
-                                        updated = (now - response.CreatedAt).Days + "D ago";
-                                    }
-                                    else
-                                    {
-                                        updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
-                                    }
-
-                                    localModsDataModel.LocalModsData.Add(new LocalMods.LocalModData(localModSyncer)
-                                    {
-                                        Mod = previousData.Mod,
-                                        Latest = gitHubApi.DetectVersion(response.TagName),
-                                        Updated = updated,
-                                        Original = original,
-                                        MA = "×",
-                                        Description = response.Body,
-                                        Url = previousData.Url
-                                    });
-                                }
-                            }
-                        }
-                    }
-
-                    await Task.Run(() => localModSyncer.Sync());
+                    await Task.Run(() => syncer.Sync());
                 }
 
-                await pastModsDataModel.Initialize();
+                await pastModsDataFetcher.FetchData();
 
-                ShowInstallTabViewEnable = true;
-                ShowSettingsTabViewEnable = true;
-                UpdateOrInstallButtonEnable = true;
-                ModRepositoryButtonEnable = true;
-                ChangeModInfoButtonEnable = true;
-                AllCheckedButtonEnable = true;
-                RefreshButtonEnable = true;
+                AllButtonEnable();
             });
 
 
@@ -418,11 +349,33 @@ namespace BSModManager.ViewModels
                         Directory.CreateDirectory(dataDirectory);
                     }
                     string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-                    Task.Run(async () => await modCsv.Write(modsDataCsvPath, localModsDataModel.LocalModsData)).GetAwaiter().GetResult();
+                    Task.Run(async () => await modCsv.Write(modsDataCsvPath, localMods.LocalModsData)).GetAwaiter().GetResult();
                 }
             };
+        }
 
+        private void AllButtonDisable()
+        {
+            ShowInstallTabViewEnable = false;
+            ShowSettingsTabViewEnable = false;
+            ShowUpdateTabViewEnable = false;
+            UpdateOrInstallButtonEnable = false;
+            ModRepositoryButtonEnable = false;
+            ChangeModInfoButtonEnable = false;
+            AllCheckedButtonEnable = false;
+            RefreshButtonEnable = false;
+        }
 
+        private void AllButtonEnable()
+        {
+            ShowInstallTabViewEnable = true;
+            ShowSettingsTabViewEnable = true;
+            ShowUpdateTabViewEnable = true;
+            UpdateOrInstallButtonEnable = true;
+            ModRepositoryButtonEnable = true;
+            ChangeModInfoButtonEnable = true;
+            AllCheckedButtonEnable = true;
+            RefreshButtonEnable = true;
         }
 
         public void Destroy()

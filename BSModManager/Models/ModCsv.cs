@@ -1,4 +1,5 @@
-﻿using CsvHelper;
+﻿using BSModManager.Interfaces;
+using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace BSModManager.Models
 {
     public class ModCsv
     {
-        public async Task Write(string csvPath, IEnumerable<LocalMods.LocalModData> e)
+        public async Task Write(string csvPath, IEnumerable<IModData> e)
         {
             List<ModCsvIndex> modInformationCsvList = new List<ModCsvIndex>();
 

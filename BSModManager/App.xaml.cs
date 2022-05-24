@@ -13,7 +13,7 @@ namespace BSModManager
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            Folder.Instance.Initialize();
+            Folder.Instance.InitialCreate();
             base.OnStartup(e);
         }
 
@@ -32,7 +32,8 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<RecommendMods>();
             containerRegistry.RegisterSingleton<LocalMods>();
 
-            containerRegistry.RegisterSingleton<LocalModSyncer>();
+            containerRegistry.RegisterSingleton<Syncer>();
+            containerRegistry.RegisterSingleton<ModInstaller>();
             containerRegistry.RegisterSingleton<GitHubApi>();
             containerRegistry.RegisterSingleton<ConfigFile>();
             containerRegistry.RegisterSingleton<MAMods>();
@@ -42,6 +43,8 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<Initializer>();
             containerRegistry.RegisterSingleton<ModDisposer>();
             containerRegistry.RegisterSingleton<SettingsVerifier>();
+            containerRegistry.RegisterSingleton<PastModsDataFetcher>();
+            containerRegistry.RegisterSingleton<LocalModsDataFetcher>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();

@@ -80,7 +80,7 @@ namespace BSModManager.Static
             }
         }
 
-        public void Initialize()
+        public void InitialCreate()
         {
             if (!Directory.Exists(backupFolder))
             {
