@@ -1,4 +1,5 @@
-﻿using BSModManager.Static;
+﻿using BSModManager.Interfaces;
+using BSModManager.Static;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,16 @@ using static BSModManager.Models.ModCsvHandler;
 
 namespace BSModManager.Models
 {
-    public class PastModsDataFetcher
+    public class PastModsDataHandler
     {
         MAMods mAMods;
         LocalMods localMods;
         PastMods pastMods;
         ModCsvHandler modCsv;
-        Syncer syncer;
+        LocalModsDataSyncer syncer;
         GitHubApi gitHubApi;
 
-        public PastModsDataFetcher(MAMods mam, LocalMods lm, PastMods pm, ModCsvHandler mc, Syncer s, GitHubApi gha)
+        public PastModsDataHandler(MAMods mam, LocalMods lm, PastMods pm, ModCsvHandler mc, LocalModsDataSyncer s, GitHubApi gha)
         {
             mAMods = mam;
             localMods = lm;
@@ -28,9 +29,11 @@ namespace BSModManager.Models
             gitHubApi = gha;
         }
 
-        public async Task FetchData()
+        public async Task FetchAndSync()
         {
             List<ModCsvIndex> previousDataList = new List<ModCsvIndex>();
+
+            List<IModData> removeList = new List<IModData>();
 
             // 現在のバージョンも含む
             string[] AllPastVersion = Directory.GetDirectories(Folder.Instance.dataFolder, "*", SearchOption.TopDirectoryOnly);
@@ -84,6 +87,9 @@ namespace BSModManager.Models
                 if (!previousDataList.Find(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇" ? true : false)) continue;
 
                 previousDataList.Remove(previousDataList.Find(x => x.Mod == localMod.Mod));
+                
+                // MAや手動でMod追加したときの更新のため
+                removeList.Add(localMod);
             }
 
             if (NoPreviousData(previousDataList)) return;
@@ -163,6 +169,13 @@ namespace BSModManager.Models
                         Url = previousData.Url
                     });
                 }
+            }
+
+            if (removeList.Count == 0) return;
+
+            foreach (var removeModData in removeList)
+            {
+                pastMods.Remove(removeModData);
             }
         }
 

@@ -13,14 +13,16 @@ namespace BSModManager.Models
         LocalMods localModsDataModel;
         GitHubApi gitHubApi;
         ModDisposer modDisposer;
-        Syncer localModSyncer;
+        LocalModsDataSyncer syncer;
+        PastModsDataHandler pastModsDataHandler;
 
-        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md, Syncer lms)
+        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md, LocalModsDataSyncer lms,PastModsDataHandler pmdh)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
             modDisposer = md;
-            localModSyncer = lms;
+            syncer = lms;
+            pastModsDataHandler = pmdh;
         }
 
         public void Install(IMods sourceModData)
@@ -43,19 +45,18 @@ namespace BSModManager.Models
                     continue;
                 }
 
-
                 Task.Run(async () => response = await gitHubApi.GetModLatestVersionAsync(a.Url)).GetAwaiter().GetResult();
 
                 if (response != null)
                 {
                     Task.Run(async () => await gitHubApi.DownloadAsync(a.Url, a.Installed, Folder.Instance.tmpFolder)).GetAwaiter().GetResult();
                     Task.Run(() => modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath)).GetAwaiter().GetResult();
-                    localModsDataModel.Update(a);
-                    sourceModData.Remove(a);
+                    localModsDataModel.Add(a);
                 }
             }
 
-            localModSyncer.Sync();
+            syncer.Sync();
+            Task.Run(()=>pastModsDataHandler.FetchAndSync()).GetAwaiter().GetResult();
 
             if (openMA)
             {

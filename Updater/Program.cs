@@ -8,7 +8,6 @@ namespace Updater
     {
         static void Main(string[] args)
         {
-
             String[] a = Environment.GetCommandLineArgs();
 
             string downloadPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, a[1]);

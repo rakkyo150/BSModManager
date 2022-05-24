@@ -112,11 +112,11 @@ namespace BSModManager.ViewModels
 
         IDialogService dialogService;
         LocalMods localMods;
-        Syncer syncer;
+        LocalModsDataSyncer syncer;
         ChangeModInfoModel changeModInfoPropertyModel;
         GitHubApi gitHubApi;
         PastMods pastMods;
-        PastModsDataFetcher pastModsDataFetcher;
+        PastModsDataHandler pastModsDataFetcher;
         ModCsvHandler modCsv;
         InitialDirectorySetup initializer;
         MyselfUpdater mySelfUpdater;
@@ -125,7 +125,7 @@ namespace BSModManager.ViewModels
         ConfigFileHandler configFile;
         SettingsVerifier settingsVerifier;
         ModInstaller modInstaller;
-        LocalModsDataFetcher localModsDataFetcher;
+        PreviousLocalModsDataFetcher localModsDataFetcher;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
@@ -152,8 +152,8 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            Syncer dm, ChangeModInfoModel cmipm, ModInstaller mi, PastModsDataFetcher pmdf,
-            GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, LocalModsDataFetcher lmdf,
+            LocalModsDataSyncer dm, ChangeModInfoModel cmipm, ModInstaller mi, PastModsDataHandler pmdf,
+            GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataFetcher lmdf,
             PastMods pmdm, ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
             localMods = lmdm;
@@ -225,6 +225,7 @@ namespace BSModManager.ViewModels
             RefreshButtonCommand = new DelegateCommand(() =>
               {
                   syncer.Sync();
+                  Task.Run(() => pastModsDataFetcher.FetchAndSync()).GetAwaiter().GetResult();
               });
 
             ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
@@ -323,7 +324,7 @@ namespace BSModManager.ViewModels
                     await Task.Run(() => syncer.Sync());
                 }
 
-                await pastModsDataFetcher.FetchData();
+                await pastModsDataFetcher.FetchAndSync();
 
                 AllButtonEnable();
             });

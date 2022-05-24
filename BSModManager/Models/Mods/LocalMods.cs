@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
@@ -117,14 +118,14 @@ namespace BSModManager.Models
         // https://yutori-techblog.com/innerclass-private-access
         public class LocalModData : BindableBase, IDestructible, IModData
         {
-            public Syncer localModSyncer;
+            public LocalModsDataSyncer localModSyncer;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 
             public CompositeDisposable disposables = new CompositeDisposable();
 
 
-            public LocalModData(Syncer dm)
+            public LocalModData(LocalModsDataSyncer dm)
             {
                 localModSyncer = dm;
 
@@ -218,16 +219,26 @@ namespace BSModManager.Models
             {
                 string modFileName = modName + ".dll";
                 string modFilePath = Path.Combine(Folder.Instance.BSFolderPath, "Plugins", modFileName);
+                string modPendingFilePath = Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins", modFileName);
 
                 if (MessageBoxResult.Yes == MessageBox.Show($"{modName}を削除します。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
                 {
-                    if (!File.Exists(modFilePath))
+                    if (!File.Exists(modFilePath) && !File.Exists(modPendingFilePath))
                     {
-                        MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath}";
+                        MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath} or {modPendingFilePath}";
                         return;
                     }
 
-                    File.Delete(modFilePath);
+                    if (File.Exists(modFilePath))
+                    {
+                        File.Delete(modFilePath);
+                    }
+
+                    if (File.Exists(modPendingFilePath))
+                    {
+                        File.Delete(modPendingFilePath);
+                    }
+
                     localModSyncer.Sync();
                     MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
                 }
