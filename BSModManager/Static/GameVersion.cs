@@ -1,5 +1,4 @@
 ﻿using BSModManager.Static;
-using Prism.Mvvm;
 using System.IO;
 using System.Text;
 

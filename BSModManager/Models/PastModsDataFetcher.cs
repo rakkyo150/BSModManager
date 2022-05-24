@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using static BSModManager.Models.ModCsv;
 
@@ -19,7 +18,7 @@ namespace BSModManager.Models
         Syncer syncer;
         GitHubApi gitHubApi;
 
-        public PastModsDataFetcher(MAMods mam,LocalMods lm,PastMods pm,ModCsv mc,Syncer s,GitHubApi gha)
+        public PastModsDataFetcher(MAMods mam, LocalMods lm, PastMods pm, ModCsv mc, Syncer s, GitHubApi gha)
         {
             mAMods = mam;
             localMods = lm;

@@ -110,7 +110,7 @@ namespace BSModManager.Models
             return RecommendModsData.Where(x => x.Checked == true);
         }
 
-        public class RecommendModData : BindableBase,IModData,IDestructible
+        public class RecommendModData : BindableBase, IModData, IDestructible
         {
             private bool c = false;
             private string mod = "";

@@ -1,7 +1,6 @@
 ﻿using BSModManager.Models;
 using BSModManager.Static;
 using BSModManager.Views;
-using Octokit;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -17,7 +16,6 @@ using System.IO;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows;
-using static BSModManager.Models.ModCsv;
 
 namespace BSModManager.ViewModels
 {
@@ -134,17 +132,17 @@ namespace BSModManager.ViewModels
         public DelegateCommand<string> ShowInstallTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
         public DelegateCommand<string> UpdateOrInstallButtonCommand { get; private set; }
-        
+
         private DelegateCommand allCheckedButtonCommand;
-        public DelegateCommand AllCheckedButtonCommand 
+        public DelegateCommand AllCheckedButtonCommand
         {
             get { return allCheckedButtonCommand; }
-            private set { SetProperty(ref allCheckedButtonCommand, value); } 
+            private set { SetProperty(ref allCheckedButtonCommand, value); }
         }
         public DelegateCommand ChangeModInfoButtonCommand { get; private set; }
 
         private DelegateCommand modRepositoryButtonCommand;
-        public DelegateCommand ModRepositoryButtonCommand 
+        public DelegateCommand ModRepositoryButtonCommand
         {
             get { return modRepositoryButtonCommand; }
             private set { SetProperty(ref modRepositoryButtonCommand, value); }
@@ -154,9 +152,9 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            Syncer dm, ChangeModInfoModel cmipm,ModInstaller mi,PastModsDataFetcher pmdf,
-            GitHubApi gha, LocalMods lmdm, ConfigFile cf,SettingsVerifier sv,LocalModsDataFetcher lmdf,
-            PastMods pmdm, ModCsv mc,Initializer i,MyselfUpdater u,ModUpdater mu,MAMods mam)
+            Syncer dm, ChangeModInfoModel cmipm, ModInstaller mi, PastModsDataFetcher pmdf,
+            GitHubApi gha, LocalMods lmdm, ConfigFile cf, SettingsVerifier sv, LocalModsDataFetcher lmdf,
+            PastMods pmdm, ModCsv mc, Initializer i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
             localMods = lmdm;
             syncer = dm;
@@ -244,7 +242,7 @@ namespace BSModManager.ViewModels
                 AllButtonEnable();
                 RegionManager.RequestNavigate("ContentRegion", x);
             });
-            
+
             ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
             {
                 AllCheckedButtonCommand = new DelegateCommand(() =>

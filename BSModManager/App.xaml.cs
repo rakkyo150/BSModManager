@@ -27,7 +27,7 @@ namespace BSModManager
             // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
             containerRegistry.RegisterSingleton<ChangeModInfoModel>();
 
-            
+
             containerRegistry.RegisterSingleton<PastMods>();
             containerRegistry.RegisterSingleton<RecommendMods>();
             containerRegistry.RegisterSingleton<LocalMods>();

@@ -5,11 +5,8 @@ using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -35,7 +32,7 @@ namespace BSModManager.ViewModels
 
         public ReactiveProperty<string> BSFolderPath { get; } = new ReactiveProperty<string>(Folder.Instance.BSFolderPath);
         public ReactiveProperty<string> MAExePath { get; } = new ReactiveProperty<string>(FilePath.Instance.MAExePath);
-        
+
         public ReactiveProperty<bool> OpenBSFolderButtonEnable { get; } = new ReactiveProperty<bool>();
 
         public ReactiveProperty<string> VerifyBSFolder { get; } = new ReactiveProperty<string>("〇");
@@ -46,7 +43,7 @@ namespace BSModManager.ViewModels
         public ReactiveProperty<Brush> VerifyMAExeColor { get; } = new ReactiveProperty<Brush>(Brushes.Green);
 
         // IContainerProviderをDIしてResolveで取ってきてもOK
-        public SettingsTabViewModel(ConfigFile cf,GitHubApi gha,SettingsVerifier sv)
+        public SettingsTabViewModel(ConfigFile cf, GitHubApi gha, SettingsVerifier sv)
         {
             configFile = cf;
             gitHubApi = gha;

@@ -17,7 +17,7 @@ namespace BSModManager.Models
         GitHubApi gitHubManager;
         MAMods mAMod;
 
-        public ChangeModInfoModel(IDialogService ds, LocalMods mdm, GitHubApi ghm,MAMods mam)
+        public ChangeModInfoModel(IDialogService ds, LocalMods mdm, GitHubApi ghm, MAMods mam)
         {
             dialogService = ds;
             modsDataModel = mdm;
@@ -157,7 +157,7 @@ namespace BSModManager.Models
             get { return position; }
             set { SetProperty(ref position, value); }
         }
-        
+
         public void ChangeModInfo()
         {
             // 何個目のCheckedか

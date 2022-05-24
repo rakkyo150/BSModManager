@@ -5,10 +5,10 @@ using System.Windows.Forms;
 
 namespace BSModManager.Static
 {
-    public class FilePath: BindableBase
+    public class FilePath : BindableBase
     {
         public static FilePath Instance { get; set; } = new FilePath();
-        
+
         public readonly string configFilePath = Path.Combine(Environment.CurrentDirectory, "config.json");
         public readonly string mAModCsvPath = Path.Combine(Folder.Instance.dataFolder, "ModAssistantModData.csv");
 
@@ -16,7 +16,7 @@ namespace BSModManager.Static
         public string MAExePath
         {
             get { return mAExePath; }
-            set 
+            set
             { SetProperty(ref mAExePath, value); }
         }
 

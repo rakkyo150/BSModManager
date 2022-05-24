@@ -1,5 +1,4 @@
-﻿using BSModManager.Models;
-using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using Prism.Mvvm;
 using System;
 using System.IO;
@@ -19,8 +18,8 @@ namespace BSModManager.Static
         public string BSFolderPath
         {
             get { return bSFolderPath; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref bSFolderPath, value);
             }
         }

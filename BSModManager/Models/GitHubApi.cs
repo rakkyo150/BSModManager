@@ -2,7 +2,6 @@
 using Octokit;
 using Prism.Mvvm;
 using System;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -223,7 +222,7 @@ namespace BSModManager.Models
                             Console.WriteLine($"対象のURL : {uri}");
                             return false;
                         }
-                        
+
                         using (var content = response.Content)
                         using (var stream = await content.ReadAsStreamAsync())
                         {
@@ -236,7 +235,7 @@ namespace BSModManager.Models
                             {
                                 await stream.CopyToAsync(fileStream);
                             }
-                            
+
                             return true;
                         }
                     }

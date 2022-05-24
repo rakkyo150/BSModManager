@@ -1,9 +1,5 @@
 ﻿using BSModManager.Static;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BSModManager.Models
@@ -38,11 +34,11 @@ namespace BSModManager.Models
             set { SetProperty(ref bSFolderAndGitHubToken, value); }
         }
         GitHubApi gitHubApi;
-        
+
         public SettingsVerifier(GitHubApi gha)
         {
             gitHubApi = gha;
-            
+
             this.PropertyChanged += (sender, e) =>
             {
                 if (BSFolder && GitHubToken) BSFolderAndGitHubToken = true;
@@ -61,7 +57,7 @@ namespace BSModManager.Models
 
             Folder.Instance.PropertyChanged += (sender, e) =>
             {
-                BSFolder = GameVersion.Version != "---" ;
+                BSFolder = GameVersion.Version != "---";
             };
 
             FilePath.Instance.PropertyChanged += (sender, e) =>

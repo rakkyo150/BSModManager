@@ -11,15 +11,15 @@ namespace BSModManager.Models
         GitHubApi gitHubApi;
         ModDisposer modDisposer;
         Syncer localModSyncer;
-        
-        public ModUpdater(LocalMods lmdm,GitHubApi gha,ModDisposer md,Syncer lms)
+
+        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md, Syncer lms)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
             modDisposer = md;
             localModSyncer = lms;
         }
-        
+
         public void Update()
         {
             bool openMA = false;
