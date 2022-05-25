@@ -64,6 +64,7 @@ namespace BSModManager.Models
                 catch (Exception ex)
                 {
                     Console.WriteLine($"{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
@@ -121,8 +122,7 @@ namespace BSModManager.Models
             private string description = "?";
             private Brush installedColor = Brushes.Green;
             private string url = "";
-
-            Refresher refresher;
+            readonly Refresher refresher;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 

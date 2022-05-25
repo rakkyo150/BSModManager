@@ -8,7 +8,7 @@ namespace BSModManager.Models
 {
     public class MAMods
     {
-        public MAModStructure[] modAssistantAllMods { get; set; }
+        public MAModStructure[] ModAssistantAllMods { get; set; }
 
         public async Task<MAModStructure[]> GetAllAsync()
         {

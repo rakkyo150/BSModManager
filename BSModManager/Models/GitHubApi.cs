@@ -22,7 +22,7 @@ namespace BSModManager.Models
             }
         }
 
-        MyselfUpdater myselfUpdater;
+        readonly MyselfUpdater myselfUpdater;
 
         public GitHubApi(MyselfUpdater u)
         {
@@ -31,7 +31,6 @@ namespace BSModManager.Models
 
         public async Task<bool> CheckNewVersionAndDowonload()
         {
-            GitHubClient github = new GitHubClient(new ProductHeaderValue("BSModManager"));
             string url = "https://github.com/rakkyo150/BSModManager";
             string destDirFullPath;
 
@@ -96,8 +95,10 @@ namespace BSModManager.Models
         public async Task DownloadAsync(string url, Version currentVersion, string destDirFullPath)
         {
             var credential = new Credentials(GitHubToken);
-            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"));
-            gitHub.Credentials = credential;
+            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
+            {
+                Credentials = credential
+            };
 
             string temp = url.Replace("https://github.com/", "");
             int nextSlashPosition = temp.IndexOf('/');
@@ -164,8 +165,10 @@ namespace BSModManager.Models
         public async Task<Release> GetModLatestVersionAsync(string url)
         {
             var credential = new Credentials(GitHubToken);
-            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"));
-            gitHub.Credentials = credential;
+            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"))
+            {
+                Credentials = credential
+            };
 
             string temp = url.Replace("https://github.com/", "");
             int nextSlashPosition = temp.IndexOf('/');
@@ -179,15 +182,12 @@ namespace BSModManager.Models
 
             string owner = temp.Substring(0, nextSlashPosition);
             string name = temp.Substring(nextSlashPosition + 1);
-
-            Version latestVersion = null;
-            Release response = null;
-
+            Release response;
             try
             {
                 // プレリリース非対応
                 response = await gitHub.Repository.Release.GetLatest(owner, name);
-                latestVersion = DetectVersion(response.TagName);
+                Version latestVersion = DetectVersion(response.TagName);
 
                 if (latestVersion == null)
                 {
@@ -198,6 +198,7 @@ namespace BSModManager.Models
             {
                 Console.WriteLine("リポジトリのURLではなさそうです");
                 Console.WriteLine($"対象のURL : {url}");
+                Console.WriteLine(ex.Message);
                 return null;
             }
 
@@ -283,8 +284,10 @@ namespace BSModManager.Models
             if (GitHubToken == "") return false;
 
             var credential = new Credentials(GitHubToken);
-            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"));
-            gitHub.Credentials = credential;
+            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"))
+            {
+                Credentials = credential
+            };
 
             string owner = "rakkyo150";
             string name = "GithubModUpdateCheckerConsole";

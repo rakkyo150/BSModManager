@@ -22,8 +22,8 @@ namespace BSModManager.Models
                     Mod = a.Mod,
                     LocalVersion = a.Installed.ToString(),
                     LatestVersion = a.Latest.ToString(),
-                    Original = (a.Original == "×") ? false : true,
-                    Ma = (a.MA == "×") ? false : true,
+                    Original = a.Original != "×",
+                    Ma = a.MA != "×",
                     Url = a.Url,
                 };
                 modInformationCsvList.Add(githubModInstance);

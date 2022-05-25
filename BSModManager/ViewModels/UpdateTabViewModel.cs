@@ -8,7 +8,7 @@ namespace BSModManager.ViewModels
 {
     public class UpdateTabViewModel : BindableBase
     {
-        LocalMods modsDataModel;
+        readonly LocalMods modsDataModel;
 
         public ObservableCollection<IModData> ModsData { get; }
 

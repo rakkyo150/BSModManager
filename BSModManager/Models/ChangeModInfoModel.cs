@@ -12,10 +12,10 @@ namespace BSModManager.Models
 {
     public class ChangeModInfoModel : BindableBase
     {
-        IDialogService dialogService;
-        LocalMods modsDataModel;
-        GitHubApi gitHubManager;
-        MAMods mAMod;
+        readonly IDialogService dialogService;
+        readonly LocalMods modsDataModel;
+        readonly GitHubApi gitHubManager;
+        readonly MAMods mAMod;
 
         public ChangeModInfoModel(IDialogService ds, LocalMods mdm, GitHubApi ghm, MAMods mam)
         {
@@ -206,6 +206,7 @@ namespace BSModManager.Models
             catch (Exception ex)
             {
                 MainWindowLog.Instance.Debug = "Google検索できませんでした";
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -248,7 +249,7 @@ namespace BSModManager.Models
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
 
-            MAModStructure[] a = mAMod.modAssistantAllMods.Where(x => x.name == modName).ToArray();
+            MAModStructure[] a = mAMod.ModAssistantAllMods.Where(x => x.name == modName).ToArray();
             ExistInMA = true;
             Latest = new Version(a[0].version);
             Url = a[0].link;
@@ -268,7 +269,7 @@ namespace BSModManager.Models
 
         private bool ExistsModDataInMA()
         {
-            return Array.Exists(mAMod.modAssistantAllMods, x => x.name == modName);
+            return Array.Exists(mAMod.ModAssistantAllMods, x => x.name == modName);
         }
     }
 }

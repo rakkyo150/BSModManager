@@ -32,7 +32,6 @@ namespace BSModManager.Models
                 Console.WriteLine($"{Folder.Instance.tmpFolder}を作成します");
                 Directory.CreateDirectory(Folder.Instance.tmpFolder);
             }
-            DirectoryInfo dir = new DirectoryInfo(Folder.Instance.tmpFolder);
 
             //ディレクトリ以外の全ファイルを削除
             string[] filePaths = Directory.GetFiles(path);

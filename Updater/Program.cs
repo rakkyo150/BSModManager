@@ -37,13 +37,16 @@ namespace Updater
                 Console.WriteLine("本体のアップデート完了");
                 Console.WriteLine("Enterで本体を再起動します");
                 Console.ReadLine();
-                ProcessStartInfo processStartInfo = new ProcessStartInfo();
-                processStartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "BSModManager.exe");
+                ProcessStartInfo processStartInfo = new ProcessStartInfo
+                {
+                    FileName = Path.Combine(Environment.CurrentDirectory, "BSModManager.exe")
+                };
                 Process process = Process.Start(processStartInfo);
                 Environment.Exit(0);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 Console.WriteLine("正常にアップデートができませんでした");
                 Console.WriteLine("最新バージョンのフォルダが生成されているはずなので、手動で中身を上書きコピペしてください");
                 Console.ReadLine();

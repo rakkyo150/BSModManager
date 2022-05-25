@@ -10,10 +10,10 @@ namespace BSModManager.Models
 {
     public class ModInstaller
     {
-        LocalMods localModsDataModel;
-        GitHubApi gitHubApi;
-        ModDisposer modDisposer;
-        Refresher refresher;
+        readonly LocalMods localModsDataModel;
+        readonly GitHubApi gitHubApi;
+        readonly ModDisposer modDisposer;
+        readonly Refresher refresher;
 
         public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r)
         {
