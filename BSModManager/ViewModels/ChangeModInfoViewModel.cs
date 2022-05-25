@@ -11,7 +11,7 @@ namespace BSModManager.ViewModels
 {
     public class ChangeModInfoViewModel : BindableBase, IDialogAware, IDestructible
     {
-        private CompositeDisposable disposables { get; } = new CompositeDisposable();
+        private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReadOnlyReactivePropertySlim<string> ModNameAndProgress { get; }
         public ReactiveProperty<string> Url { get; }
@@ -32,23 +32,23 @@ namespace BSModManager.ViewModels
         {
             changeModInfoPropertyModel = cmipm;
 
-            ModNameAndProgress = changeModInfoPropertyModel.ObserveProperty(x => x.ModNameAndProgress).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            ModNameAndProgress = changeModInfoPropertyModel.ObserveProperty(x => x.ModNameAndProgress).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             // 双方向のバインドにはToReactivePropertyAsSynchronizedを使う(ToReactivePropertyでは片方向になってしまう)
 
             // SetterでModsDataにデータセットされます
-            Url = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Url).AddTo(disposables);
-            ExistInMA = changeModInfoPropertyModel.ObserveProperty(x => x.ExistInMA).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            Url = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Url).AddTo(Disposables);
+            ExistInMA = changeModInfoPropertyModel.ObserveProperty(x => x.ExistInMA).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
             // SetterでModsDataにデータセットされます
-            Original = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Original).AddTo(disposables);
+            Original = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Original).AddTo(Disposables);
 
-            NextOrFinish = changeModInfoPropertyModel.ObserveProperty(x => x.NextOrFinish).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            NextOrFinish = changeModInfoPropertyModel.ObserveProperty(x => x.NextOrFinish).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
 
             SearchMod.Subscribe(() =>
             {
                 changeModInfoPropertyModel.Search();
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             ExitCommand.Subscribe(() =>
             {
                 // Exitするので
@@ -61,7 +61,7 @@ namespace BSModManager.ViewModels
                 {
                     changeModInfoPropertyModel.NextOrFinish = "Next";
                 }
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             NextOrFinishCommand.Subscribe(() =>
             {
                 canCloseDialog = true;
@@ -69,7 +69,7 @@ namespace BSModManager.ViewModels
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
                 canCloseDialog = false;
                 changeModInfoPropertyModel.ChangeModInfo();
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
         }
 
         public string Title => "Change Mod Info";
@@ -88,7 +88,7 @@ namespace BSModManager.ViewModels
 
         public void Destroy()
         {
-            disposables.Dispose();
+            Disposables.Dispose();
         }
     }
 }

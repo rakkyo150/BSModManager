@@ -14,11 +14,11 @@ namespace BSModManager.ViewModels
 {
     public class SettingsTabViewModel : BindableBase, IDestructible
     {
-        ConfigFileHandler configFile;
-        GitHubApi gitHubApi;
-        SettingsVerifier settingsVerifier;
+        readonly ConfigFileHandler configFile;
+        readonly GitHubApi gitHubApi;
+        readonly SettingsVerifier settingsVerifier;
 
-        CompositeDisposable disposables { get; } = new CompositeDisposable();
+        CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReactiveCommand SelectBSFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenBSFolder { get; }
@@ -49,15 +49,15 @@ namespace BSModManager.ViewModels
             gitHubApi = gha;
             settingsVerifier = sv;
 
-            BSFolderPath.AddTo(disposables);
-            MAExePath.AddTo(disposables);
-            OpenBSFolderButtonEnable.AddTo(disposables);
-            VerifyBSFolder.AddTo(disposables);
-            VerifyBSFolderColor.AddTo(disposables);
-            VerifyGitHubToken.AddTo(disposables);
-            VerifyGitHubTokenColor.AddTo(disposables);
-            VerifyMAExe.AddTo(disposables);
-            VerifyMAExeColor.AddTo(disposables);
+            BSFolderPath.AddTo(Disposables);
+            MAExePath.AddTo(Disposables);
+            OpenBSFolderButtonEnable.AddTo(Disposables);
+            VerifyBSFolder.AddTo(Disposables);
+            VerifyBSFolderColor.AddTo(Disposables);
+            VerifyGitHubToken.AddTo(Disposables);
+            VerifyGitHubTokenColor.AddTo(Disposables);
+            VerifyMAExe.AddTo(Disposables);
+            VerifyMAExeColor.AddTo(Disposables);
 
             Folder.Instance.PropertyChanged += (sender, e) =>
             {
@@ -77,7 +77,7 @@ namespace BSModManager.ViewModels
             {
                 Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
                 MainWindowLog.Instance.Debug = Folder.Instance.BSFolderPath;
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             OpenBSFolder = OpenBSFolderButtonEnable
                 .ToReactiveCommand()
                 .WithSubscribe(() =>
@@ -85,37 +85,37 @@ namespace BSModManager.ViewModels
                     MainWindowLog.Instance.Debug = "Open BS Folder";
                     Folder.Instance.Open(Folder.Instance.BSFolderPath);
                     MainWindowLog.Instance.Debug = Folder.Instance.BSFolderPath;
-                }).AddTo(disposables);
+                }).AddTo(Disposables);
             ChangeToken.Subscribe((x) =>
             {
                 gitHubApi.GitHubToken = ((PasswordBox)x).Password;
                 MainWindowLog.Instance.Debug = "GitHub Token Changed";
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             SelectMAExe.Subscribe(() =>
             {
                 MainWindowLog.Instance.Debug = "Select ModAssistant.exe";
                 FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             OpenMAFolder.Subscribe(() =>
             {
                 MainWindowLog.Instance.Debug = "Open ModAssistant Folder";
                 Folder.Instance.Open(Path.GetDirectoryName(FilePath.Instance.MAExePath));
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             OpenDataFolder.Subscribe(_ =>
             {
                 MainWindowLog.Instance.Debug = "Open Data Folder";
                 Folder.Instance.Open(Folder.Instance.dataFolder);
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             OpenBackupFolder.Subscribe(_ =>
             {
                 MainWindowLog.Instance.Debug = "Open Backup Folder";
                 Folder.Instance.Open(Folder.Instance.backupFolder);
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
             OpenModTempFolder.Subscribe(_ =>
             {
                 MainWindowLog.Instance.Debug = "Open Temp Folder";
                 Folder.Instance.Open(Folder.Instance.tmpFolder);
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
 
 
             if (!settingsVerifier.BSFolder)
@@ -175,7 +175,7 @@ namespace BSModManager.ViewModels
 
         public void Destroy()
         {
-            disposables.Dispose();
+            Disposables.Dispose();
         }
     }
 }

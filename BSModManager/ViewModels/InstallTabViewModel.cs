@@ -23,8 +23,8 @@ namespace BSModManager.ViewModels
             }
         }
 
-        PastMods pastModsDataModel;
-        RecommendMods recommendModsDataModel;
+        readonly PastMods pastModsDataModel;
+        readonly RecommendMods recommendModsDataModel;
 
         public InstallTabViewModel(PastMods pmdm, RecommendMods rmdm)
         {

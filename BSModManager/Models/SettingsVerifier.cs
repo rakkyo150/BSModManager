@@ -33,7 +33,8 @@ namespace BSModManager.Models
             get { return bSFolderAndGitHubToken; }
             set { SetProperty(ref bSFolderAndGitHubToken, value); }
         }
-        GitHubApi gitHubApi;
+
+        readonly GitHubApi gitHubApi;
 
         public SettingsVerifier(GitHubApi gha)
         {

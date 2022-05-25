@@ -64,6 +64,7 @@ namespace BSModManager.Models
                 catch (Exception ex)
                 {
                     Console.WriteLine($"{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
@@ -118,7 +119,7 @@ namespace BSModManager.Models
         // https://yutori-techblog.com/innerclass-private-access
         public class LocalModData : BindableBase, IDestructible, IModData
         {
-            Refresher refresher;
+            readonly Refresher refresher;
 
             public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 

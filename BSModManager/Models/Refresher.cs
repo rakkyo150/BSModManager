@@ -13,11 +13,11 @@ namespace BSModManager.Models
 {
     public class Refresher
     {
-        MAMods mAMods;
-        ModCsvHandler modCsvHandler;
-        LocalMods localMods;
-        PastMods pastMods;
-        GitHubApi gitHubApi;
+        readonly MAMods mAMods;
+        readonly ModCsvHandler modCsvHandler;
+        readonly LocalMods localMods;
+        readonly PastMods pastMods;
+        readonly GitHubApi gitHubApi;
         
         public Refresher(MAMods mam,LocalMods lm,ModCsvHandler mch,PastMods pm,GitHubApi gha)
         {
@@ -50,7 +50,7 @@ namespace BSModManager.Models
             foreach (var localMod in localMods.LocalModsData)
             {
                 if (!previousDataList.Any(x => x.Mod == localMod.Mod)) continue;
-                if (!previousDataList.Find(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇" ? true : false)) continue;
+                if (!previousDataList.Find(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇")) continue;
 
                 previousDataList.Remove(previousDataList.Find(x => x.Mod == localMod.Mod));
 
@@ -104,7 +104,7 @@ namespace BSModManager.Models
                 }
             }
 
-            foreach (var modAssistantMod in mAMods.modAssistantAllMods)
+            foreach (var modAssistantMod in mAMods.ModAssistantAllMods)
             {
                 if (!previousDataList.Any(x => x.Mod == modAssistantMod.name)) continue;
                 if (!previousDataList.Find(x => x.Mod == modAssistantMod.name).Original) continue;
@@ -119,15 +119,15 @@ namespace BSModManager.Models
             {
                 if (previousData.Ma)
                 {
-                    bool existsInNowMa = Array.Exists(mAMods.modAssistantAllMods, x => x.name == previousData.Mod);
+                    bool existsInNowMa = Array.Exists(mAMods.ModAssistantAllMods, x => x.name == previousData.Mod);
 
                     DateTime now = DateTime.Now;
                     DateTime mAUpdatedAt = existsInNowMa ?
-                        DateTime.Parse(mAMods.modAssistantAllMods.First(x => x.name == previousData.Mod).updatedDate) : DateTime.MaxValue;
+                        DateTime.Parse(mAMods.ModAssistantAllMods.First(x => x.name == previousData.Mod).updatedDate) : DateTime.MaxValue;
                     string updated = "?";
 
                     string description = existsInNowMa ?
-                       mAMods.modAssistantAllMods.First(x => x.name == previousData.Mod).description : "?";
+                       mAMods.ModAssistantAllMods.First(x => x.name == previousData.Mod).description : "?";
 
                     if (mAUpdatedAt != DateTime.MaxValue)
                     {
@@ -226,7 +226,7 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                var temp = Array.Find(mAMods.modAssistantAllMods, x => x.name == localModNameAndVersion.Key);
+                var temp = Array.Find(mAMods.ModAssistantAllMods, x => x.name == localModNameAndVersion.Key);
 
                 DateTime now = DateTime.Now;
                 DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
@@ -349,7 +349,7 @@ namespace BSModManager.Models
 
         private bool ExistsDataInMAMod(KeyValuePair<string, Version> modNameAndVersion)
         {
-            return Array.Exists(mAMods.modAssistantAllMods, x => x.name == modNameAndVersion.Key);
+            return Array.Exists(mAMods.ModAssistantAllMods, x => x.name == modNameAndVersion.Key);
         }
 
         private bool ExistsDataInLocalModsData(KeyValuePair<string, Version> modNameAndVersion)

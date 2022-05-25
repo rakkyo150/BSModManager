@@ -10,13 +10,12 @@ namespace BSModManager.Models
 {
     public class PreviousLocalModsDataGetter
     {
-        LocalMods localMods;
-        GitHubApi gitHubApi;
-        MAMods mAMods;
-        ModCsvHandler modCsv;
-        Refresher refresher;
-
-        DateTime now = DateTime.Now;
+        readonly LocalMods localMods;
+        readonly GitHubApi gitHubApi;
+        readonly MAMods mAMods;
+        readonly ModCsvHandler modCsv;
+        readonly Refresher refresher;
+        readonly DateTime now = DateTime.Now;
         string updated = "";
 
         public PreviousLocalModsDataGetter(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc,Refresher r)
@@ -43,7 +42,7 @@ namespace BSModManager.Models
                 {
                     if (!previousData.Original) continue;
 
-                    var temp = Array.Find(mAMods.modAssistantAllMods, x => x.name == previousData.Mod);
+                    var temp = Array.Find(mAMods.ModAssistantAllMods, x => x.name == previousData.Mod);
 
                     DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
                     if ((now - mAUpdatedAt).Days >= 1)
@@ -116,7 +115,7 @@ namespace BSModManager.Models
 
         private bool ExistsModDataInMA(ModCsvIndex previousData)
         {
-            return Array.Exists(mAMods.modAssistantAllMods, x => x.name == previousData.Mod);
+            return Array.Exists(mAMods.ModAssistantAllMods, x => x.name == previousData.Mod);
         }
     }
 }

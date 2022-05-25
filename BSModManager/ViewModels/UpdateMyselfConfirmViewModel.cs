@@ -10,21 +10,21 @@ namespace BSModManager.ViewModels
 {
     public class UpdateMyselfConfirmViewModel : BindableBase, IDestructible
     {
-        MyselfUpdater updater;
+        readonly MyselfUpdater updater;
 
-        CompositeDisposable disposables { get; } = new CompositeDisposable();
+        CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReadOnlyReactivePropertySlim<Version> LatestMyselfVersion { get; }
 
         public UpdateMyselfConfirmViewModel(MyselfUpdater u)
         {
             updater = u;
-            LatestMyselfVersion = updater.ObserveProperty(x => x.LatestMyselfVersion).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            LatestMyselfVersion = updater.ObserveProperty(x => x.LatestMyselfVersion).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
         }
 
         public void Destroy()
         {
-            disposables.Dispose();
+            Disposables.Dispose();
         }
     }
 }

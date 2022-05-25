@@ -21,7 +21,7 @@ namespace BSModManager.ViewModels
 {
     public class MainWindowViewModel : BindableBase, IDestructible
     {
-        CompositeDisposable disposables { get; } = new CompositeDisposable();
+        CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
         public ReadOnlyReactivePropertySlim<string> Debug { get; }
@@ -110,21 +110,21 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref refreshButtonEnable, value); }
         }
 
-        IDialogService dialogService;
-        LocalMods localMods;
-        ChangeModInfoModel changeModInfoPropertyModel;
-        GitHubApi gitHubApi;
-        PastMods pastMods;
-        ModCsvHandler modCsv;
-        InitialDirectorySetup initializer;
-        MyselfUpdater mySelfUpdater;
-        ModUpdater modUpdater;
-        MAMods mAMod;
-        ConfigFileHandler configFile;
-        SettingsVerifier settingsVerifier;
-        ModInstaller modInstaller;
-        PreviousLocalModsDataGetter localModsDataFetcher;
-        Refresher refresher;
+        readonly IDialogService dialogService;
+        readonly LocalMods localMods;
+        readonly ChangeModInfoModel changeModInfoPropertyModel;
+        readonly GitHubApi gitHubApi;
+        readonly PastMods pastMods;
+        readonly ModCsvHandler modCsv;
+        readonly InitialDirectorySetup initializer;
+        readonly MyselfUpdater mySelfUpdater;
+        readonly ModUpdater modUpdater;
+        readonly MAMods mAMod;
+        readonly ConfigFileHandler configFile;
+        readonly SettingsVerifier settingsVerifier;
+        readonly ModInstaller modInstaller;
+        readonly PreviousLocalModsDataGetter localModsDataFetcher;
+        readonly Refresher refresher;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
@@ -177,7 +177,7 @@ namespace BSModManager.ViewModels
             System.Windows.Application.Current.MainWindow.Closing += new CancelEventHandler(ClosingCommand);
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            this.Debug = MainWindowLog.Instance.ObserveProperty(x => x.Debug).ToReadOnlyReactivePropertySlim().AddTo(disposables);
+            this.Debug = MainWindowLog.Instance.ObserveProperty(x => x.Debug).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
 
             Folder.Instance.PropertyChanged += (sender, e) =>
             {
@@ -292,9 +292,11 @@ namespace BSModManager.ViewModels
                         {
                             mySelfUpdater.UpdateUpdater();
 
-                            ProcessStartInfo processStartInfo = new ProcessStartInfo();
-                            processStartInfo.Arguments = mySelfUpdater.LatestMyselfVersion.ToString();
-                            processStartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "Updater.exe");
+                            ProcessStartInfo processStartInfo = new ProcessStartInfo
+                            {
+                                Arguments = mySelfUpdater.LatestMyselfVersion.ToString(),
+                                FileName = Path.Combine(Environment.CurrentDirectory, "Updater.exe")
+                            };
                             Process process = Process.Start(processStartInfo);
                             Environment.Exit(0);
                         }
@@ -314,7 +316,7 @@ namespace BSModManager.ViewModels
                     await Task.Run(() => { initializer.CleanModsTemp(Folder.Instance.tmpFolder); });
                     MainWindowLog.Instance.Debug = "Finish Cleanup ModsTemp";
 
-                    mAMod.modAssistantAllMods = await mAMod.GetAllAsync();
+                    mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
 
                     await localModsDataFetcher.GetData();
                 }
@@ -374,7 +376,7 @@ namespace BSModManager.ViewModels
 
         public void Destroy()
         {
-            disposables.Dispose();
+            Disposables.Dispose();
         }
     }
 }

@@ -19,17 +19,16 @@ namespace BSModManager.ViewModels
 {
     public class InitialSettingViewModel : BindableBase, IDialogAware, IDestructible
     {
-        SettingsVerifier settingsVerifier;
+        readonly SettingsVerifier settingsVerifier;
+        readonly GitHubApi gitHubApi;
+        readonly LocalMods modsDataModel;
+        readonly ModCsvHandler modCsv;
+        readonly InitialDirectorySetup initializer;
+        readonly MAMods mAMod;
+        readonly ConfigFileHandler configFile;
+        readonly Refresher refresher;
 
-        GitHubApi gitHubApi;
-        LocalMods modsDataModel;
-        ModCsvHandler modCsv;
-        InitialDirectorySetup initializer;
-        MAMods mAMod;
-        ConfigFileHandler configFile;
-        Refresher refresher;
-
-        CompositeDisposable disposables { get; } = new CompositeDisposable();
+        CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReactiveProperty<string> VerifyBSFolder { get; }
         public ReactiveProperty<Brush> VerifyBSFolderColor { get; }
@@ -66,16 +65,16 @@ namespace BSModManager.ViewModels
             configFile = cf;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            BSFolderPath = Folder.Instance.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(disposables);
-            MAExePath = FilePath.Instance.ToReactivePropertyAsSynchronized(x => x.MAExePath).AddTo(disposables);
+            BSFolderPath = Folder.Instance.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(Disposables);
+            MAExePath = FilePath.Instance.ToReactivePropertyAsSynchronized(x => x.MAExePath).AddTo(Disposables);
 
-            VerifyBSFolder = new ReactiveProperty<string>("〇").AddTo(disposables);
-            VerifyBSFolderColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(disposables);
-            VerifyGitHubToken = new ReactiveProperty<string>("〇").AddTo(disposables);
-            VerifyGitHubTokenColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(disposables);
-            VerifyBSFolderAndGitHubToken = new ReactiveProperty<bool>(true).AddTo(disposables);
-            VerifyMAExe = new ReactiveProperty<string>("〇").AddTo(disposables);
-            VerifyMAExeColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(disposables);
+            VerifyBSFolder = new ReactiveProperty<string>("〇").AddTo(Disposables);
+            VerifyBSFolderColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(Disposables);
+            VerifyGitHubToken = new ReactiveProperty<string>("〇").AddTo(Disposables);
+            VerifyGitHubTokenColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(Disposables);
+            VerifyBSFolderAndGitHubToken = new ReactiveProperty<bool>(true).AddTo(Disposables);
+            VerifyMAExe = new ReactiveProperty<string>("〇").AddTo(Disposables);
+            VerifyMAExeColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(Disposables);
 
             if (!settingsVerifier.BSFolder)
             {
@@ -139,21 +138,21 @@ namespace BSModManager.ViewModels
             {
                 Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
                 configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
 
             SelectMAExeCommand.Subscribe(() =>
             {
                 FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
                 configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
 
             SettingFinishCommand = VerifyBSFolderAndGitHubToken.ToReactiveCommand()
-                .WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK))).AddTo(disposables);
+                .WithSubscribe(() => RequestClose.Invoke(new DialogResult(ButtonResult.OK))).AddTo(Disposables);
 
             VerifyGitHubTokenCommand.Subscribe((x) =>
             {
                 gitHubApi.GitHubToken = ((PasswordBox)x).Password;
-            }).AddTo(disposables);
+            }).AddTo(Disposables);
         }
 
         public string Title => "Initial Setting";
@@ -170,7 +169,7 @@ namespace BSModManager.ViewModels
                 initializer.Backup();
                 MainWindowLog.Instance.Debug = "Finish Making Backup";
             }).GetAwaiter().GetResult();
-            Task.Run(() => { mAMod.modAssistantAllMods = mAMod.GetAllAsync().Result; }).GetAwaiter().GetResult();
+            Task.Run(() => { mAMod.ModAssistantAllMods = mAMod.GetAllAsync().Result; }).GetAwaiter().GetResult();
 
             string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
@@ -180,11 +179,11 @@ namespace BSModManager.ViewModels
                 previousDataList = Task.Run(async () => await modCsv.Read(modsDataCsvPath)).GetAwaiter().GetResult();
                 foreach (var previousData in previousDataList)
                 {
-                    if (Array.Exists(mAMod.modAssistantAllMods, x => x.name == previousData.Mod))
+                    if (Array.Exists(mAMod.ModAssistantAllMods, x => x.name == previousData.Mod))
                     {
                         if (previousData.Original)
                         {
-                            var temp = Array.Find(mAMod.modAssistantAllMods, x => x.name == previousData.Mod);
+                            var temp = Array.Find(mAMod.ModAssistantAllMods, x => x.name == previousData.Mod);
 
                             DateTime now = DateTime.Now;
                             DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
@@ -275,7 +274,7 @@ namespace BSModManager.ViewModels
 
         public void Destroy()
         {
-            disposables.Dispose();
+            Disposables.Dispose();
         }
     }
 }
