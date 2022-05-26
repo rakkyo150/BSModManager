@@ -177,7 +177,7 @@ namespace BSModManager.ViewModels
             System.Windows.Application.Current.MainWindow.Closing += new CancelEventHandler(ClosingCommand);
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            this.Debug = MainWindowLog.Instance.ObserveProperty(x => x.Debug).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
+            this.Debug = Logger.Instance.ObserveProperty(x => x.InfoLog).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
 
             Folder.Instance.PropertyChanged += (sender, e) =>
             {
@@ -198,14 +198,13 @@ namespace BSModManager.ViewModels
 
             UpdateOrInstallButtonCommand = new DelegateCommand<string>((x) =>
               {
-                  MainWindowLog.Instance.Debug = x;
+                  Logger.Instance.Debug(x + " Button pushed");
                   if (x == "Update")
                   {
                       modUpdater.Update();
                   }
                   else
                   {
-                      Console.WriteLine("test");
                       modInstaller.Install(pastMods);
                   }
               });
@@ -235,7 +234,7 @@ namespace BSModManager.ViewModels
                 {
                     localMods.ModRepositoryOpen(); ;
                 });
-                MainWindowLog.Instance.Debug = "Update";
+                Logger.Instance.Info("Update");
                 UpdateOrInstall = "Update";
                 AllButtonEnable();
                 RegionManager.RequestNavigate("ContentRegion", x);
@@ -251,7 +250,7 @@ namespace BSModManager.ViewModels
                 {
                     pastMods.ModRepositoryOpen(); ;
                 });
-                MainWindowLog.Instance.Debug = "Install";
+                Logger.Instance.Info("Install");
                 UpdateOrInstall = "Install";
                 AllButtonEnable();
                 RegionManager.RequestNavigate("ContentRegion", x);
@@ -259,7 +258,7 @@ namespace BSModManager.ViewModels
 
             ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
             {
-                MainWindowLog.Instance.Debug = "Settings";
+                Logger.Instance.Info("Settings");
                 AllButtonDisable();
                 ShowInstallTabViewEnable = true;
                 ShowSettingsTabViewEnable = true;
@@ -277,11 +276,11 @@ namespace BSModManager.ViewModels
 
             LoadedCommand = new DelegateCommand(async () =>
             {
-                MainWindowLog.Instance.Debug = "Start Initializing";
+                Logger.Instance.Info("Start Initializing");
 
                 AllButtonDisable();
 
-                MainWindowLog.Instance.Debug = "Check Myself Latest Version";
+                Logger.Instance.Info("Check Myself Latest Version");
                 bool update = await gitHubApi.CheckNewVersionAndDowonload();
 
                 if (update)
@@ -309,12 +308,12 @@ namespace BSModManager.ViewModels
                 }
                 else
                 {
-                    MainWindowLog.Instance.Debug = "Start Making Backup";
+                    Logger.Instance.Info("Start Making Backup");
                     await Task.Run(() => { initializer.Backup(); });
-                    MainWindowLog.Instance.Debug = "Finish Making Backup";
-                    MainWindowLog.Instance.Debug = "Start Cleanup ModsTemp";
+                    Logger.Instance.Info("Finish Making Backup");
+                    Logger.Instance.Info("Start Cleanup ModsTemp");
                     await Task.Run(() => { initializer.CleanModsTemp(Folder.Instance.tmpFolder); });
-                    MainWindowLog.Instance.Debug = "Finish Cleanup ModsTemp";
+                    Logger.Instance.Info("Finish Cleanup ModsTemp");
 
                     mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
 
@@ -335,18 +334,18 @@ namespace BSModManager.ViewModels
                     e.Cancel = true;
                     return;
                 }
-                else
-                {
-                    if (GameVersion.Version == "---") return;
 
-                    string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
-                    if (!Directory.Exists(dataDirectory))
-                    {
-                        Directory.CreateDirectory(dataDirectory);
-                    }
-                    string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-                    Task.Run(async () => await modCsv.Write(modsDataCsvPath, localMods.LocalModsData)).GetAwaiter().GetResult();
+                if (GameVersion.Version == "---") return;
+
+                string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
+                if (!Directory.Exists(dataDirectory))
+                {
+                    Directory.CreateDirectory(dataDirectory);
                 }
+                string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
+                Task.Run(async () => await modCsv.Write(modsDataCsvPath, localMods.LocalModsData)).GetAwaiter().GetResult();
+
+                Logger.Instance.GenerateLogFile();
             };
         }
 

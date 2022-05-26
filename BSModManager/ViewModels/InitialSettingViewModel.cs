@@ -165,9 +165,9 @@ namespace BSModManager.ViewModels
         {
             Task.Run(() =>
             {
-                MainWindowLog.Instance.Debug = "Start Making Backup";
+                Logger.Instance.Info("Start Making Backup");
                 initializer.Backup();
-                MainWindowLog.Instance.Debug = "Finish Making Backup";
+                Logger.Instance.Info("Finish Making Backup");
             }).GetAwaiter().GetResult();
             Task.Run(() => { mAMod.ModAssistantAllMods = mAMod.GetAllAsync().Result; }).GetAwaiter().GetResult();
 

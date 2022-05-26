@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using BSModManager.Static;
+using Prism.Mvvm;
 using System;
 using System.IO;
 using System.Windows;
@@ -39,7 +40,7 @@ namespace BSModManager.Models
                         file.CopyTo(tempPath, true);
                     }
                 }
-                Console.WriteLine("Updaterのアップデート完了");
+                Logger.Instance.Info("Updaterのアップデート完了");
             }
             catch (Exception ex)
             {

@@ -205,7 +205,7 @@ namespace BSModManager.Models
             }
             catch (Exception ex)
             {
-                MainWindowLog.Instance.Debug = "Google検索できませんでした";
+                Logger.Instance.Info("Google検索できませんでした");
                 Console.WriteLine(ex.Message);
             }
         }

@@ -13,7 +13,6 @@ namespace BSModManager
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            Folder.Instance.InitialCreate();
             base.OnStartup(e);
         }
 

@@ -226,7 +226,7 @@ namespace BSModManager.Models
                 {
                     if (!File.Exists(modFilePath) && !File.Exists(modPendingFilePath))
                     {
-                        MainWindowLog.Instance.Debug = $"Fail to Delete {modFilePath} or {modPendingFilePath}";
+                        Logger.Instance.Error($"Fail to Delete {modFilePath} or {modPendingFilePath}");
                         return;
                     }
 
@@ -241,7 +241,7 @@ namespace BSModManager.Models
                     }
 
                     Task.Run(()=>refresher.Refresh()).GetAwaiter().GetResult();
-                    MainWindowLog.Instance.Debug = $"Finish Deleting {modFilePath}";
+                    Logger.Instance.Info($"Finish Deleting {modFilePath}");
                 }
             }
         }
