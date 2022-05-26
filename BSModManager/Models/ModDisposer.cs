@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BSModManager.Static;
+using System;
 using System.IO;
 using System.IO.Compression;
 
@@ -26,9 +27,9 @@ namespace BSModManager.Models
                     }
                     File.Move(dllFileFullPath, installPath);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"{e}");
+                    Logger.Instance.Error($"{ex.Message}\nダウンロードしたModを正常に移動できませんでした");
                 }
             }
             foreach (var zipFileName in Directory.EnumerateFiles(sourceDirFullPath, "*.zip", SearchOption.TopDirectoryOnly))
@@ -50,9 +51,9 @@ namespace BSModManager.Models
                     }
                     File.Delete(zipFileName);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"{e}");
+                    Logger.Instance.Error($"{ex.Message}\nダウンロードしたModの解凍を正常に行えませんでした");
                 }
             }
         }

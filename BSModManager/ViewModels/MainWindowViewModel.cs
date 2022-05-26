@@ -281,13 +281,15 @@ namespace BSModManager.ViewModels
                 AllButtonDisable();
 
                 Logger.Instance.Info("Check Myself Latest Version");
-                bool update = await gitHubApi.CheckNewVersionAndDowonload();
+                bool canUpdate = await gitHubApi.CheckMyselfNewVersion();
 
-                if (update)
+                if (canUpdate)
                 {
                     if (MessageBoxResult.Yes != MessageBox.Show("更新版を発見しました。更新しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
                     {
-                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "Updater.exe")))
+                        bool hasDownloaded = await gitHubApi.DownloadMyselfNewVersion();
+                        
+                        if (hasDownloaded && File.Exists(Path.Combine(Environment.CurrentDirectory, "Updater.exe")))
                         {
                             mySelfUpdater.UpdateUpdater();
 

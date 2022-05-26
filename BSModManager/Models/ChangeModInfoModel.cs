@@ -205,8 +205,7 @@ namespace BSModManager.Models
             }
             catch (Exception ex)
             {
-                Logger.Instance.Info("Google検索できませんでした");
-                Console.WriteLine(ex.Message);
+                Logger.Instance.Error(ex.Message + "\nGoogle検索できませんでした");
             }
         }
 
@@ -215,14 +214,14 @@ namespace BSModManager.Models
             if (ExistInMA)  return;
 
             Release response = null;
-            Task.Run(() => { response = gitHubManager.GetModLatestVersionAsync(Url).Result; }).GetAwaiter().GetResult();
+            Task.Run(() => { response = gitHubManager.GetLatestReleaseAsync(Url).Result; }).GetAwaiter().GetResult();
             if (response != null)
             {
                 string releaseBody = response.Body;
                 var releaseCreatedAt = response.CreatedAt;
                 DateTimeOffset now = DateTimeOffset.UtcNow;
 
-                Latest = gitHubManager.DetectVersion(response.TagName);
+                Latest = gitHubManager.DetectVersionFromTagName(response.TagName);
 
                 if ((now - releaseCreatedAt).Days >= 1)
                 {
@@ -232,7 +231,6 @@ namespace BSModManager.Models
                 {
                     Updated = (now - releaseCreatedAt).Hours + "H" + (now - releaseCreatedAt).Minutes + "m ago";
                 }
-                Console.WriteLine("リリースの説明");
                 Description = releaseBody;
             }
             else

@@ -33,7 +33,6 @@ namespace BSModManager.Static
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 // 選択されたファイル名 (ファイルパス) をメッセージボックスに表示
-                Console.WriteLine(dialog.FileName);
                 return dialog.FileName;
             }
 

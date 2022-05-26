@@ -29,12 +29,9 @@ namespace BSModManager.Models
 
         public void AllCheckedOrUnchecked()
         {
-            Console.WriteLine(PastModsData.Count);
-
             int i = 0;
             if (PastModsData.Count(x => x.Checked == true) * 2 > PastModsData.Count)
             {
-                Console.WriteLine("to false");
                 foreach (var _ in PastModsData)
                 {
                     PastModsData[i].Checked = false;
@@ -43,7 +40,6 @@ namespace BSModManager.Models
                 return;
             }
 
-            Console.WriteLine("to true");
             foreach (var _ in PastModsData)
             {
                 PastModsData[i].Checked = true;
@@ -69,8 +65,7 @@ namespace BSModManager.Models
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
-                    Console.WriteLine(ex.Message);
+                    Logger.Instance.Error($"ex.Message\n{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
                 }
             }
         }
@@ -79,7 +74,7 @@ namespace BSModManager.Models
         {
             if (!ExistsSameData(modData))
             {
-                Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
+                Logger.Instance.Debug($"{modData}はAddされる予定でしたがUpdateに変更されます");
                 Add(modData);
                 return;
             }
@@ -92,7 +87,7 @@ namespace BSModManager.Models
         {
             if (ExistsSameData(modData))
             {
-                Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
+                Logger.Instance.Debug($"{modData}はAddされる予定でしたがUpdateに変更されます");
                 Update(modData);
                 return;
             }
@@ -104,7 +99,7 @@ namespace BSModManager.Models
         {
             if (!ExistsSameData(modData))
             {
-                Console.WriteLine($"{modData}のデータが存在しないため削除できませんでした");
+                Logger.Instance.Debug($"{modData}のデータが存在しないため削除できませんでした");
                 return;
             }
 

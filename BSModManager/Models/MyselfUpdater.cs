@@ -44,9 +44,8 @@ namespace BSModManager.Models
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                MessageBox.Show("Updaterのアップデートができませんでした\n最新バージョンのフォルダが生成されているはずなので、手動で中身を上書きコピペしてください",
-                        "アップデート失敗", MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Instance.Error($"{ex.Message}\nUpdaterのアップデートができませんでした" +
+                    $"\n最新バージョンのフォルダが生成されているはずなので、手動で中身を上書きコピペしてください");
                 Environment.Exit(0);
             }
         }
