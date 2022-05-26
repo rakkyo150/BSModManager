@@ -46,14 +46,14 @@ namespace BSModManager.Models
                 else BSFolderAndGitHubToken = false;
             };
 
-            Task.Run(async () => { GitHubToken = await gitHubApi.CheckCredential(); }).GetAwaiter().GetResult();
+            Task.Run(async () => { GitHubToken = await gitHubApi.VerifyGitHubToken(); }).GetAwaiter().GetResult();
             BSFolder = GameVersion.Version != "---";
             MAExe = FilePath.Instance.MAExePath.Contains("ModAssistant.exe");
 
             gitHubApi.PropertyChanged += (sender, e) =>
             {
                 // https://nryblog.work/call-sync-to-async-method/
-                Task.Run(async () => { GitHubToken = await gitHubApi.CheckCredential(); }).GetAwaiter().GetResult();
+                Task.Run(async () => { GitHubToken = await gitHubApi.VerifyGitHubToken(); }).GetAwaiter().GetResult();
             };
 
             Folder.Instance.PropertyChanged += (sender, e) =>

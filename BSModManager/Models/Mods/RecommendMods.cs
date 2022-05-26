@@ -23,12 +23,9 @@ namespace BSModManager.Models
 
         public void AllCheckedOrUnchecked()
         {
-            Console.WriteLine(RecommendModsData.Count);
-
             int i = 0;
             if (RecommendModsData.Count(x => x.Checked == true) * 2 > RecommendModsData.Count)
             {
-                Console.WriteLine("to false");
                 foreach (var _ in RecommendModsData)
                 {
                     RecommendModsData[i].Checked = false;
@@ -37,7 +34,6 @@ namespace BSModManager.Models
                 return;
             }
 
-            Console.WriteLine("to true");
             foreach (var _ in RecommendModsData)
             {
                 RecommendModsData[i].Checked = true;
@@ -63,8 +59,7 @@ namespace BSModManager.Models
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
-                    Console.WriteLine(ex.Message);
+                    Logger.Instance.Error($"ex.Message\n{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
                 }
             }
         }
@@ -73,7 +68,7 @@ namespace BSModManager.Models
         {
             if (!RecommendModsData.Any(x => x.Mod == modData.Mod) || !!RecommendModsData.Any(x => x.Original == modData.Original))
             {
-                Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
+                Logger.Instance.Debug($"{modData}はAddされる予定でしたがUpdateに変更されます");
                 Add(modData);
                 return;
             }
@@ -86,7 +81,7 @@ namespace BSModManager.Models
         {
             if (RecommendModsData.Any(x => x.Mod == modData.Mod) && RecommendModsData.Any(x => x.Original == modData.Original))
             {
-                Console.WriteLine($"{modData}はAddされる予定でしたがUpdateに変更されます");
+                Logger.Instance.Debug($"{modData}はAddされる予定でしたがUpdateに変更されます");
                 Update(modData);
                 return;
             }
@@ -98,7 +93,7 @@ namespace BSModManager.Models
         {
             if (!RecommendModsData.Any(x => x.Mod == modData.Mod) || !RecommendModsData.Any(x => x.Original == modData.Original))
             {
-                Console.WriteLine($"{modData}のデータが存在しないため削除できませんでした");
+                Logger.Instance.Debug($"{modData}のデータが存在しないため削除できませんでした");
                 return;
             }
 

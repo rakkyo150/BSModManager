@@ -213,7 +213,7 @@ namespace BSModManager.ViewModels
                     {
                         Release response = null;
                         string original = null;
-                        Task.Run(async () => { response = await gitHubApi.GetModLatestVersionAsync(previousData.Url); }).GetAwaiter().GetResult();
+                        Task.Run(async () => { response = await gitHubApi.GetLatestReleaseAsync(previousData.Url); }).GetAwaiter().GetResult();
 
                         if (!previousData.Original)
                         {
@@ -253,7 +253,7 @@ namespace BSModManager.ViewModels
                             modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                             {
                                 Mod = previousData.Mod,
-                                Latest = gitHubApi.DetectVersion(response.TagName),
+                                Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
                                 Updated = updated,
                                 Original = original,
                                 MA = "×",

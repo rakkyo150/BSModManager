@@ -28,8 +28,8 @@ namespace BSModManager.Models
         {
             if (!Directory.Exists(Folder.Instance.tmpFolder))
             {
-                Console.WriteLine($"{Folder.Instance.tmpFolder}がありません");
-                Console.WriteLine($"{Folder.Instance.tmpFolder}を作成します");
+                Logger.Instance.Info($"{Folder.Instance.tmpFolder}がありません");
+                Logger.Instance.Info($"{Folder.Instance.tmpFolder}を作成します");
                 Directory.CreateDirectory(Folder.Instance.tmpFolder);
             }
 

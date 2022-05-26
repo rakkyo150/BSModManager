@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BSModManager.Static;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -58,7 +59,7 @@ namespace BSModManager.Models
                         mod.name = mod.name.Replace(" ", "");
                     }
                 }
-                catch (Exception ex) { Console.WriteLine(ex.Message); }
+                catch (Exception ex) { Logger.Instance.Error($"{ex.Message}\nModAssistantのデータの取得に失敗しました"); }
             }
 
             return modAssistantMod;

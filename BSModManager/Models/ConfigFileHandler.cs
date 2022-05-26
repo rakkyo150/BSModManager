@@ -16,7 +16,7 @@ namespace BSModManager.Models
             {
                 StreamReader re = new StreamReader(FilePath.Instance.configFilePath);
                 string _jsonStr = re.ReadToEnd();
-                Console.WriteLine(_jsonStr);
+                Logger.Instance.Debug(_jsonStr);
                 re.Close();
                 var _jsonDyn = JsonConvert.DeserializeObject<Dictionary<string, string>>(_jsonStr);
 

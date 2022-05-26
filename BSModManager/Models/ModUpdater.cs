@@ -40,10 +40,10 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                Task.Run(async () => response = await gitHubApi.GetModLatestVersionAsync(a.Url)).GetAwaiter().GetResult();
+                Task.Run(async () => response = await gitHubApi.GetLatestReleaseAsync(a.Url)).GetAwaiter().GetResult();
                 if (response != null)
                 {
-                    Task.Run(async () => await gitHubApi.DownloadAsync(a.Url, a.Installed, Folder.Instance.tmpFolder)).GetAwaiter().GetResult();
+                    Task.Run(async () => await gitHubApi.DownloadAsync(a.Url, Folder.Instance.tmpFolder)).GetAwaiter().GetResult();
                     Task.Run(() => modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath)).GetAwaiter().GetResult();
                 }
             }

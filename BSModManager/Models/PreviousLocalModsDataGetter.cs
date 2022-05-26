@@ -69,7 +69,7 @@ namespace BSModManager.Models
                 }
 
 
-                Release response = await gitHubApi.GetModLatestVersionAsync(previousData.Url);
+                Release response = await gitHubApi.GetLatestReleaseAsync(previousData.Url);
                 string original = null;
 
                 original = previousData.Original ? "〇" : "×";
@@ -103,7 +103,7 @@ namespace BSModManager.Models
                 localMods.LocalModsData.Add(new LocalMods.LocalModData(refresher)
                 {
                     Mod = previousData.Mod,
-                    Latest = gitHubApi.DetectVersion(response.TagName),
+                    Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
                     Updated = updated,
                     Original = original,
                     MA = "×",

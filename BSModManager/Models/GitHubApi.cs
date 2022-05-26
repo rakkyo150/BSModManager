@@ -12,6 +12,8 @@ namespace BSModManager.Models
 {
     public class GitHubApi : BindableBase
     {
+        readonly string myselfUrl = "https://github.com/rakkyo150/BSModManager";
+
         private string gitHubToken = "";
         public string GitHubToken
         {
@@ -24,43 +26,51 @@ namespace BSModManager.Models
 
         readonly MyselfUpdater myselfUpdater;
 
-        public GitHubApi(MyselfUpdater u)
+        public GitHubApi(MyselfUpdater u,ModDisposer md)
         {
             myselfUpdater = u;
         }
 
-        public async Task<bool> CheckNewVersionAndDowonload()
+        public async Task<bool> CheckMyselfNewVersion()
         {
-            string url = "https://github.com/rakkyo150/BSModManager";
-            string destDirFullPath;
-
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             System.Version rawVersion = assembly.GetName().Version;
 
             Version currentVersion = new Version(rawVersion.Major, rawVersion.Minor, rawVersion.Build);
 
-            Release response = await GetModLatestVersionAsync(url);
+            Release response = await GetLatestReleaseAsync(myselfUrl);
 
             if (response == null) return false;
 
-            myselfUpdater.LatestMyselfVersion = DetectVersion((await GetModLatestVersionAsync(url)).TagName);
+            myselfUpdater.LatestMyselfVersion = DetectVersionFromTagName((await GetLatestReleaseAsync(myselfUrl)).TagName);
 
             if (myselfUpdater.LatestMyselfVersion <= currentVersion)
             {
-                Console.WriteLine("更新版はみつかりませんでした");
+                Logger.Instance.Info("自分自身の更新版はみつかりませんでした");
                 return false;
             }
 
-            destDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, myselfUpdater.LatestMyselfVersion.ToString());
-            
+            return true;
+        }
+
+        public async Task<bool> DownloadMyselfNewVersion()
+        {
+            string destDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, myselfUpdater.LatestMyselfVersion.ToString());
+
             if (!Directory.Exists(destDirFullPath))
             {
                 Directory.CreateDirectory(destDirFullPath);
             }
 
-            await DownloadAsync(url, currentVersion, destDirFullPath);
+            await DownloadAsync(myselfUrl, destDirFullPath);
 
             string zipFileName = Path.Combine(destDirFullPath, "BSModManager.zip");
+            
+            return UnzipMyselfNewVersion(destDirFullPath, zipFileName);
+        }
+
+        private static bool UnzipMyselfNewVersion(string destDirFullPath, string zipFileName)
+        {
             try
             {
                 using (var fs = File.Open(zipFileName, System.IO.FileMode.Open))
@@ -70,7 +80,7 @@ namespace BSModManager.Models
                     {
                         var installPath = Path.Combine(destDirFullPath, file.FullName);
                         if (!File.Exists(installPath)) continue;
-                                
+
                         File.Delete(installPath);
                     }
                     zip.ExtractToDirectory(destDirFullPath);
@@ -83,16 +93,32 @@ namespace BSModManager.Models
 
                 Folder.Instance.Copy(unzipPath, destDirFullPath, true);
                 Directory.Delete(unzipPath, true);
+
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine($"{e}");
+                Logger.Instance.Debug($"{ex}");
+                Logger.Instance.Info("自分自身の最新版のダウンロードに失敗しました");
                 return false;
             }
         }
 
-        public async Task DownloadAsync(string url, Version currentVersion, string destDirFullPath)
+        public async Task DownloadAsync(string url, string destDirFullPath)
+        {
+            Release response = await GetLatestReleaseAsync(url);
+            if (response == null) return;
+
+            foreach (var item in response.Assets)
+            {
+                Logger.Instance.Info($"{item.Name}をダウンロード中");
+                bool success = await StreamingDownloadAsync(item.BrowserDownloadUrl, item.Name, destDirFullPath);
+                if (success) Logger.Instance.Info($"{item.Name}のダウンロード成功！");
+                else Logger.Instance.Info($"{item.Name}のダウンロード失敗");
+            }
+        }
+
+        public async Task<Release> GetLatestReleaseAsync(string url)
         {
             var credential = new Credentials(GitHubToken);
             GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
@@ -105,108 +131,28 @@ namespace BSModManager.Models
 
             if (nextSlashPosition == -1)
             {
-                Console.WriteLine("URLにミスがあります");
-                Console.WriteLine($"対象のURL : {url}");
-                return;
-            }
-
-            string owner = temp.Substring(0, nextSlashPosition);
-            string name = temp.Substring(nextSlashPosition + 1);
-
-            var response = await gitHub.Repository.Release.GetLatest(owner, name);
-
-            try
-            {
-                string releaseBody = response.Body;
-                var releaseCreatedAt = response.CreatedAt;
-                DateTimeOffset now = DateTimeOffset.UtcNow;
-
-                Version latestVersion = DetectVersion(response.TagName);
-
-                if (latestVersion == null)
-                {
-                    throw new Exception("バージョン情報の取得に失敗");
-                }
-
-                if (latestVersion <= currentVersion) return;
-
-                Console.WriteLine("****************************************************");
-                Console.WriteLine($"{owner}/{name}の最新バージョン:{latestVersion}が見つかりました");
-
-                Console.WriteLine("----------------------------------------------------");
-                if ((now - releaseCreatedAt).Days >= 1)
-                {
-                    Console.WriteLine((now - releaseCreatedAt).Days + "日前にリリース");
-                }
-                else
-                {
-                    Console.WriteLine((now - releaseCreatedAt).Hours + "時間" + (now - releaseCreatedAt).Minutes + "分前にリリース");
-                }
-                Console.WriteLine("リリースの説明");
-                Console.WriteLine(releaseBody);
-                Console.WriteLine("----------------------------------------------------");
-
-
-                foreach (var item in response.Assets)
-                {
-                    Console.WriteLine("ダウンロード中");
-                    await DownloadHelperAsync(item.BrowserDownloadUrl, item.Name, destDirFullPath);
-                    Console.WriteLine("ダウンロード成功！");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("リリースが見つかりませんでした");
-                Console.WriteLine($"対象のリポジトリのURL : {url}");
-            }
-        }
-
-        public async Task<Release> GetModLatestVersionAsync(string url)
-        {
-            var credential = new Credentials(GitHubToken);
-            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"))
-            {
-                Credentials = credential
-            };
-
-            string temp = url.Replace("https://github.com/", "");
-            int nextSlashPosition = temp.IndexOf('/');
-
-            if (nextSlashPosition == -1)
-            {
-                Console.WriteLine("GitHubのURLではないです");
-                Console.WriteLine($"対象のURL : {url}");
+                Logger.Instance.Info($"{url}は不正なURLです");
                 return null;
             }
 
             string owner = temp.Substring(0, nextSlashPosition);
             string name = temp.Substring(nextSlashPosition + 1);
-            Release response;
+
             try
             {
-                // プレリリース非対応
-                response = await gitHub.Repository.Release.GetLatest(owner, name);
-                Version latestVersion = DetectVersion(response.TagName);
-
-                if (latestVersion == null)
-                {
-                    throw new Exception("バージョン情報の取得に失敗");
-                }
+                var response = await gitHub.Repository.Release.GetLatest(owner, name);
+                return response;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("リポジトリのURLではなさそうです");
-                Console.WriteLine($"対象のURL : {url}");
-                Console.WriteLine(ex.Message);
+                Logger.Instance.Info($"{owner}/{name}のリリース情報を取得できませんでした");
+                Logger.Instance.Debug(ex.Message);
                 return null;
             }
-
-            return response;
         }
 
         // Based on https://qiita.com/thrzn41/items/2754bec8ebad97ecd7fd
-        public async Task<bool> DownloadHelperAsync(string uri, string name, string destDirFullPath)
+        private async Task<bool> StreamingDownloadAsync(string uri, string name, string destDirFullPath)
         {
             using (HttpClient httpClient = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Get, new Uri(uri)))
@@ -217,8 +163,7 @@ namespace BSModManager.Models
                     {
                         if (response.StatusCode != HttpStatusCode.OK)
                         {
-                            Console.WriteLine("失敗しました");
-                            Console.WriteLine($"対象のURL : {uri}");
+                            Logger.Instance.Info($"{uri}のダウンロードに失敗しました");
                             return false;
                         }
 
@@ -241,15 +186,14 @@ namespace BSModManager.Models
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine("URLにミスがあるかもしれません");
-                    Console.WriteLine($"対象のURL : {uri}");
+                    Logger.Instance.Info($"{uri}のダウンロードに失敗しました");
+                    Logger.Instance.Debug(ex.Message);
                     return false;
                 }
             }
         }
 
-        public Version DetectVersion(string tagName)
+        public Version DetectVersionFromTagName(string tagName)
         {
             Version version = null;
 
@@ -279,12 +223,12 @@ namespace BSModManager.Models
             return version;
         }
 
-        public async Task<bool> CheckCredential()
+        public async Task<bool> VerifyGitHubToken()
         {
             if (GitHubToken == "") return false;
 
             var credential = new Credentials(GitHubToken);
-            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GithubModUpdateChecker"))
+            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
             {
                 Credentials = credential
             };
@@ -299,7 +243,7 @@ namespace BSModManager.Models
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Logger.Instance.Info(ex.Message);
                 return false;
             }
         }
