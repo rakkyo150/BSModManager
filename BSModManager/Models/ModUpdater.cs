@@ -11,13 +11,15 @@ namespace BSModManager.Models
         readonly GitHubApi gitHubApi;
         readonly ModDisposer modDisposer;
         readonly Refresher refresher;
+        readonly SettingsVerifier settingsVerifier;
 
-        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r)
+        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r,SettingsVerifier sv)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
             modDisposer = md;
             refresher = r;
+            settingsVerifier = sv;
         }
 
         public void Update()
@@ -48,7 +50,7 @@ namespace BSModManager.Models
 
             Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
 
-            if (openMA)
+            if (openMA && settingsVerifier.MAExe)
             {
                 try
                 {
@@ -56,7 +58,7 @@ namespace BSModManager.Models
                 }
                 catch (Exception e)
                 {
-                    MainWindowLog.Instance.Debug = e.Message;
+                    Logger.Instance.Error(e.Message);
                 }
             }
         }

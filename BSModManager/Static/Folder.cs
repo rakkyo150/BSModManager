@@ -10,6 +10,7 @@ namespace BSModManager.Static
     {
         internal static Folder Instance { get; set; } = new Folder();
 
+        public string logFolder = Path.Combine(Environment.CurrentDirectory, "Log");
         public string backupFolder = Path.Combine(Environment.CurrentDirectory, "Backup");
         public string dataFolder = Path.Combine(Environment.CurrentDirectory, "Data");
         public string tmpFolder = Path.Combine(Path.GetTempPath(), "BSModManager");
@@ -24,6 +25,26 @@ namespace BSModManager.Static
             }
         }
 
+        public Folder()
+        {
+            if (!Directory.Exists(logFolder))
+            {
+                Directory.CreateDirectory(logFolder);
+            }
+            if (!Directory.Exists(backupFolder))
+            {
+                Directory.CreateDirectory(backupFolder);
+            }
+            if (!Directory.Exists(dataFolder))
+            {
+                Directory.CreateDirectory(dataFolder);
+            }
+            if (!Directory.Exists(tmpFolder))
+            {
+                Directory.CreateDirectory(tmpFolder);
+            }
+        }
+        
         public string Select(string previouPath)
         {
             var dialog = new CommonOpenFileDialog
@@ -41,7 +62,14 @@ namespace BSModManager.Static
 
         public void Open(string path)
         {
-            System.Diagnostics.Process.Start("explorer.exe", path);
+            try
+            {
+                System.Diagnostics.Process.Start("explorer.exe", path);
+            }
+            catch(Exception ex)
+            {
+                Logger.Instance.Error(ex.Message);
+            }
         }
 
         public void Copy(string sourceDirName, string destDirName, bool copySubDirs)
@@ -70,29 +98,12 @@ namespace BSModManager.Static
             }
 
             // If copying subdirectories, copy them and their contents to new location.
-            if (copySubDirs)
-            {
-                foreach (DirectoryInfo subdir in dirs)
-                {
-                    string tempPath = Path.Combine(destDirName, subdir.Name);
-                    Copy(subdir.FullName, tempPath, copySubDirs);
-                }
-            }
-        }
+            if (!copySubDirs) return;
 
-        public void InitialCreate()
-        {
-            if (!Directory.Exists(backupFolder))
+            foreach (DirectoryInfo subdir in dirs)
             {
-                Directory.CreateDirectory(backupFolder);
-            }
-            if (!Directory.Exists(dataFolder))
-            {
-                Directory.CreateDirectory(dataFolder);
-            }
-            if (!Directory.Exists(tmpFolder))
-            {
-                Directory.CreateDirectory(tmpFolder);
+                string tempPath = Path.Combine(destDirName, subdir.Name);
+                Copy(subdir.FullName, tempPath, copySubDirs);
             }
         }
     }

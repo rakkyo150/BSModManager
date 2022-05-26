@@ -25,6 +25,7 @@ namespace BSModManager.ViewModels
         public ReactiveCommand ChangeToken { get; } = new ReactiveCommand();
         public ReactiveCommand SelectMAExe { get; } = new ReactiveCommand();
         public ReactiveCommand OpenMAFolder { get; } = new ReactiveCommand();
+        public ReactiveCommand OpenLogFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenDataFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenBackupFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenModTempFolder { get; } = new ReactiveCommand();
@@ -76,44 +77,49 @@ namespace BSModManager.ViewModels
             SelectBSFolder.Subscribe(_ =>
             {
                 Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
-                MainWindowLog.Instance.Debug = Folder.Instance.BSFolderPath;
+                Logger.Instance.Info(Folder.Instance.BSFolderPath);
             }).AddTo(Disposables);
             OpenBSFolder = OpenBSFolderButtonEnable
                 .ToReactiveCommand()
                 .WithSubscribe(() =>
                 {
-                    MainWindowLog.Instance.Debug = "Open BS Folder";
+                    Logger.Instance.Info("Open BS Folder");
                     Folder.Instance.Open(Folder.Instance.BSFolderPath);
-                    MainWindowLog.Instance.Debug = Folder.Instance.BSFolderPath;
+                    Logger.Instance.Info(Folder.Instance.BSFolderPath);
                 }).AddTo(Disposables);
             ChangeToken.Subscribe((x) =>
             {
                 gitHubApi.GitHubToken = ((PasswordBox)x).Password;
-                MainWindowLog.Instance.Debug = "GitHub Token Changed";
+                Logger.Instance.Info("GitHub Token Changed");
             }).AddTo(Disposables);
             SelectMAExe.Subscribe(() =>
             {
-                MainWindowLog.Instance.Debug = "Select ModAssistant.exe";
+                Logger.Instance.Info("Select ModAssistant.exe");
                 FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
             }).AddTo(Disposables);
             OpenMAFolder.Subscribe(() =>
             {
-                MainWindowLog.Instance.Debug = "Open ModAssistant Folder";
+                Logger.Instance.Info("Open ModAssistant Folder");
                 Folder.Instance.Open(Path.GetDirectoryName(FilePath.Instance.MAExePath));
+            }).AddTo(Disposables);
+            OpenLogFolder.Subscribe(_ =>
+            {
+                Logger.Instance.Info("Open Log Folder");
+                Folder.Instance.Open(Folder.Instance.logFolder);
             }).AddTo(Disposables);
             OpenDataFolder.Subscribe(_ =>
             {
-                MainWindowLog.Instance.Debug = "Open Data Folder";
+                Logger.Instance.Info("Open Data Folder");
                 Folder.Instance.Open(Folder.Instance.dataFolder);
             }).AddTo(Disposables);
             OpenBackupFolder.Subscribe(_ =>
             {
-                MainWindowLog.Instance.Debug = "Open Backup Folder";
+                Logger.Instance.Info("Open Backup Folder");
                 Folder.Instance.Open(Folder.Instance.backupFolder);
             }).AddTo(Disposables);
             OpenModTempFolder.Subscribe(_ =>
             {
-                MainWindowLog.Instance.Debug = "Open Temp Folder";
+                Logger.Instance.Info("Open Temp Folder");
                 Folder.Instance.Open(Folder.Instance.tmpFolder);
             }).AddTo(Disposables);
 
@@ -170,7 +176,7 @@ namespace BSModManager.ViewModels
                 }
             };
 
-            MainWindowLog.Instance.Debug = "Settings";
+            Logger.Instance.Info("Settings");
         }
 
         public void Destroy()

@@ -84,7 +84,7 @@
     </Compile>
     <Compile Include="Static\FilePath.cs" />
     <Compile Include="Static\Folder.cs" />
-    <Compile Include="Static\MainWindowLog.cs" />
+    <Compile Include="Static\Logger.cs" />
     <Compile Include="ViewModels\ChangeModInfoViewModel.cs" />
     <Compile Include="ViewModels\InitialSettingViewModel.cs" />
     <Compile Include="ViewModels\InstallTabViewModel.cs" />

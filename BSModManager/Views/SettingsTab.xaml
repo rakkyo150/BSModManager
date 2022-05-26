@@ -192,6 +192,12 @@
             Grid.Column="0"
             Orientation="Horizontal">
                 <Button
+                Height="30"
+                Margin="5"
+                Padding="5"
+                Command="{Binding OpenLogFolder}"
+                Content="Open Log" />
+                <Button
                 HorizontalAlignment="Left"
                 Height="30"
                 Margin="5"
