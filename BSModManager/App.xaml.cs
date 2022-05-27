@@ -24,8 +24,6 @@ namespace BSModManager
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
-            containerRegistry.RegisterSingleton<ChangeModInfoModel>();
-
 
             containerRegistry.RegisterSingleton<PastMods>();
             containerRegistry.RegisterSingleton<RecommendMods>();
@@ -43,6 +41,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<ModDisposer>();
             containerRegistry.RegisterSingleton<SettingsVerifier>();
             containerRegistry.RegisterSingleton<PreviousLocalModsDataGetter>();
+            containerRegistry.RegisterSingleton<ChangeModInfoModel>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();

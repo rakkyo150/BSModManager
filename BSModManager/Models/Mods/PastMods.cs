@@ -70,6 +70,11 @@ namespace BSModManager.Models
             }
         }
 
+        public List<IModData> AllCheckedMod()
+        {
+            return PastModsData.Where(x => x.Checked == true).ToList();
+        }
+
         public void SortByName()
         {
             var sorted = this.PastModsData.OrderBy(x => x.Mod).ToList();

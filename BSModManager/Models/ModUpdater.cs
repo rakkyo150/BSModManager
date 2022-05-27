@@ -22,7 +22,7 @@ namespace BSModManager.Models
             settingsVerifier = sv;
         }
 
-        public void Update()
+        public async Task Update()
         {
             bool openMA = false;
 
@@ -40,15 +40,15 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                Task.Run(async () => response = await gitHubApi.GetLatestReleaseAsync(a.Url)).GetAwaiter().GetResult();
+                response = await gitHubApi.GetLatestReleaseAsync(a.Url);
                 if (response != null)
                 {
-                    Task.Run(async () => await gitHubApi.DownloadAsync(a.Url, Folder.Instance.tmpFolder)).GetAwaiter().GetResult();
-                    Task.Run(() => modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath)).GetAwaiter().GetResult();
+                    await gitHubApi.DownloadAsync(a.Url, Folder.Instance.tmpFolder);
+                    modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath);
                 }
             }
 
-            Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
+            await refresher.Refresh();
 
             if (openMA && settingsVerifier.MAExe)
             {
