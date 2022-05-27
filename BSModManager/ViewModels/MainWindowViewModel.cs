@@ -237,6 +237,7 @@ namespace BSModManager.ViewModels
                 Logger.Instance.Info("Update");
                 UpdateOrInstall = "Update";
                 AllButtonEnable();
+                localMods.SortByName();
                 RegionManager.RequestNavigate("ContentRegion", x);
             });
 
@@ -253,6 +254,7 @@ namespace BSModManager.ViewModels
                 Logger.Instance.Info("Install");
                 UpdateOrInstall = "Install";
                 AllButtonEnable();
+                pastMods.SortByName();
                 RegionManager.RequestNavigate("ContentRegion", x);
             });
 

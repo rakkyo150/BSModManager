@@ -68,6 +68,8 @@ namespace BSModManager.Models
             {
                 pastMods.Remove(removeModData);
             }
+
+            pastMods.SortByName();
         }   
 
         private async Task GetPreciousDataList(List<ModCsvIndex> previousDataList, string[] AllPastVersion)
@@ -199,6 +201,8 @@ namespace BSModManager.Models
             AddModsData(localModNameAndVersionDic);
 
             RemoveNotExistingModsData(localModNameAndVersionDic);
+
+            localMods.SortByName();
         }
 
         private void AddModsData(Dictionary<string, Version> localModNameAndVersionDic)
