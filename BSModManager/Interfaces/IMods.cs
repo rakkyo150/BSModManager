@@ -7,6 +7,8 @@ namespace BSModManager.Interfaces
         void AllCheckedOrUnchecked();
         void ModRepositoryOpen();
 
+        void SortByName();
+
         void Add(IModData modData);
         void Remove(IModData modData);
 

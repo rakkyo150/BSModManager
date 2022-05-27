@@ -64,6 +64,13 @@ namespace BSModManager.Models
             }
         }
 
+        public void SortByName()
+        {
+            var sorted = this.RecommendModsData.OrderBy(x => x.Mod).ToList();
+            this.RecommendModsData.Clear();
+            foreach (var item in sorted) this.RecommendModsData.Add(item);
+        }
+
         public void Add(IModData modData)
         {
             if (ExistsSameModData(modData))
