@@ -44,7 +44,7 @@ namespace BSModManager.Models
 
             if (AllPastVersion.Count() == 0) return;
 
-            await GetPreciousDataList(previousDataListAddedToPastModsData, AllPastVersion);
+            await GetPreviousDataList(previousDataListAddedToPastModsData, AllPastVersion);
 
             List<IModData> removeList = new List<IModData>();
 
@@ -72,7 +72,7 @@ namespace BSModManager.Models
             pastMods.SortByName();
         }   
 
-        private async Task GetPreciousDataList(List<ModCsvIndex> previousDataList, string[] AllPastVersion)
+        private async Task GetPreviousDataList(List<ModCsvIndex> previousDataList, string[] AllPastVersion)
         {
             foreach (string pastVersion in AllPastVersion)
             {
@@ -86,24 +86,31 @@ namespace BSModManager.Models
 
                 var exceptDataList = tempDataList.Except(previousDataList);
 
-                foreach (ModCsvIndex a in exceptDataList)
+                foreach (ModCsvIndex exceptData in exceptDataList)
                 {
-                    bool existsSameModNameAtPrevioudsDataList = previousDataList.Any(x => x.Mod == a.Mod);
-                    bool sameMA = previousDataList.Any(x => x.Ma == a.Ma);
+                    bool existsSameModNameAtPrevioudsDataList = previousDataList.Any(x => x.Mod == exceptData.Mod);
+                    bool sameMA = previousDataList.Any(x => x.Ma == exceptData.Ma);
                     bool nowMA = true;
 
-                    if (existsSameModNameAtPrevioudsDataList) nowMA = previousDataList.Find(x => x.Mod == a.Mod).Ma;
-
-                    if (existsSameModNameAtPrevioudsDataList && (sameMA || nowMA == false)) continue;
-
-                    if (existsSameModNameAtPrevioudsDataList && nowMA == true && !sameMA)
+                    if (!existsSameModNameAtPrevioudsDataList)
                     {
-                        previousDataList.Find(x => x.Mod == a.Mod).Ma = a.Ma;
-                        previousDataList.Find(x => x.Mod == a.Mod).Url = a.Url;
+                        previousDataList.Add(exceptData);
                         continue;
                     }
 
-                    previousDataList.Add(a);
+                    nowMA = previousDataList.Find(x => x.Mod == exceptData.Mod).Ma;
+
+                    if (nowMA && !sameMA)
+                    {
+                        previousDataList.Find(x => x.Mod == exceptData.Mod).Ma = exceptData.Ma;
+                        previousDataList.Find(x => x.Mod == exceptData.Mod).Url = exceptData.Url;
+                        continue;
+                    }
+
+                    if(previousDataList.Find(x => x.Mod == exceptData.Mod).Url== "" && exceptData.Url != "")
+                    {
+                        previousDataList.Find(x => x.Mod == exceptData.Mod).Url = exceptData.Url;
+                    }
                 }
             }
 
