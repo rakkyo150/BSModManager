@@ -1,4 +1,5 @@
-﻿using BSModManager.Static;
+﻿using BSModManager.Models.Mods.Structures;
+using BSModManager.Static;
 using Octokit;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -13,16 +14,18 @@ namespace BSModManager.Models
     public class ChangeModInfoModel : BindableBase
     {
         readonly IDialogService dialogService;
-        readonly LocalMods modsDataModel;
+        readonly LocalMods localMods;
         readonly GitHubApi gitHubManager;
         readonly MAMods mAMod;
+        readonly Refresher refresher;
 
-        public ChangeModInfoModel(IDialogService ds, LocalMods mdm, GitHubApi ghm, MAMods mam)
+        public ChangeModInfoModel(IDialogService ds, LocalMods mdm, GitHubApi ghm, MAMods mam, Refresher r)
         {
             dialogService = ds;
-            modsDataModel = mdm;
+            localMods = mdm;
             gitHubManager = ghm;
             mAMod = mam;
+            refresher = r;
         }
 
         private string modName;
@@ -42,7 +45,11 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref url, value);
-                modsDataModel.LocalModsData.First(x => x.Mod == modName).Url = Url;
+                localMods.UpdateURL(new LocalModData(refresher)
+                {
+                    Mod = modName,
+                    Url = value
+                });
             }
         }
 
@@ -53,7 +60,11 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref updated, value);
-                modsDataModel.LocalModsData.First(x => x.Mod == modName).Updated = Updated;
+                localMods.UpdateUpdated(new LocalModData(refresher)
+                {
+                    Mod = modName,
+                    Updated = value
+                });
             }
         }
 
@@ -67,12 +78,20 @@ namespace BSModManager.Models
                 SetProperty(ref original, value);
                 if (Original)
                 {
-                    modsDataModel.LocalModsData.First(x => x.Mod == modName).Original = "〇";
-                    SetModDataForMA();
+                    localMods.UpdateOriginal(new LocalModData(refresher)
+                    {
+                        Mod = modName,
+                        Original = "〇"
+                    });
+                    SetInfoForMA();
                 }
                 else
                 {
-                    modsDataModel.LocalModsData.First(x => x.Mod == modName).Original = "×";
+                    localMods.UpdateOriginal(new LocalModData(refresher)
+                    {
+                        Mod = modName,
+                        Original = "×"
+                    });
                     ExistInMA = false;
                     MA = "×";
                 }
@@ -93,7 +112,11 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref latest, value);
-                modsDataModel.LocalModsData.First(x => x.Mod == modName).Latest = Latest;
+                localMods.UpdateLatest(new LocalModData(refresher)
+                {
+                    Mod = modName,
+                    Latest = value
+                });
             }
         }
 
@@ -104,7 +127,11 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref mA, value);
-                modsDataModel.LocalModsData.First(x => x.Mod == modName).MA = MA;
+                localMods.UpdateMA(new LocalModData(refresher)
+                {
+                    Mod = modName,
+                    MA = value
+                });
             }
         }
 
@@ -125,7 +152,11 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref description, value);
-                modsDataModel.LocalModsData.First(x => x.Mod == modName).Description = Description;
+                localMods.UpdateDescription(new LocalModData(refresher)
+                {
+                    Mod = modName,
+                    Description = value
+                });
             }
         }
 
@@ -138,13 +169,13 @@ namespace BSModManager.Models
             set { SetProperty(ref position, value); }
         }
 
-        public void ChangeModInfo()
+        public void ChangeInfo()
         {
             // 何個目のCheckedか
             int count = 0;
-            int AllCheckedMod = modsDataModel.LocalModsData.Count(x => x.Checked == true);
+            int AllCheckedMod = localMods.LocalModsData.Count(x => x.Checked == true);
 
-            foreach (var a in modsDataModel.LocalModsData)
+            foreach (var a in localMods.LocalModsData)
             {
                 // Finishボタン押したとき
                 if (Position > AllCheckedMod)
@@ -241,13 +272,13 @@ namespace BSModManager.Models
             }
         }
 
-        private void SetModDataForMA()
+        private void SetInfoForMA()
         {
-            if (!ExistsModDataInMA()) return;
+            if (!mAMod.ExistsData(new MAModData() { name=modName})) return;
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
 
-            MAModStructure[] a = mAMod.ModAssistantAllMods.Where(x => x.name == modName).ToArray();
+            MAModData[] a = mAMod.ModAssistantAllMods.Where(x => x.name == modName).ToArray();
             ExistInMA = true;
             Latest = new Version(a[0].version);
             Url = a[0].link;
@@ -263,11 +294,6 @@ namespace BSModManager.Models
             {
                 Updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
             }
-        }
-
-        private bool ExistsModDataInMA()
-        {
-            return Array.Exists(mAMod.ModAssistantAllMods, x => x.name == modName);
         }
     }
 }

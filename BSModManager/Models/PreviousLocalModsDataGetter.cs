@@ -1,4 +1,5 @@
-﻿using BSModManager.Static;
+﻿using BSModManager.Models.Mods.Structures;
+using BSModManager.Static;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace BSModManager.Models
                         updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                     }
 
-                    localMods.LocalModsData.Add(new LocalMods.LocalModData(refresher)
+                    localMods.LocalModsData.Add(new LocalModData(refresher)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version(temp.version),
@@ -77,7 +78,7 @@ namespace BSModManager.Models
 
                 if (response == null)
                 {
-                    localMods.LocalModsData.Add(new LocalMods.LocalModData(refresher)
+                    localMods.LocalModsData.Add(new LocalModData(refresher)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version("0.0.0"),
@@ -100,7 +101,7 @@ namespace BSModManager.Models
                     updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                 }
 
-                localMods.LocalModsData.Add(new LocalMods.LocalModData(refresher)
+                localMods.LocalModsData.Add(new LocalModData(refresher)
                 {
                     Mod = previousData.Mod,
                     Latest = gitHubApi.DetectVersionFromTagName(response.TagName),

@@ -61,6 +61,10 @@
     <Compile Include="Interfaces\IMods.cs" />
     <Compile Include="Interfaces\IModData.cs" />
     <Compile Include="Models\ConfigFileHandler.cs" />
+    <Compile Include="Models\Mods\Structures\LocalModData.cs" />
+    <Compile Include="Models\Mods\Structures\MAModData.cs" />
+    <Compile Include="Models\Mods\Structures\PastModData.cs" />
+    <Compile Include="Models\Mods\Structures\RecommendModData.cs" />
     <Compile Include="Models\PreviousLocalModsDataGetter.cs" />
     <Compile Include="Models\InitialDirectorySetup.cs" />
     <Compile Include="Models\ModDisposer.cs" />

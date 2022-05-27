@@ -68,7 +68,7 @@ namespace BSModManager.ViewModels
                 changeModInfoPropertyModel.GetInfo();
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
                 canCloseDialog = false;
-                changeModInfoPropertyModel.ChangeModInfo();
+                changeModInfoPropertyModel.ChangeInfo();
             }).AddTo(Disposables);
         }
 

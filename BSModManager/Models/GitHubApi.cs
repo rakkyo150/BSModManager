@@ -26,7 +26,7 @@ namespace BSModManager.Models
 
         readonly MyselfUpdater myselfUpdater;
 
-        public GitHubApi(MyselfUpdater u,ModDisposer md)
+        public GitHubApi(MyselfUpdater u)
         {
             myselfUpdater = u;
         }

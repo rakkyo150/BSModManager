@@ -1,4 +1,5 @@
 ﻿using BSModManager.Models;
+using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
 using Octokit;
 using Prism.Mvvm;
@@ -197,7 +198,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(refresher)
+                            modsDataModel.LocalModsData.Add(new LocalModData(refresher)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version(temp.version),
@@ -226,7 +227,7 @@ namespace BSModManager.ViewModels
 
                         if (response == null)
                         {
-                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(refresher)
+                            modsDataModel.LocalModsData.Add(new LocalModData(refresher)
                             {
                                 Mod = previousData.Mod,
                                 Latest = new Version("0.0.0"),
@@ -250,7 +251,7 @@ namespace BSModManager.ViewModels
                                 updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                             }
 
-                            modsDataModel.LocalModsData.Add(new LocalMods.LocalModData(refresher)
+                            modsDataModel.LocalModsData.Add(new LocalModData(refresher)
                             {
                                 Mod = previousData.Mod,
                                 Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
