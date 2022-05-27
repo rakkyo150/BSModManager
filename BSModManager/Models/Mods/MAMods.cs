@@ -1,4 +1,5 @@
-﻿using BSModManager.Static;
+﻿using BSModManager.Models.Mods.Structures;
+using BSModManager.Static;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,11 @@ namespace BSModManager.Models
 {
     public class MAMods
     {
-        public MAModStructure[] ModAssistantAllMods { get; set; }
+        public MAModData[] ModAssistantAllMods { get; set; }
 
-        public async Task<MAModStructure[]> GetAllAsync()
+        public async Task<MAModData[]> GetAllAsync()
         {
-            MAModStructure[] modAssistantMod = null;
+            MAModData[] modAssistantMod = null;
 
             string gameVersion = GameVersion.Version;
 
@@ -24,7 +25,7 @@ namespace BSModManager.Models
                 try
                 {
                     var resp = await httpClient.GetStringAsync(modAssistantModInformationUrl);
-                    modAssistantMod = JsonConvert.DeserializeObject<MAModStructure[]>(resp);
+                    modAssistantMod = JsonConvert.DeserializeObject<MAModData[]>(resp);
 
                     Version retryGameVersion = new Version(gameVersion);
 
@@ -42,7 +43,7 @@ namespace BSModManager.Models
                         string retryModAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={retryGameVersion}";
 
                         var retryResp = await httpClient.GetStringAsync(retryModAssistantModInformationUrl);
-                        modAssistantMod = JsonConvert.DeserializeObject<MAModStructure[]>(retryResp);
+                        modAssistantMod = JsonConvert.DeserializeObject<MAModData[]>(retryResp);
                     }
 
                     foreach (var mod in modAssistantMod)
@@ -65,51 +66,9 @@ namespace BSModManager.Models
             return modAssistantMod;
         }
 
-        public class MAModStructure
+        internal bool ExistsData(MAModData mAModData)
         {
-            public string name;
-            public string version;
-            public string gameVersion;
-            public string _id;
-            public string status;
-            public string authorId;
-            public string uploadedDate;
-            public string updatedDate;
-            public Author author;
-            public string description;
-            public string link;
-            public string category;
-            public DownloadLink[] downloads;
-            public bool required;
-            public Dependency[] dependencies;
-            public List<MAModStructure> Dependents = new List<MAModStructure>();
-
-            public class Author
-            {
-                public string _id;
-                public string username;
-                public string lastLogin;
-            }
-
-            public class DownloadLink
-            {
-                public string type;
-                public string url;
-                public FileHashes[] hashMd5;
-            }
-
-            public class FileHashes
-            {
-                public string hash;
-                public string file;
-            }
-
-            public class Dependency
-            {
-                public string name;
-                public string _id;
-                public MAModStructure Mod;
-            }
+            return Array.Exists(ModAssistantAllMods, x => x.name == mAModData.name);
         }
     }
 }

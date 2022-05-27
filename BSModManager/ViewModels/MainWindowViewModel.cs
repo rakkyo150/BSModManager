@@ -211,7 +211,7 @@ namespace BSModManager.ViewModels
 
             ChangeModInfoButtonCommand = new DelegateCommand(() =>
               {
-                  changeModInfoPropertyModel.ChangeModInfo();
+                  changeModInfoPropertyModel.ChangeInfo();
               });
 
             ModRepositoryButtonCommand = new DelegateCommand(() =>
