@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BSModManager.Interfaces
 {
@@ -6,6 +7,7 @@ namespace BSModManager.Interfaces
     {
         void AllCheckedOrUnchecked();
         void ModRepositoryOpen();
+        List<IModData> AllCheckedMod();
 
         void SortByName();
 

@@ -1,9 +1,11 @@
-﻿using BSModManager.Models.Mods.Structures;
+﻿using BSModManager.Interfaces;
+using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
 using Octokit;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,15 +16,16 @@ namespace BSModManager.Models
     public class ChangeModInfoModel : BindableBase
     {
         readonly IDialogService dialogService;
-        readonly LocalMods localMods;
         readonly GitHubApi gitHubManager;
         readonly MAMods mAMod;
         readonly Refresher refresher;
 
-        public ChangeModInfoModel(IDialogService ds, LocalMods mdm, GitHubApi ghm, MAMods mam, Refresher r)
+        private IMods iMods;
+
+        public ChangeModInfoModel(IDialogService ds, LocalMods im, GitHubApi ghm, MAMods mam, Refresher r)
         {
             dialogService = ds;
-            localMods = mdm;
+            iMods = im;
             gitHubManager = ghm;
             mAMod = mam;
             refresher = r;
@@ -45,7 +48,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref url, value);
-                localMods.UpdateURL(new LocalModData(refresher)
+                iMods.UpdateURL(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Url = value
@@ -60,7 +63,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref updated, value);
-                localMods.UpdateUpdated(new LocalModData(refresher)
+                iMods.UpdateUpdated(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Updated = value
@@ -78,7 +81,7 @@ namespace BSModManager.Models
                 SetProperty(ref original, value);
                 if (Original)
                 {
-                    localMods.UpdateOriginal(new LocalModData(refresher)
+                    iMods.UpdateOriginal(new LocalModData(refresher)
                     {
                         Mod = modName,
                         Original = "〇"
@@ -87,7 +90,7 @@ namespace BSModManager.Models
                 }
                 else
                 {
-                    localMods.UpdateOriginal(new LocalModData(refresher)
+                    iMods.UpdateOriginal(new LocalModData(refresher)
                     {
                         Mod = modName,
                         Original = "×"
@@ -112,7 +115,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref latest, value);
-                localMods.UpdateLatest(new LocalModData(refresher)
+                iMods.UpdateLatest(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Latest = value
@@ -127,7 +130,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref mA, value);
-                localMods.UpdateMA(new LocalModData(refresher)
+                iMods.UpdateMA(new LocalModData(refresher)
                 {
                     Mod = modName,
                     MA = value
@@ -152,7 +155,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref description, value);
-                localMods.UpdateDescription(new LocalModData(refresher)
+                iMods.UpdateDescription(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Description = value
@@ -169,37 +172,41 @@ namespace BSModManager.Models
             set { SetProperty(ref position, value); }
         }
 
+        public void ChangeIMod(IMods mods)
+        {
+            iMods = mods;
+        }
+        
         public void ChangeInfo()
         {
             // 何個目のCheckedか
             int count = 0;
-            int AllCheckedMod = localMods.LocalModsData.Count(x => x.Checked == true);
+            List<IModData> AllCheckedMod = iMods.AllCheckedMod();
+            int AllChekedModCount = AllCheckedMod.Count();
 
-            foreach (var a in localMods.LocalModsData)
+            foreach (var checkedMod in AllCheckedMod)
             {
                 // Finishボタン押したとき
-                if (Position > AllCheckedMod)
+                if (Position > AllChekedModCount)
                 {
                     break;
                 }
 
-                if (!a.Checked) continue;
-
                 count++;
 
-                if (count == AllCheckedMod)
+                if (count == AllChekedModCount)
                 {
                     NextOrFinish = "Finish";
                 }
 
                 if (count == Position)
                 {
-                    modName = a.Mod;
+                    modName = checkedMod.Mod;
 
-                    ModNameAndProgress = a.Mod + "(" + Position.ToString()
-                    + "/" + AllCheckedMod.ToString() + ")";
-                    Url = a.Url;
-                    if (a.Original == "?" || a.Original == "〇")
+                    ModNameAndProgress = checkedMod.Mod + "(" + Position.ToString()
+                    + "/" + AllChekedModCount.ToString() + ")";
+                    Url = checkedMod.Url;
+                    if (checkedMod.Original == "?" || checkedMod.Original == "〇")
                     {
                         Original = true;
                     }

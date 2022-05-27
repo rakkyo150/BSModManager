@@ -112,7 +112,7 @@ namespace BSModManager.ViewModels
 
         readonly IDialogService dialogService;
         readonly LocalMods localMods;
-        readonly ChangeModInfoModel changeModInfoPropertyModel;
+        readonly ChangeModInfoModel changeModInfoModel;
         readonly GitHubApi gitHubApi;
         readonly PastMods pastMods;
         readonly ModCsvHandler modCsv;
@@ -151,12 +151,11 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ChangeModInfoModel cmipm, ModInstaller mi, Refresher r,
+            ModInstaller mi, Refresher r,ChangeModInfoModel cmim,
             GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataGetter lmdf,
             PastMods pmdm, ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
             localMods = lmdm;
-            changeModInfoPropertyModel = cmipm;
             gitHubApi = gha;
             pastMods = pmdm;
             localModsDataFetcher = lmdf;
@@ -169,6 +168,7 @@ namespace BSModManager.ViewModels
             settingsVerifier = sv;
             modInstaller = mi;
             refresher = r;
+            changeModInfoModel = cmim;
 
             dialogService = ds;
 
@@ -196,22 +196,22 @@ namespace BSModManager.ViewModels
                   localMods.AllCheckedOrUnchecked();
               });
 
-            UpdateOrInstallButtonCommand = new DelegateCommand<string>((x) =>
+            UpdateOrInstallButtonCommand = new DelegateCommand<string>(async(x) =>
               {
                   Logger.Instance.Debug(x + " Button pushed");
                   if (x == "Update")
                   {
-                      modUpdater.Update();
+                      await modUpdater.Update();
                   }
                   else
                   {
-                      modInstaller.Install(pastMods);
+                      await modInstaller.Install(pastMods);
                   }
               });
 
             ChangeModInfoButtonCommand = new DelegateCommand(() =>
               {
-                  changeModInfoPropertyModel.ChangeInfo();
+                  changeModInfoModel.ChangeInfo();
               });
 
             ModRepositoryButtonCommand = new DelegateCommand(() =>
@@ -223,9 +223,10 @@ namespace BSModManager.ViewModels
               {
                   Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
               });
-
             ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
             {
+                changeModInfoModel.ChangeIMod(localMods);
+                
                 AllCheckedButtonCommand = new DelegateCommand(() =>
                 {
                     localMods.AllCheckedOrUnchecked();
@@ -234,6 +235,7 @@ namespace BSModManager.ViewModels
                 {
                     localMods.ModRepositoryOpen(); ;
                 });
+
                 Logger.Instance.Info("Update");
                 UpdateOrInstall = "Update";
                 AllButtonEnable();
@@ -243,14 +245,17 @@ namespace BSModManager.ViewModels
 
             ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
             {
+                changeModInfoModel.ChangeIMod(pastMods);
+
                 AllCheckedButtonCommand = new DelegateCommand(() =>
                 {
                     pastMods.AllCheckedOrUnchecked();
                 });
                 ModRepositoryButtonCommand = new DelegateCommand(() =>
                 {
-                    pastMods.ModRepositoryOpen(); ;
+                    pastMods.ModRepositoryOpen();
                 });
+
                 Logger.Instance.Info("Install");
                 UpdateOrInstall = "Install";
                 AllButtonEnable();

@@ -17,7 +17,7 @@ using System.Windows.Media;
 
 namespace BSModManager.Models
 {
-    public class LocalMods : BindableBase, IMods
+    public class LocalMods : BindableBase,IMods
     {
         public ObservableCollection<IModData> LocalModsData = new ObservableCollection<IModData>();
 
@@ -62,6 +62,11 @@ namespace BSModManager.Models
                     Logger.Instance.Error($"{ex.Message}\n{a.Mod}のURL : \"{a.Url}\"を開けませんでした");
                 }
             }
+        }
+
+        public List<IModData> AllCheckedMod()
+        {
+            return LocalModsData.Where(x => x.Checked == true).ToList();
         }
 
         public void SortByName()
