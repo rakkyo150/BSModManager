@@ -22,26 +22,24 @@ namespace BSModManager
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            // たとえViewModelであったとしても、ViewModelをDIするときはシングルトンでないと新しいインスタンスになる
-
             containerRegistry.RegisterSingleton<PastMods>();
             containerRegistry.RegisterSingleton<RecommendMods>();
             containerRegistry.RegisterSingleton<LocalMods>();
-
-            containerRegistry.RegisterSingleton<Refresher>();
-            containerRegistry.RegisterSingleton<ModInstaller>();
-            containerRegistry.RegisterSingleton<GitHubApi>();
-            containerRegistry.RegisterSingleton<ConfigFileHandler>();
             containerRegistry.RegisterSingleton<MAMods>();
-            containerRegistry.RegisterSingleton<ModCsvHandler>();
-            containerRegistry.RegisterSingleton<MyselfUpdater>();
-            containerRegistry.RegisterSingleton<ModUpdater>();
-            containerRegistry.RegisterSingleton<InitialDirectorySetup>();
-            containerRegistry.RegisterSingleton<ModDisposer>();
             containerRegistry.RegisterSingleton<SettingsVerifier>();
-            containerRegistry.RegisterSingleton<PreviousLocalModsDataGetter>();
-            containerRegistry.RegisterSingleton<ChangeModInfoModel>();
+            containerRegistry.RegisterSingleton<GitHubApi>();
             containerRegistry.RegisterSingleton<MainModsSetter>();
+            containerRegistry.RegisterSingleton<ChangeModInfoModel>();
+
+            containerRegistry.Register<Refresher>();
+            containerRegistry.Register<ModInstaller>();
+            containerRegistry.Register<ConfigFileHandler>();
+            containerRegistry.Register<ModCsvHandler>();
+            containerRegistry.Register<MyselfUpdater>();
+            containerRegistry.Register<ModUpdater>();
+            containerRegistry.Register<InitialDirectorySetup>();
+            containerRegistry.Register<ModDisposer>();
+            containerRegistry.Register<PreviousLocalModsDataGetter>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();
