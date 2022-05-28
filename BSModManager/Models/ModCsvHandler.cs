@@ -11,7 +11,7 @@ namespace BSModManager.Models
 {
     public class ModCsvHandler
     {
-        public async Task Write(string csvPath, IEnumerable<IModData> e)
+        public void Write(string csvPath, IEnumerable<IModData> e)
         {
             List<ModCsvIndex> modInformationCsvList = new List<ModCsvIndex>();
 
@@ -32,7 +32,7 @@ namespace BSModManager.Models
             using (var writer = new StreamWriter(csvPath, false))
             using (var csv = new CsvWriter(writer, new CultureInfo("ja-JP", false)))
             {
-                await csv.WriteRecordsAsync(modInformationCsvList);
+                csv.WriteRecords(modInformationCsvList);
             }
         }
 

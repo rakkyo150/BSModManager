@@ -13,7 +13,7 @@
     },
     {
         "Mod": "SongRequestManagerV2",
-        "Original": false,
+        "Original": true,
         "Description": "譜面のリクエストを受け取ることができます。配信するなら入れましょう。",
         "Url": "https://github.com/denpadokei/SongRequestManagerV2"
     },

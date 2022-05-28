@@ -120,26 +120,29 @@ namespace BSModManager.Models
 
         public async Task<Release> GetLatestReleaseInfoAsync(string url)
         {
-            var credential = new Credentials(GitHubToken);
-            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
-            {
-                Credentials = credential
-            };
-
-            string temp = url.Replace("https://github.com/", "");
-            int nextSlashPosition = temp.IndexOf('/');
-
-            if (nextSlashPosition == -1)
-            {
-                Logger.Instance.Info($"{url}は不正なURLです");
-                return null;
-            }
-
-            string owner = temp.Substring(0, nextSlashPosition);
-            string name = temp.Substring(nextSlashPosition + 1);
+            string owner = string.Empty;
+            string name = string.Empty;
 
             try
             {
+                var credential = new Credentials(GitHubToken);
+                GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
+                {
+                    Credentials = credential
+                };
+
+                string temp = url.Replace("https://github.com/", "");
+                int nextSlashPosition = temp.IndexOf('/');
+
+                if (nextSlashPosition == -1)
+                {
+                    Logger.Instance.Info($"{url}は不正なURLです");
+                    return null;
+                }
+
+                owner = temp.Substring(0, nextSlashPosition);
+                name = temp.Substring(nextSlashPosition + 1);
+
                 var response = await gitHub.Repository.Release.GetLatest(owner, name);
                 return response;
             }
@@ -225,19 +228,17 @@ namespace BSModManager.Models
 
         public async Task<bool> VerifyGitHubToken()
         {
-            if (GitHubToken == "") return false;
-
-            var credential = new Credentials(GitHubToken);
-            GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
-            {
-                Credentials = credential
-            };
-
-            string owner = "rakkyo150";
-            string name = "GithubModUpdateCheckerConsole";
-
             try
             {
+                var credential = new Credentials(GitHubToken);
+                GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
+                {
+                    Credentials = credential
+                };
+
+                string owner = "rakkyo150";
+                string name = "GithubModUpdateCheckerConsole";
+
                 var response = await gitHub.Repository.Release.GetLatest(owner, name);
                 return true;
             }

@@ -61,8 +61,8 @@ namespace BSModManager.Models
                     Mod = a.Mod,
                     LocalVersion = a.Installed.ToString(),
                     LatestVersion = a.Latest.ToString(),
-                    Original = a.Original == "true" ? true : false,
-                    Ma = a.MA == "〇" ? true : false,
+                    Original = a.Original == "true",
+                    Ma = a.MA == "〇",
                     Url = a.Url
                 });
             }

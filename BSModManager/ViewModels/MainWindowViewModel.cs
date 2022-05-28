@@ -114,7 +114,6 @@ namespace BSModManager.ViewModels
         readonly LocalMods localMods;
         readonly ChangeModInfoModel changeModInfoModel;
         readonly GitHubApi gitHubApi;
-        readonly PastMods pastMods;
         readonly ModCsvHandler modCsv;
         readonly InitialDirectorySetup initializer;
         readonly MyselfUpdater mySelfUpdater;
@@ -154,11 +153,10 @@ namespace BSModManager.ViewModels
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
             ModInstaller mi, Refresher r,ChangeModInfoModel cmim,MainModsSetter mmc,
             GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataGetter lmdf,
-            PastMods pmdm, ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
+            ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
             localMods = lmdm;
             gitHubApi = gha;
-            pastMods = pmdm;
             localModsDataFetcher = lmdf;
             modCsv = mc;
             initializer = i;
@@ -193,7 +191,7 @@ namespace BSModManager.ViewModels
             ButtonCommandSubscribe(regionManager);
 
             Dictionary<string, string> tempDictionary = configFile.Load();
-            if (tempDictionary["BSFolderPath"] != null && tempDictionary["GitHubToken"] != null)
+            if (tempDictionary["BSFolderPath"] != string.Empty && tempDictionary["GitHubToken"] != string.Empty)
             {
                 Folder.Instance.BSFolderPath = tempDictionary["BSFolderPath"];
                 gitHubApi.GitHubToken = tempDictionary["GitHubToken"];
@@ -202,19 +200,22 @@ namespace BSModManager.ViewModels
 
             LoadedCommand = new DelegateCommand(async () =>
             {
-                Logger.Instance.Info("Start Initializing");
-
-                AllButtonDisable();
-
-                Logger.Instance.Info("Check Myself Latest Version");
-                await UpdateCheck();
-
-                if (!settingsVerifier.BSFolderAndGitHubToken)
+                // 少なくとも最初にスッと落ちるのは避けたいので
+                try
                 {
-                    dialogService.ShowDialog("InitialSetting");
-                }
-                else
-                {
+                    Logger.Instance.Info("Start Initializing");
+
+                    AllButtonDisable();
+
+                    Logger.Instance.Info("Check Myself Latest Version");
+
+                    await MyselfUpdateCheck();
+
+                    if (!settingsVerifier.BSFolderAndGitHubToken)
+                    {
+                        dialogService.ShowDialog("InitialSetting");
+                    }
+
                     Logger.Instance.Info("Start Making Backup");
                     initializer.Backup();
                     Logger.Instance.Info("Finish Making Backup");
@@ -225,15 +226,19 @@ namespace BSModManager.ViewModels
                     mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
 
                     await localModsDataFetcher.GetData();
+
+                    await refresher.Refresh();
+
+                    AllButtonEnable();
                 }
-
-                await refresher.Refresh();
-
-                AllButtonEnable();
+                catch(Exception ex)
+                {
+                    Logger.Instance.Error(ex.Message);
+                }
             });
 
 
-            async void ClosingCommand(object sender, CancelEventArgs e)
+            void ClosingCommand(object sender, CancelEventArgs e)
             {
                 // https://araramistudio.jimdo.com/2016/10/12/wpf%E3%81%A7window%E3%82%92%E9%96%89%E3%81%98%E3%82%8B%E5%89%8D%E3%81%AB%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B/
                 if (MessageBoxResult.Yes != MessageBox.Show("画面を閉じます。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
@@ -244,7 +249,9 @@ namespace BSModManager.ViewModels
 
                 if (GameVersion.Version == "---") return;
 
-                await SaveModsData();
+                SaveModsData();
+
+                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
 
                 Logger.Instance.GenerateLogFile();
             };
@@ -257,7 +264,7 @@ namespace BSModManager.ViewModels
             MyselfVersion = "Version\n" + version.ToString(3);
         }
 
-        private async Task SaveModsData()
+        private void SaveModsData()
         {
             string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
             if (!Directory.Exists(dataDirectory))
@@ -265,10 +272,10 @@ namespace BSModManager.ViewModels
                 Directory.CreateDirectory(dataDirectory);
             }
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-            await modCsv.Write(modsDataCsvPath, localMods.LocalModsData);
+            modCsv.Write(modsDataCsvPath, localMods.LocalModsData);
         }
 
-        private async Task UpdateCheck()
+        private async Task MyselfUpdateCheck()
         {
             bool canUpdate = await gitHubApi.CheckMyselfNewVersion();
 
@@ -290,7 +297,7 @@ namespace BSModManager.ViewModels
                     Arguments = mySelfUpdater.LatestMyselfVersion.ToString(),
                     FileName = Path.Combine(Environment.CurrentDirectory, "Updater.exe")
                 };
-                Process process = Process.Start(processStartInfo);
+                Process.Start(processStartInfo);
                 Environment.Exit(0);
             }
         }

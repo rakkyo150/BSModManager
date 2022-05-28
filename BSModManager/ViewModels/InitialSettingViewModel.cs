@@ -22,12 +22,7 @@ namespace BSModManager.ViewModels
     {
         readonly SettingsVerifier settingsVerifier;
         readonly GitHubApi gitHubApi;
-        readonly LocalMods modsDataModel;
-        readonly ModCsvHandler modCsv;
-        readonly InitialDirectorySetup initializer;
-        readonly MAMods mAMod;
         readonly ConfigFileHandler configFile;
-        readonly Refresher refresher;
 
         CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
@@ -53,15 +48,8 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(Refresher r,GitHubApi ghm, LocalMods mdm, ModCsvHandler mc,
-            InitialDirectorySetup i, MAMods mam, SettingsVerifier sv, ConfigFileHandler cf)
+        internal InitialSettingViewModel(SettingsVerifier sv, ConfigFileHandler cf)
         {
-            refresher = r;
-            gitHubApi = ghm;
-            modsDataModel = mdm;
-            modCsv = mc;
-            initializer = i;
-            mAMod = mam;
             settingsVerifier = sv;
             configFile = cf;
 
@@ -164,109 +152,6 @@ namespace BSModManager.ViewModels
 
         public void OnDialogClosed()
         {
-            Task.Run(() =>
-            {
-                Logger.Instance.Info("Start Making Backup");
-                initializer.Backup();
-                Logger.Instance.Info("Finish Making Backup");
-            }).GetAwaiter().GetResult();
-            Task.Run(() => { mAMod.ModAssistantAllMods = mAMod.GetAllAsync().Result; }).GetAwaiter().GetResult();
-
-            string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
-            string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-            List<ModCsvIndex> previousDataList;
-            if (File.Exists(modsDataCsvPath))
-            {
-                previousDataList = Task.Run(async () => await modCsv.Read(modsDataCsvPath)).GetAwaiter().GetResult();
-                foreach (var previousData in previousDataList)
-                {
-                    if (Array.Exists(mAMod.ModAssistantAllMods, x => x.name == previousData.Mod))
-                    {
-                        if (previousData.Original)
-                        {
-                            var temp = Array.Find(mAMod.ModAssistantAllMods, x => x.name == previousData.Mod);
-
-                            DateTime now = DateTime.Now;
-                            DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
-                            string updated = null;
-                            if ((now - mAUpdatedAt).Days >= 1)
-                            {
-                                updated = (now - mAUpdatedAt).Days + "D ago";
-                            }
-                            else
-                            {
-                                updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
-                            }
-
-                            modsDataModel.LocalModsData.Add(new LocalModData(refresher)
-                            {
-                                Mod = previousData.Mod,
-                                Latest = new Version(temp.version),
-                                Updated = updated,
-                                Original = "〇",
-                                MA = "〇",
-                                Description = temp.description,
-                                Url = temp.link
-                            });
-                        }
-                    }
-                    else
-                    {
-                        Release response = null;
-                        string original = null;
-                        Task.Run(async () => { response = await gitHubApi.GetLatestReleaseInfoAsync(previousData.Url); }).GetAwaiter().GetResult();
-
-                        if (!previousData.Original)
-                        {
-                            original = "×";
-                        }
-                        else
-                        {
-                            original = "〇";
-                        }
-
-                        if (response == null)
-                        {
-                            modsDataModel.LocalModsData.Add(new LocalModData(refresher)
-                            {
-                                Mod = previousData.Mod,
-                                Latest = new Version("0.0.0"),
-                                Updated = previousData.Url == "" ? "?" : "---",
-                                Original = original,
-                                MA = "×",
-                                Description = previousData.Url == "" ? "?" : "---",
-                                Url = previousData.Url
-                            });
-                        }
-                        else
-                        {
-                            DateTime now = DateTime.Now;
-                            string updated = null;
-                            if ((now - response.CreatedAt).Days >= 1)
-                            {
-                                updated = (now - response.CreatedAt).Days + "D ago";
-                            }
-                            else
-                            {
-                                updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
-                            }
-
-                            modsDataModel.LocalModsData.Add(new LocalModData(refresher)
-                            {
-                                Mod = previousData.Mod,
-                                Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
-                                Updated = updated,
-                                Original = original,
-                                MA = "×",
-                                Description = response.Body,
-                                Url = previousData.Url
-                            });
-                        }
-                    }
-                }
-
-                Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
-            }
         }
 
         public void OnDialogOpened(IDialogParameters _)
