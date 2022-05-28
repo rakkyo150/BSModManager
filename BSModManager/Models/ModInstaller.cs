@@ -15,21 +15,23 @@ namespace BSModManager.Models
         readonly ModDisposer modDisposer;
         readonly Refresher refresher;
         readonly SettingsVerifier settingsVerifier;
+        readonly MainModsSetter mainModsSetter;
 
-        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r,SettingsVerifier sv)
+        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r,SettingsVerifier sv,MainModsSetter mms)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
             modDisposer = md;
             refresher = r;
             settingsVerifier = sv;
+            mainModsSetter = mms;
         }
 
-        public async Task Install(IMods sourceModData)
+        public async Task Install()
         {
             bool openMA = false;
 
-            IEnumerable<IModData> ModsData = sourceModData.ReturnCheckedModsData();
+            IEnumerable<IModData> ModsData = mainModsSetter.MainMods.ReturnCheckedModsData();
 
             if (ModsData.Count() == 0) return;
 
@@ -45,7 +47,7 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                response = await gitHubApi.GetLatestReleaseAsync(a.Url);
+                response = await gitHubApi.GetLatestReleaseInfoAsync(a.Url);
 
                 if (response != null)
                 {
@@ -55,7 +57,7 @@ namespace BSModManager.Models
                 }
             }
 
-            Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
+            await refresher.Refresh();
 
             if (openMA && settingsVerifier.MAExe)
             {

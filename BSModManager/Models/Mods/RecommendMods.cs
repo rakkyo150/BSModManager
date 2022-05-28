@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace BSModManager.Models
@@ -21,6 +22,11 @@ namespace BSModManager.Models
     {
         public ObservableCollection<IModData> RecommendModsData = new ObservableCollection<IModData>();
 
+        public RecommendMods()
+        {
+            BindingOperations.EnableCollectionSynchronization(RecommendModsData, new object());
+        }
+        
         public void AllCheckedOrUnchecked()
         {
             int i = 0;

@@ -61,6 +61,8 @@
     <Compile Include="Interfaces\IMods.cs" />
     <Compile Include="Interfaces\IModData.cs" />
     <Compile Include="Models\ConfigFileHandler.cs" />
+    <Compile Include="Models\MainModsSetter.cs" />
+    <Compile Include="Models\Mods\RecommendModsJsonStructure.cs" />
     <Compile Include="Models\Mods\Structures\LocalModData.cs" />
     <Compile Include="Models\Mods\Structures\MAModData.cs" />
     <Compile Include="Models\Mods\Structures\PastModData.cs" />
@@ -165,6 +167,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Models\Mods\RecommendMods.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

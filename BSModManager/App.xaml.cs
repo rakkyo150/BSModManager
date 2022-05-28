@@ -42,6 +42,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<SettingsVerifier>();
             containerRegistry.RegisterSingleton<PreviousLocalModsDataGetter>();
             containerRegistry.RegisterSingleton<ChangeModInfoModel>();
+            containerRegistry.RegisterSingleton<MainModsSetter>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();

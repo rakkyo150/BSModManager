@@ -40,7 +40,7 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                response = await gitHubApi.GetLatestReleaseAsync(a.Url);
+                response = await gitHubApi.GetLatestReleaseInfoAsync(a.Url);
                 if (response != null)
                 {
                     await gitHubApi.DownloadAsync(a.Url, Folder.Instance.tmpFolder);

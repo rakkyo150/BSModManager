@@ -1,0 +1,81 @@
+[
+    {
+        "Mod": "CameraPlus",
+        "Original": true,
+        "Description": "バーチャルモーションキャプチャーを利用する場合に使うといいかもです。\nCamera2が使いづらい人も使ってみるとかもです",
+        "Url": "https://github.com/Snow1226/CameraPlus"
+    },
+    {
+        "Mod": "EnhancedStreamChat",
+        "Original": false,
+        "Description": "配信中にゲーム内からコメントが見れるようになります。配信するなら入れましょう。",
+        "Url": "https://github.com/denpadokei/EnhancedStreamChat-v3"
+    },
+    {
+        "Mod": "SongRequestManagerV2",
+        "Original": false,
+        "Description": "譜面のリクエストを受け取ることができます。配信するなら入れましょう。",
+        "Url": "https://github.com/denpadokei/SongRequestManagerV2"
+    },
+    {
+        "Mod": "HttpSiraStatus",
+        "Original": true,
+        "Description": "オーバーレイ表示をするのに必要になります。HttpStatusより多機能。\nhttps://github.com/rynan4818/beat-saber-overlay と併用しましょう。",
+        "Url": "https://github.com/denpadokei/HttpSiraStatus"
+    },
+    {
+        "Mod": "SoundReplacer",
+        "Original": true,
+        "Description": "ヒット音などを好きな音に変えることができます。",
+        "Url": "https://github.com/SamuelTulach/SoundReplacer"
+    },
+    {
+        "Mod": "BeatmapInformation",
+        "Original": true,
+        "Description": "曲の情報をプレイスペースの後ろに表示できます。",
+        "Url": "https://github.com/denpadokei/BeatmapInformation"
+    },
+    {
+        "Mod": "NalulunaAvatars",
+        "Original": true,
+        "Description": "VRM形式のアバターをお手軽に使えます。有料会員である必要があります。",
+        "Url": "https://nalulululuna.fanbox.cc/posts/2079749"
+    },
+    {
+        "Mod": "NalulunaMenu",
+        "Original": true,
+        "Description": "メニュー画面や音楽をいじれます",
+        "Url": "https://youtu.be/qZMGXzJWrsk"
+    },
+    {
+        "Mod": "NalulunaModifier",
+        "Original": true,
+        "Description": "色々な遊び方ができるようになります。特にFeetSaberを遊びたいなら入れましょう。",
+        "Url": "https://youtu.be/QtLNweiiQPU"
+    },
+    {
+        "Mod": "AlternativePlay",
+        "Original": true,
+        "Description": "色々な遊び方ができるようになります。特にダースモールを遊びたいなら入れましょう。",
+        "Url": "https://github.com/Kylon99/AlternativePlay"
+    },
+    {
+        "Mod": "NullponSpectrum",
+        "Original": true,
+        "Description": "曲に合わせて床がいい感じになってくれます。",
+        "Url": "https://github.com/nullpon16tera/NullponSpectrum"
+    },
+    {
+        "Mod": "NoteMode",
+        "Original": true,
+        "Description": "ノーツを色々いじれます",
+        "Url": "https://github.com/nullpon16tera/NoteMode"
+    },
+    {
+        "Mod": "GetNearRankMod",
+        "Original": true,
+        "Description": "日本ローカルランクで近い順位の人がPPをたくさん取ってる譜面をプレイリスト化します。",
+        "Url": "https://github.com/rakkyo150/GetNearRankMod"
+    }
+]
+
