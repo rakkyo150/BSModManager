@@ -15,8 +15,18 @@ namespace BSModManager.Models
             string zipPath = Path.Combine(Folder.Instance.tmpFolder, $"BS{GameVersion.Version}-{now}");
             Directory.CreateDirectory(zipPath);
 
-            Folder.Instance.Copy(Path.Combine(Folder.Instance.BSFolderPath, "Plugins"),
-                Path.Combine(zipPath, "Plugins"), true);
+            if(Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "Plugins")))
+            {
+                Folder.Instance.Copy(Path.Combine(Folder.Instance.BSFolderPath, "Plugins"),
+                    Path.Combine(zipPath, "Plugins"), true);
+            }
+
+            if (Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "IPA","Pending","Plugins")))
+            {
+                Folder.Instance.Copy(Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins"),
+                    Path.Combine(zipPath, "Plugins"), true);
+            }
+
             Folder.Instance.Copy(Folder.Instance.dataFolder, Path.Combine(zipPath, "Data"), true);
             File.Copy(FilePath.Instance.configFilePath, Path.Combine(zipPath, "config.json"), true);
 

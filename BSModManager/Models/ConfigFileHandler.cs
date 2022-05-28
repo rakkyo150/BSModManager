@@ -29,9 +29,9 @@ namespace BSModManager.Models
             {
                 settingDictionary = new Dictionary<string, string>()
                 {
-                    {"BSFolderPath",null },
-                    {"GitHubToken", null},
-                    {"MAExePath", null }
+                    {"BSFolderPath",string.Empty },
+                    {"GitHubToken", string.Empty},
+                    {"MAExePath", string.Empty }
                 };
             }
 
