@@ -17,7 +17,7 @@ namespace BSModManager.Models
         readonly SettingsVerifier settingsVerifier;
         readonly MainModsSetter mainModsSetter;
 
-        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r,SettingsVerifier sv,MainModsSetter mms)
+        public ModInstaller(LocalMods lmdm, GitHubApi gha, ModDisposer md, Refresher r, SettingsVerifier sv, MainModsSetter mms)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
@@ -40,7 +40,7 @@ namespace BSModManager.Models
                 Release response = null;
 
                 if (a.Installed >= a.Latest) continue;
-                
+
                 if (a.MA == "〇")
                 {
                     openMA = true;
@@ -51,7 +51,7 @@ namespace BSModManager.Models
 
                 if (response != null)
                 {
-                    await gitHubApi.DownloadAsync(a.Url,Folder.Instance.tmpFolder);
+                    await gitHubApi.DownloadAsync(a.Url, Folder.Instance.tmpFolder);
                     modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath);
                     localModsDataModel.Add(a);
                 }

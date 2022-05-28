@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using static BSModManager.Models.MAMods;
 
 namespace BSModManager.Models
 {
@@ -21,7 +20,7 @@ namespace BSModManager.Models
         readonly Refresher refresher;
         readonly MainModsSetter mainModsChanger;
 
-        public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MAMods mam, Refresher r,MainModsSetter mmc)
+        public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MAMods mam, Refresher r, MainModsSetter mmc)
         {
             dialogService = ds;
             gitHubManager = ghm;
@@ -170,7 +169,7 @@ namespace BSModManager.Models
             get { return position; }
             set { SetProperty(ref position, value); }
         }
-        
+
         public void ChangeInfo()
         {
             // 何個目のCheckedか
@@ -243,7 +242,7 @@ namespace BSModManager.Models
 
         public void GetInfo()
         {
-            if (ExistInMA)  return;
+            if (ExistInMA) return;
 
             Release response = null;
             Task.Run(() => { response = gitHubManager.GetLatestReleaseInfoAsync(Url).Result; }).GetAwaiter().GetResult();
@@ -275,7 +274,7 @@ namespace BSModManager.Models
 
         private void SetInfoForMA()
         {
-            if (!mAMod.ExistsData(new MAModData() { name=modName})) return;
+            if (!mAMod.ExistsData(new MAModData() { name = modName })) return;
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
 

@@ -22,7 +22,7 @@ namespace Updater
                     Console.ReadLine();
                     return;
                 }
-                
+
                 DirectoryInfo dir = new DirectoryInfo(downloadPath);
 
                 FileInfo[] files = dir.GetFiles();

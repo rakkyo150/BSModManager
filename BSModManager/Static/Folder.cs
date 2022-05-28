@@ -44,7 +44,7 @@ namespace BSModManager.Static
                 Directory.CreateDirectory(tmpFolder);
             }
         }
-        
+
         public string Select(string previouPath)
         {
             var dialog = new CommonOpenFileDialog
@@ -66,7 +66,7 @@ namespace BSModManager.Static
             {
                 System.Diagnostics.Process.Start("explorer.exe", path);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Instance.Error(ex.Message);
             }

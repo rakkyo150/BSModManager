@@ -151,7 +151,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ModInstaller mi, Refresher r,ChangeModInfoModel cmim,MainModsSetter mmc,
+            ModInstaller mi, Refresher r, ChangeModInfoModel cmim, MainModsSetter mmc,
             GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataGetter lmdf,
             ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
@@ -185,7 +185,7 @@ namespace BSModManager.ViewModels
             };
 
             mainModsChanger.ChangeModInfoButtonEnable = this.ToReactivePropertyAsSynchronized(x => x.ChangeModInfoButtonEnable).AddTo(Disposables);
-            
+
             SetMyselfVersion();
 
             ButtonCommandSubscribe(regionManager);
@@ -231,7 +231,7 @@ namespace BSModManager.ViewModels
 
                     AllButtonEnable();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.Instance.Error(ex.Message);
                 }
@@ -280,7 +280,7 @@ namespace BSModManager.ViewModels
             bool canUpdate = await gitHubApi.CheckMyselfNewVersion();
 
             if (!canUpdate) return;
-                
+
             if (MessageBoxResult.Yes != MessageBox.Show("更新版を発見しました。更新しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
             {
                 return;

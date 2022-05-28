@@ -65,7 +65,7 @@ namespace BSModManager.Models
             await DownloadAsync(myselfUrl, destDirFullPath);
 
             string zipFileName = Path.Combine(destDirFullPath, "BSModManager.zip");
-            
+
             return UnzipMyselfNewVersion(destDirFullPath, zipFileName);
         }
 

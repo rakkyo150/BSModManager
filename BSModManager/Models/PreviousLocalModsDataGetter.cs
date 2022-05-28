@@ -19,7 +19,7 @@ namespace BSModManager.Models
         readonly DateTime now = DateTime.Now;
         string updated = "";
 
-        public PreviousLocalModsDataGetter(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc,Refresher r)
+        public PreviousLocalModsDataGetter(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc, Refresher r)
         {
             localMods = lm;
             gitHubApi = gha;
@@ -33,7 +33,7 @@ namespace BSModManager.Models
             string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
             List<ModCsvIndex> previousDataList;
-            
+
             if (!File.Exists(modsDataCsvPath)) return;
 
             previousDataList = await modCsv.Read(modsDataCsvPath);

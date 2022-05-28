@@ -1,20 +1,14 @@
 ﻿using BSModManager.Models;
-using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
-using Octokit;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
-using static BSModManager.Models.ModCsvHandler;
 
 namespace BSModManager.ViewModels
 {

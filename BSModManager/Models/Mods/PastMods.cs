@@ -1,27 +1,19 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Static;
 using Prism.Mvvm;
-using Prism.Navigation;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reactive.Disposables;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace BSModManager.Models
 {
     public class PastMods : BindableBase, IMods
     {
         internal ObservableCollection<IModData> PastModsData = new ObservableCollection<IModData>();
-        
+
         public PastMods()
         {
             BindingOperations.EnableCollectionSynchronization(PastModsData, new object());

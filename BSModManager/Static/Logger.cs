@@ -16,13 +16,13 @@ namespace BSModManager.Static
         {
             get { return Path.Combine(Folder.Instance.logFolder, $"{DateTime.Now:yyyy.MM.dd.HH.mm.ss}.log"); }
         }
-        
+
         private string infoLog = "";
         public string InfoLog
         {
             get { return infoLog; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref infoLog, value);
                 allLog += $"[Info @ {DateTime.Now:HH:mm:ss}] " + value + "\n";
             }
@@ -43,7 +43,7 @@ namespace BSModManager.Static
             allLog += $"[Error @ {DateTime.Now:HH:mm:ss}] " + error + "\n";
             MessageBox.Show($"{error}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-        
+
         internal void GenerateLogFile()
         {
             if (!Directory.Exists(Folder.Instance.logFolder))
@@ -57,10 +57,10 @@ namespace BSModManager.Static
                 using (StreamWriter streamWriter = new StreamWriter(LogFilePath, false, enc))
                 {
                     streamWriter.WriteLine(allLog);
-                    
+
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"{ex.Message}",
                         "ログファイル作成失敗", MessageBoxButton.OK, MessageBoxImage.Error);

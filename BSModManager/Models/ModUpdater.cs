@@ -13,7 +13,7 @@ namespace BSModManager.Models
         readonly Refresher refresher;
         readonly SettingsVerifier settingsVerifier;
 
-        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md,Refresher r,SettingsVerifier sv)
+        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md, Refresher r, SettingsVerifier sv)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;

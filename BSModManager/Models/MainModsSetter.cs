@@ -1,19 +1,13 @@
 ﻿using BSModManager.Interfaces;
-using BSModManager.Static;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Disposables;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
-    public class MainModsSetter:BindableBase,IDestructible
+    public class MainModsSetter : BindableBase, IDestructible
     {
         private IMods mainMods;
 

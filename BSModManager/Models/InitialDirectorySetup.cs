@@ -15,13 +15,13 @@ namespace BSModManager.Models
             string zipPath = Path.Combine(Folder.Instance.tmpFolder, $"BS{GameVersion.Version}-{now}");
             Directory.CreateDirectory(zipPath);
 
-            if(Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "Plugins")))
+            if (Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "Plugins")))
             {
                 Folder.Instance.Copy(Path.Combine(Folder.Instance.BSFolderPath, "Plugins"),
                     Path.Combine(zipPath, "Plugins"), true);
             }
 
-            if (Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "IPA","Pending","Plugins")))
+            if (Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins")))
             {
                 Folder.Instance.Copy(Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins"),
                     Path.Combine(zipPath, "Plugins"), true);
