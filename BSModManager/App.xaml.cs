@@ -1,5 +1,4 @@
 ﻿using BSModManager.Models;
-using BSModManager.Static;
 using BSModManager.Views;
 using Prism.Ioc;
 using System.Windows;

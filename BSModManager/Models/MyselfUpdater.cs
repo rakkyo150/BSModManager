@@ -18,7 +18,7 @@ namespace BSModManager.Models
         public void UpdateUpdater()
         {
             string downloadPath = Path.Combine(Environment.CurrentDirectory, LatestMyselfVersion.ToString());
-            
+
             try
             {
                 if (!Directory.Exists(downloadPath))

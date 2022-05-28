@@ -79,7 +79,7 @@ namespace BSModManager.ViewModels
                 Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
                 Logger.Instance.Info(Folder.Instance.BSFolderPath);
             }).AddTo(Disposables);
-            
+
             OpenBSFolder = OpenBSFolderButtonEnable
                 .ToReactiveCommand()
                 .WithSubscribe(() =>
@@ -88,43 +88,43 @@ namespace BSModManager.ViewModels
                     Folder.Instance.Open(Folder.Instance.BSFolderPath);
                     Logger.Instance.Info(Folder.Instance.BSFolderPath);
                 }).AddTo(Disposables);
-            
+
             ChangeToken.Subscribe((x) =>
             {
                 gitHubApi.GitHubToken = ((PasswordBox)x).Password;
                 Logger.Instance.Info("GitHub Token Changed");
             }).AddTo(Disposables);
-            
+
             SelectMAExe.Subscribe(() =>
             {
                 Logger.Instance.Info("Select ModAssistant.exe");
                 FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
             }).AddTo(Disposables);
-            
+
             OpenMAFolder.Subscribe(() =>
             {
                 Logger.Instance.Info("Open ModAssistant Folder");
                 Folder.Instance.Open(Path.GetDirectoryName(FilePath.Instance.MAExePath));
             }).AddTo(Disposables);
-            
+
             OpenLogFolder.Subscribe(_ =>
             {
                 Logger.Instance.Info("Open Log Folder");
                 Folder.Instance.Open(Folder.Instance.logFolder);
             }).AddTo(Disposables);
-            
+
             OpenDataFolder.Subscribe(_ =>
             {
                 Logger.Instance.Info("Open Data Folder");
                 Folder.Instance.Open(Folder.Instance.dataFolder);
             }).AddTo(Disposables);
-            
+
             OpenBackupFolder.Subscribe(_ =>
             {
                 Logger.Instance.Info("Open Backup Folder");
                 Folder.Instance.Open(Folder.Instance.backupFolder);
             }).AddTo(Disposables);
-            
+
             OpenModTempFolder.Subscribe(_ =>
             {
                 Logger.Instance.Info("Open Temp Folder");

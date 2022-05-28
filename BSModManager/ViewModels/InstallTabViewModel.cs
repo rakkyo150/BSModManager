@@ -1,6 +1,5 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Models;
-using BSModManager.Static;
 using Prism.Commands;
 using Prism.Mvvm;
 using Reactive.Bindings;
