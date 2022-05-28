@@ -70,7 +70,7 @@ namespace BSModManager.Models
                 }
 
 
-                Release response = await gitHubApi.GetLatestReleaseAsync(previousData.Url);
+                Release response = await gitHubApi.GetLatestReleaseInfoAsync(previousData.Url);
                 string original = null;
 
                 original = previousData.Original ? "〇" : "×";

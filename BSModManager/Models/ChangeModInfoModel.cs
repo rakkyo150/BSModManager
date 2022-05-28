@@ -19,16 +19,15 @@ namespace BSModManager.Models
         readonly GitHubApi gitHubManager;
         readonly MAMods mAMod;
         readonly Refresher refresher;
+        readonly MainModsSetter mainModsChanger;
 
-        private IMods iMods;
-
-        public ChangeModInfoModel(IDialogService ds, LocalMods im, GitHubApi ghm, MAMods mam, Refresher r)
+        public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MAMods mam, Refresher r,MainModsSetter mmc)
         {
             dialogService = ds;
-            iMods = im;
             gitHubManager = ghm;
             mAMod = mam;
             refresher = r;
+            mainModsChanger = mmc;
         }
 
         private string modName;
@@ -48,7 +47,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref url, value);
-                iMods.UpdateURL(new LocalModData(refresher)
+                mainModsChanger.MainMods.UpdateURL(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Url = value
@@ -63,7 +62,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref updated, value);
-                iMods.UpdateUpdated(new LocalModData(refresher)
+                mainModsChanger.MainMods.UpdateUpdated(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Updated = value
@@ -81,7 +80,7 @@ namespace BSModManager.Models
                 SetProperty(ref original, value);
                 if (Original)
                 {
-                    iMods.UpdateOriginal(new LocalModData(refresher)
+                    mainModsChanger.MainMods.UpdateOriginal(new LocalModData(refresher)
                     {
                         Mod = modName,
                         Original = "〇"
@@ -90,7 +89,7 @@ namespace BSModManager.Models
                 }
                 else
                 {
-                    iMods.UpdateOriginal(new LocalModData(refresher)
+                    mainModsChanger.MainMods.UpdateOriginal(new LocalModData(refresher)
                     {
                         Mod = modName,
                         Original = "×"
@@ -115,7 +114,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref latest, value);
-                iMods.UpdateLatest(new LocalModData(refresher)
+                mainModsChanger.MainMods.UpdateLatest(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Latest = value
@@ -130,7 +129,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref mA, value);
-                iMods.UpdateMA(new LocalModData(refresher)
+                mainModsChanger.MainMods.UpdateMA(new LocalModData(refresher)
                 {
                     Mod = modName,
                     MA = value
@@ -155,7 +154,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref description, value);
-                iMods.UpdateDescription(new LocalModData(refresher)
+                mainModsChanger.MainMods.UpdateDescription(new LocalModData(refresher)
                 {
                     Mod = modName,
                     Description = value
@@ -171,17 +170,12 @@ namespace BSModManager.Models
             get { return position; }
             set { SetProperty(ref position, value); }
         }
-
-        public void ChangeIMod(IMods mods)
-        {
-            iMods = mods;
-        }
         
         public void ChangeInfo()
         {
             // 何個目のCheckedか
             int count = 0;
-            List<IModData> AllCheckedMod = iMods.AllCheckedMod();
+            List<IModData> AllCheckedMod = mainModsChanger.MainMods.AllCheckedMod();
             int AllChekedModCount = AllCheckedMod.Count();
 
             foreach (var checkedMod in AllCheckedMod)
@@ -252,7 +246,7 @@ namespace BSModManager.Models
             if (ExistInMA)  return;
 
             Release response = null;
-            Task.Run(() => { response = gitHubManager.GetLatestReleaseAsync(Url).Result; }).GetAwaiter().GetResult();
+            Task.Run(() => { response = gitHubManager.GetLatestReleaseInfoAsync(Url).Result; }).GetAwaiter().GetResult();
             if (response != null)
             {
                 string releaseBody = response.Body;

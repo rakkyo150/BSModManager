@@ -38,11 +38,11 @@ namespace BSModManager.Models
 
             Version currentVersion = new Version(rawVersion.Major, rawVersion.Minor, rawVersion.Build);
 
-            Release response = await GetLatestReleaseAsync(myselfUrl);
+            Release response = await GetLatestReleaseInfoAsync(myselfUrl);
 
             if (response == null) return false;
 
-            myselfUpdater.LatestMyselfVersion = DetectVersionFromTagName((await GetLatestReleaseAsync(myselfUrl)).TagName);
+            myselfUpdater.LatestMyselfVersion = DetectVersionFromTagName((await GetLatestReleaseInfoAsync(myselfUrl)).TagName);
 
             if (myselfUpdater.LatestMyselfVersion <= currentVersion)
             {
@@ -106,7 +106,7 @@ namespace BSModManager.Models
 
         public async Task DownloadAsync(string url, string destDirFullPath)
         {
-            Release response = await GetLatestReleaseAsync(url);
+            Release response = await GetLatestReleaseInfoAsync(url);
             if (response == null) return;
 
             foreach (var item in response.Assets)
@@ -118,7 +118,7 @@ namespace BSModManager.Models
             }
         }
 
-        public async Task<Release> GetLatestReleaseAsync(string url)
+        public async Task<Release> GetLatestReleaseInfoAsync(string url)
         {
             var credential = new Credentials(GitHubToken);
             GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))

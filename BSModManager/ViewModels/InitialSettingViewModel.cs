@@ -214,7 +214,7 @@ namespace BSModManager.ViewModels
                     {
                         Release response = null;
                         string original = null;
-                        Task.Run(async () => { response = await gitHubApi.GetLatestReleaseAsync(previousData.Url); }).GetAwaiter().GetResult();
+                        Task.Run(async () => { response = await gitHubApi.GetLatestReleaseInfoAsync(previousData.Url); }).GetAwaiter().GetResult();
 
                         if (!previousData.Original)
                         {

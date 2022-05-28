@@ -125,6 +125,7 @@ namespace BSModManager.ViewModels
         readonly ModInstaller modInstaller;
         readonly PreviousLocalModsDataGetter localModsDataFetcher;
         readonly Refresher refresher;
+        readonly MainModsSetter mainModsChanger;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
@@ -151,7 +152,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ModInstaller mi, Refresher r,ChangeModInfoModel cmim,
+            ModInstaller mi, Refresher r,ChangeModInfoModel cmim,MainModsSetter mmc,
             GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataGetter lmdf,
             PastMods pmdm, ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
@@ -169,6 +170,7 @@ namespace BSModManager.ViewModels
             modInstaller = mi;
             refresher = r;
             changeModInfoModel = cmim;
+            mainModsChanger = mmc;
 
             dialogService = ds;
 
@@ -184,94 +186,11 @@ namespace BSModManager.ViewModels
                 DisplayedGameVersion = GameVersion.DisplayedVersion;
             };
 
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            System.Version version = assembly.GetName().Version;
-            MyselfVersion = "Version\n" + version.ToString(3);
+            mainModsChanger.ChangeModInfoButtonEnable = this.ToReactivePropertyAsSynchronized(x => x.ChangeModInfoButtonEnable).AddTo(Disposables);
+            
+            SetMyselfVersion();
 
-            RegionManager = regionManager;
-            RegionManager.RegisterViewWithRegion("ContentRegion", typeof(UpdateTab));
-
-            AllCheckedButtonCommand = new DelegateCommand(() =>
-              {
-                  localMods.AllCheckedOrUnchecked();
-              });
-
-            UpdateOrInstallButtonCommand = new DelegateCommand<string>(async(x) =>
-              {
-                  Logger.Instance.Debug(x + " Button pushed");
-                  if (x == "Update")
-                  {
-                      await modUpdater.Update();
-                  }
-                  else
-                  {
-                      await modInstaller.Install(pastMods);
-                  }
-              });
-
-            ChangeModInfoButtonCommand = new DelegateCommand(() =>
-              {
-                  changeModInfoModel.ChangeInfo();
-              });
-
-            ModRepositoryButtonCommand = new DelegateCommand(() =>
-              {
-                  localMods.ModRepositoryOpen();
-              });
-
-            RefreshButtonCommand = new DelegateCommand(() =>
-              {
-                  Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
-              });
-            ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
-            {
-                changeModInfoModel.ChangeIMod(localMods);
-                
-                AllCheckedButtonCommand = new DelegateCommand(() =>
-                {
-                    localMods.AllCheckedOrUnchecked();
-                });
-                ModRepositoryButtonCommand = new DelegateCommand(() =>
-                {
-                    localMods.ModRepositoryOpen(); ;
-                });
-
-                Logger.Instance.Info("Update");
-                UpdateOrInstall = "Update";
-                AllButtonEnable();
-                localMods.SortByName();
-                RegionManager.RequestNavigate("ContentRegion", x);
-            });
-
-            ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
-            {
-                changeModInfoModel.ChangeIMod(pastMods);
-
-                AllCheckedButtonCommand = new DelegateCommand(() =>
-                {
-                    pastMods.AllCheckedOrUnchecked();
-                });
-                ModRepositoryButtonCommand = new DelegateCommand(() =>
-                {
-                    pastMods.ModRepositoryOpen();
-                });
-
-                Logger.Instance.Info("Install");
-                UpdateOrInstall = "Install";
-                AllButtonEnable();
-                pastMods.SortByName();
-                RegionManager.RequestNavigate("ContentRegion", x);
-            });
-
-            ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
-            {
-                Logger.Instance.Info("Settings");
-                AllButtonDisable();
-                ShowInstallTabViewEnable = true;
-                ShowSettingsTabViewEnable = true;
-                ShowUpdateTabViewEnable = true;
-                RegionManager.RequestNavigate("ContentRegion", x);
-            });
+            ButtonCommandSubscribe(regionManager);
 
             Dictionary<string, string> tempDictionary = configFile.Load();
             if (tempDictionary["BSFolderPath"] != null && tempDictionary["GitHubToken"] != null)
@@ -288,28 +207,7 @@ namespace BSModManager.ViewModels
                 AllButtonDisable();
 
                 Logger.Instance.Info("Check Myself Latest Version");
-                bool canUpdate = await gitHubApi.CheckMyselfNewVersion();
-
-                if (canUpdate)
-                {
-                    if (MessageBoxResult.Yes != MessageBox.Show("更新版を発見しました。更新しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
-                    {
-                        bool hasDownloaded = await gitHubApi.DownloadMyselfNewVersion();
-                        
-                        if (hasDownloaded && File.Exists(Path.Combine(Environment.CurrentDirectory, "Updater.exe")))
-                        {
-                            mySelfUpdater.UpdateUpdater();
-
-                            ProcessStartInfo processStartInfo = new ProcessStartInfo
-                            {
-                                Arguments = mySelfUpdater.LatestMyselfVersion.ToString(),
-                                FileName = Path.Combine(Environment.CurrentDirectory, "Updater.exe")
-                            };
-                            Process process = Process.Start(processStartInfo);
-                            Environment.Exit(0);
-                        }
-                    }
-                }
+                await UpdateCheck();
 
                 if (!settingsVerifier.BSFolderAndGitHubToken)
                 {
@@ -318,10 +216,10 @@ namespace BSModManager.ViewModels
                 else
                 {
                     Logger.Instance.Info("Start Making Backup");
-                    await Task.Run(() => { initializer.Backup(); });
+                    initializer.Backup();
                     Logger.Instance.Info("Finish Making Backup");
                     Logger.Instance.Info("Start Cleanup ModsTemp");
-                    await Task.Run(() => { initializer.CleanModsTemp(Folder.Instance.tmpFolder); });
+                    initializer.CleanModsTemp(Folder.Instance.tmpFolder);
                     Logger.Instance.Info("Finish Cleanup ModsTemp");
 
                     mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
@@ -329,13 +227,13 @@ namespace BSModManager.ViewModels
                     await localModsDataFetcher.GetData();
                 }
 
-                Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
+                await refresher.Refresh();
 
                 AllButtonEnable();
             });
 
 
-            void ClosingCommand(object sender, CancelEventArgs e)
+            async void ClosingCommand(object sender, CancelEventArgs e)
             {
                 // https://araramistudio.jimdo.com/2016/10/12/wpf%E3%81%A7window%E3%82%92%E9%96%89%E3%81%98%E3%82%8B%E5%89%8D%E3%81%AB%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B/
                 if (MessageBoxResult.Yes != MessageBox.Show("画面を閉じます。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
@@ -346,16 +244,131 @@ namespace BSModManager.ViewModels
 
                 if (GameVersion.Version == "---") return;
 
-                string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
-                if (!Directory.Exists(dataDirectory))
-                {
-                    Directory.CreateDirectory(dataDirectory);
-                }
-                string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-                Task.Run(async () => await modCsv.Write(modsDataCsvPath, localMods.LocalModsData)).GetAwaiter().GetResult();
+                await SaveModsData();
 
                 Logger.Instance.GenerateLogFile();
             };
+        }
+
+        private void SetMyselfVersion()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Version version = assembly.GetName().Version;
+            MyselfVersion = "Version\n" + version.ToString(3);
+        }
+
+        private async Task SaveModsData()
+        {
+            string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
+            if (!Directory.Exists(dataDirectory))
+            {
+                Directory.CreateDirectory(dataDirectory);
+            }
+            string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
+            await modCsv.Write(modsDataCsvPath, localMods.LocalModsData);
+        }
+
+        private async Task UpdateCheck()
+        {
+            bool canUpdate = await gitHubApi.CheckMyselfNewVersion();
+
+            if (!canUpdate) return;
+                
+            if (MessageBoxResult.Yes != MessageBox.Show("更新版を発見しました。更新しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
+            {
+                return;
+            }
+
+            bool hasDownloaded = await gitHubApi.DownloadMyselfNewVersion();
+
+            if (hasDownloaded && File.Exists(Path.Combine(Environment.CurrentDirectory, "Updater.exe")))
+            {
+                mySelfUpdater.UpdateUpdater();
+
+                ProcessStartInfo processStartInfo = new ProcessStartInfo
+                {
+                    Arguments = mySelfUpdater.LatestMyselfVersion.ToString(),
+                    FileName = Path.Combine(Environment.CurrentDirectory, "Updater.exe")
+                };
+                Process process = Process.Start(processStartInfo);
+                Environment.Exit(0);
+            }
+        }
+
+        private void ButtonCommandSubscribe(IRegionManager regionManager)
+        {
+            RegionManager = regionManager;
+            RegionManager.RegisterViewWithRegion("ContentRegion", typeof(UpdateTab));
+
+            AllCheckedButtonCommand = new DelegateCommand(() =>
+            {
+                mainModsChanger.MainMods.AllCheckedOrUnchecked();
+            });
+
+            UpdateOrInstallButtonCommand = new DelegateCommand<string>(async (x) =>
+            {
+                Logger.Instance.Debug(x + " Button pushed");
+                if (x == "Update")
+                {
+                    await modUpdater.Update();
+                }
+                else
+                {
+                    await modInstaller.Install();
+                }
+            });
+
+            ChangeModInfoButtonCommand = new DelegateCommand(() =>
+            {
+                changeModInfoModel.ChangeInfo();
+            });
+
+            ModRepositoryButtonCommand = new DelegateCommand(() =>
+            {
+                mainModsChanger.MainMods.ModRepositoryOpen();
+            });
+
+            RefreshButtonCommand = new DelegateCommand(() =>
+            {
+                Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
+            });
+
+            ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                mainModsChanger.SetLocalMods();
+
+                Logger.Instance.Info("Update");
+                UpdateOrInstall = "Update";
+                AllButtonEnable();
+                RegionManager.RequestNavigate("ContentRegion", x);
+            });
+
+            ShowInstallTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                AllButtonEnable();
+                Logger.Instance.Info("Install");
+                UpdateOrInstall = "Install";
+                RegionManager.RequestNavigate("ContentRegion", x);
+
+                if (mainModsChanger.InstallTabIndex.Value == 0)
+                {
+                    mainModsChanger.SetPastMods();
+                    return;
+                }
+
+                mainModsChanger.SetRecommendMods();
+                ChangeModInfoButtonEnable = false;
+            });
+
+            ShowSettingsTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                Logger.Instance.Info("Settings");
+                AllButtonDisable();
+                ShowInstallTabViewEnable = true;
+                ShowSettingsTabViewEnable = true;
+                ShowUpdateTabViewEnable = true;
+                RegionManager.RequestNavigate("ContentRegion", x);
+            });
         }
 
         private void AllButtonDisable()

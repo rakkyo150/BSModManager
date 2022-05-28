@@ -1,6 +1,8 @@
 ﻿using BSModManager.Interfaces;
+using BSModManager.Models.Mods;
 using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
+using Newtonsoft.Json;
 using Octokit;
 using System;
 using System.Collections.Generic;
@@ -19,55 +21,112 @@ namespace BSModManager.Models
         readonly LocalMods localMods;
         readonly PastMods pastMods;
         readonly GitHubApi gitHubApi;
+        readonly RecommendMods recommendMods;
 
-        public Refresher(MAMods mam, LocalMods lm, ModCsvHandler mch, PastMods pm, GitHubApi gha)
+
+        public Refresher(MAMods mam, LocalMods lm, ModCsvHandler mch, PastMods pm, GitHubApi gha,RecommendMods rm)
         {
             mAMods = mam;
             localMods = lm;
             modCsvHandler = mch;
             pastMods = pm;
             gitHubApi = gha;
+            recommendMods = rm;
         }
 
         public async Task Refresh()
         {
             LocalModsDataRefresh();
             await PastModsDataRefresh();
+            await RecommendModDataRefreash();
+        }
+
+        private async Task RecommendModDataRefreash()
+        {
+            List<ModCsvIndex> notInstalledRecommendList = new List<ModCsvIndex>();
+
+            System.Reflection.Assembly myAssembly =System.Reflection.Assembly.GetExecutingAssembly();
+            System.IO.StreamReader sr =
+                new System.IO.StreamReader(
+                myAssembly.GetManifestResourceStream("BSModManager.Models.Mods.RecommendMods.json"),
+                    System.Text.Encoding.GetEncoding("shift-jis"));
+            string s = sr.ReadToEnd();
+            sr.Close();
+
+            List<RecommendModData> rawRecommendModData = JsonConvert.DeserializeObject<List<RecommendModData>>(s);
+            foreach (var a in rawRecommendModData)
+            {
+                notInstalledRecommendList.Add(new ModCsvIndex()
+                {
+                    Mod = a.Mod,
+                    LocalVersion = a.Installed.ToString(),
+                    LatestVersion = a.Latest.ToString(),
+                    Original = a.Original == "true" ? true : false,
+                    Ma = a.MA == "〇" ? true : false,
+                    Url = a.Url
+                });
+            }
+
+            foreach (var modAssistantMod in mAMods.ModAssistantAllMods)
+            {
+                if (!notInstalledRecommendList.Any(x => x.Mod == modAssistantMod.name)) continue;
+                if (!notInstalledRecommendList.Find(x => x.Mod == modAssistantMod.name).Original) continue;
+
+                UpdateDataToExistsInMAVersion(notInstalledRecommendList, modAssistantMod);
+            }
+
+            foreach (var localMod in localMods.LocalModsData)
+            {
+                if (!notInstalledRecommendList.Any(x => x.Mod == localMod.Mod)) continue;
+                if (!(notInstalledRecommendList.First(x => x.Mod == localMod.Mod).Original == (localMod.Original=="〇"))) continue;
+
+                notInstalledRecommendList.Remove(notInstalledRecommendList.First(x => x.Mod == localMod.Mod));
+
+                recommendMods.Remove(localMod);
+            }
+
+            await AddRemoteDataToModsData(recommendMods,notInstalledRecommendList);
+
+            foreach(var a in rawRecommendModData)
+            {
+                if (recommendMods.ExistsSameModData(a))
+                {
+                    recommendMods.UpdateDescription(new RecommendModData(this)
+                    {
+                        Mod = a.Mod,
+                        Description = a.Description
+                    });
+                }
+            }
+
+            recommendMods.SortByName();
         }
 
         private async Task PastModsDataRefresh()
         {
-            List<ModCsvIndex> previousDataListAddedToPastModsData = new List<ModCsvIndex>();
+            List<ModCsvIndex> previousDataListAddedToPastModsDataCue = new List<ModCsvIndex>();
 
             // 現在のバージョンも含む
             string[] AllPastVersion = Directory.GetDirectories(Folder.Instance.dataFolder, "*", SearchOption.TopDirectoryOnly);
 
             if (AllPastVersion.Count() == 0) return;
 
-            await GetPreviousDataList(previousDataListAddedToPastModsData, AllPastVersion);
-
-            List<IModData> removeList = new List<IModData>();
+            await GetPreviousDataList(previousDataListAddedToPastModsDataCue, AllPastVersion);
 
             foreach (var localMod in localMods.LocalModsData)
             {
-                if (!previousDataListAddedToPastModsData.Any(x => x.Mod == localMod.Mod)) continue;
-                if (!previousDataListAddedToPastModsData.Find(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇")) continue;
+                if (!previousDataListAddedToPastModsDataCue.Any(x => x.Mod == localMod.Mod)) continue;
+                if (!previousDataListAddedToPastModsDataCue.Find(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇")) continue;
 
-                previousDataListAddedToPastModsData.Remove(previousDataListAddedToPastModsData.Find(x => x.Mod == localMod.Mod));
+                previousDataListAddedToPastModsDataCue.Remove(previousDataListAddedToPastModsDataCue.Find(x => x.Mod == localMod.Mod));
 
                 // MAや手動でMod追加したときの更新のため
-                removeList.Add(localMod);
+                pastMods.Remove(localMod);
             }
 
-            if (NoPreviousData(previousDataListAddedToPastModsData)) return;
-            await AddPastModsData(previousDataListAddedToPastModsData);
-
-            if (removeList.Count == 0) return;
-
-            foreach (var removeModData in removeList)
-            {
-                pastMods.Remove(removeModData);
-            }
+            if (NoPreviousData(previousDataListAddedToPastModsDataCue)) return;
+            
+            await AddRemoteDataToModsData(pastMods,previousDataListAddedToPastModsDataCue);
 
             pastMods.SortByName();
         }   
@@ -119,23 +178,23 @@ namespace BSModManager.Models
                 if (!previousDataList.Any(x => x.Mod == modAssistantMod.name)) continue;
                 if (!previousDataList.Find(x => x.Mod == modAssistantMod.name).Original) continue;
 
-                UpdatePreviousDataToExistsInMAVersion(previousDataList, modAssistantMod);
+                UpdateDataToExistsInMAVersion(previousDataList, modAssistantMod);
             }
         }
 
-        private async Task AddPastModsData(List<ModCsvIndex> previousDataList)
+        private async Task AddRemoteDataToModsData(IMods mods,List<ModCsvIndex> localDataList)
         {
-            foreach (var previousData in previousDataList)
+            foreach (var localData in localDataList)
             {
-                if (previousData.Ma)
+                if (localData.Ma)
                 {
                     DateTime now = DateTime.Now;
-                    DateTime mAUpdatedAt = mAMods.ExistsData(new MAModData() { name=previousData.Mod}) ?
-                        DateTime.Parse(mAMods.ModAssistantAllMods.First(x => x.name == previousData.Mod).updatedDate) : DateTime.MaxValue;
+                    DateTime mAUpdatedAt = mAMods.ExistsData(new MAModData() { name=localData.Mod}) ?
+                        DateTime.Parse(mAMods.ModAssistantAllMods.First(x => x.name == localData.Mod).updatedDate) : DateTime.MaxValue;
                     string updated = "?";
 
-                    string description = mAMods.ExistsData(new MAModData() { name = previousData.Mod }) ?
-                       mAMods.ModAssistantAllMods.First(x => x.name == previousData.Mod).description : "?";
+                    string description = mAMods.ExistsData(new MAModData() { name = localData.Mod }) ?
+                       mAMods.ModAssistantAllMods.First(x => x.name == localData.Mod).description : "?";
 
                     if (mAUpdatedAt != DateTime.MaxValue)
                     {
@@ -143,35 +202,35 @@ namespace BSModManager.Models
                         (now - mAUpdatedAt).Days + "D ago" : (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                     }
 
-                    pastMods.Add(new PastModData(this)
+                    mods.Add(new PastModData(this)
                     {
-                        Mod = previousData.Mod,
-                        Latest = new Version(previousData.LatestVersion),
+                        Mod = localData.Mod,
+                        Latest = new Version(localData.LatestVersion),
                         Updated = updated,
                         Original = "〇",
                         MA = "〇",
                         Description = description,
-                        Url = previousData.Url
+                        Url = localData.Url
                     });
 
                     continue;
                 }
 
                 Release response = null;
-                response = await gitHubApi.GetLatestReleaseAsync(previousData.Url);
-                string original = previousData.Original ? "〇" : "×";
+                response = await gitHubApi.GetLatestReleaseInfoAsync(localData.Url);
+                string original = localData.Original ? "〇" : "×";
 
                 if (response == null)
                 {
-                    pastMods.Add(new PastModData(this)
+                    mods.Add(new PastModData(this)
                     {
-                        Mod = previousData.Mod,
+                        Mod = localData.Mod,
                         Latest = new Version("0.0.0"),
-                        Updated = previousData.Url == "" ? "?" : "---",
+                        Updated = localData.Url == "" ? "?" : "---",
                         Original = original,
                         MA = "×",
-                        Description = previousData.Url == "" ? "?" : "---",
-                        Url = previousData.Url
+                        Description = localData.Url == "" ? "?" : "---",
+                        Url = localData.Url
                     });
                 }
                 else
@@ -187,15 +246,15 @@ namespace BSModManager.Models
                         updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                     }
 
-                    pastMods.Add(new PastModData(this)
+                    mods.Add(new PastModData(this)
                     {
-                        Mod = previousData.Mod,
+                        Mod = localData.Mod,
                         Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
                         Updated = updated,
                         Original = original,
                         MA = "×",
                         Description = response.Body,
-                        Url = previousData.Url
+                        Url = localData.Url
                     });
                 }
             }
@@ -205,14 +264,14 @@ namespace BSModManager.Models
         {
             Dictionary<string, Version> localModNameAndVersionDic = GetLocalModsNameAndVersion();
             
-            AddModsData(localModNameAndVersionDic);
+            UpdateLocalModsData(localModNameAndVersionDic);
 
             RemoveNotExistingModsData(localModNameAndVersionDic);
 
             localMods.SortByName();
         }
 
-        private void AddModsData(Dictionary<string, Version> localModNameAndVersionDic)
+        private void UpdateLocalModsData(Dictionary<string, Version> localModNameAndVersionDic)
         {
             foreach (KeyValuePair<string, Version> localModNameAndVersion in localModNameAndVersionDic)
             {
@@ -364,7 +423,7 @@ namespace BSModManager.Models
             return !localModNameAndVersionDic.Keys.Any(x => x == data.Mod);
         }
 
-        private static void UpdatePreviousDataToExistsInMAVersion(List<ModCsvIndex> previousDataList, MAModData modAssistantMod)
+        private static void UpdateDataToExistsInMAVersion(List<ModCsvIndex> previousDataList, MAModData modAssistantMod)
         {
             previousDataList.Find(x => x.Mod == modAssistantMod.name).Ma = true;
             previousDataList.Find(x => x.Mod == modAssistantMod.name).LatestVersion = modAssistantMod.version;
