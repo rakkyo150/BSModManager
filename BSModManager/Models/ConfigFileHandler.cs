@@ -50,6 +50,7 @@ namespace BSModManager.Models
 
             StreamWriter wr = new StreamWriter(new FileStream(FilePath.Instance.configFilePath, FileMode.Create));
             wr.WriteLine(_jsonFinish);
+            wr.Flush();
             wr.Close();
         }
     }

@@ -242,20 +242,38 @@ namespace BSModManager.ViewModels
 
             void ClosingCommand(object sender, CancelEventArgs e)
             {
+                e.Cancel = true;
+
                 // https://araramistudio.jimdo.com/2016/10/12/wpf%E3%81%A7window%E3%82%92%E9%96%89%E3%81%98%E3%82%8B%E5%89%8D%E3%81%AB%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B/
                 if (MessageBoxResult.Yes != MessageBox.Show("画面を閉じます。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
                 {
-                    e.Cancel = true;
                     return;
                 }
 
-                if (GameVersion.Version == "---") return;
+                if (GameVersion.Version == "---")
+                {
+                    e.Cancel = false;
+                    return;
+                }
 
-                SaveModsData();
+                try
+                {
+                    SaveModsData();
 
-                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+                    configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
 
-                Logger.Instance.GenerateLogFile();
+                    Logger.Instance.GenerateLogFile();
+
+                    e.Cancel = false;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Error(ex.Message);
+
+                    Logger.Instance.GenerateLogFile();
+
+                    e.Cancel = false;
+                }
             };
         }
 

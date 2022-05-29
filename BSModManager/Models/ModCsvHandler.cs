@@ -1,4 +1,5 @@
 ﻿using BSModManager.Interfaces;
+using BSModManager.Static;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using System.Collections.Generic;
@@ -11,28 +12,31 @@ namespace BSModManager.Models
 {
     public class ModCsvHandler
     {
-        public void Write(string csvPath, IEnumerable<IModData> e)
+        public void Write(string csvPath, IEnumerable<IModData> modEnum)
         {
             List<ModCsvIndex> modInformationCsvList = new List<ModCsvIndex>();
 
-            foreach (var a in e)
-            {
+            foreach (var mod in modEnum)
+            {                
                 var githubModInstance = new ModCsvIndex()
                 {
-                    Mod = a.Mod,
-                    LocalVersion = a.Installed.ToString(),
-                    LatestVersion = a.Latest.ToString(),
-                    Original = a.Original != "×",
-                    Ma = a.MA != "×",
-                    Url = a.Url,
+                    Mod = mod.Mod,
+                    LocalVersion = mod.Installed.ToString(),
+                    LatestVersion = mod.Latest.ToString(),
+                    Original = mod.Original != "×",
+                    Ma = mod.MA != "×",
+                    Url = mod.Url,
                 };
                 modInformationCsvList.Add(githubModInstance);
             }
 
+            if (modInformationCsvList.Count == 0) return;
+            
             using (var writer = new StreamWriter(csvPath, false))
             using (var csv = new CsvWriter(writer, new CultureInfo("ja-JP", false)))
             {
                 csv.WriteRecords(modInformationCsvList);
+                csv.Flush();
             }
         }
 
