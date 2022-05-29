@@ -92,6 +92,7 @@ namespace BSModManager.ViewModels
             ChangeToken.Subscribe((x) =>
             {
                 gitHubApi.GitHubToken = ((PasswordBox)x).Password;
+                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
                 Logger.Instance.Info("GitHub Token Changed");
             }).AddTo(Disposables);
 

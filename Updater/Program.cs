@@ -28,11 +28,10 @@ namespace Updater
                 FileInfo[] files = dir.GetFiles();
                 foreach (FileInfo file in files)
                 {
-                    if (!file.Name.Contains("Updater") || file.Name.Contains("BSModManager"))
-                    {
+                    if (!file.Name.Contains("Updater") || !file.Name.Contains("Setup")) continue; 
+
                         string tempPath = Path.Combine(Environment.CurrentDirectory, file.Name);
                         file.CopyTo(tempPath, true);
-                    }
                 }
                 Console.WriteLine("本体のアップデート完了");
                 Console.WriteLine("Enterで本体を再起動します");
