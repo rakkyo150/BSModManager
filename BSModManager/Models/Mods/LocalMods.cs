@@ -160,7 +160,7 @@ namespace BSModManager.Models
             LocalModsData.Remove(LocalModsData.First(x => x.Mod == modData.Mod));
         }
 
-        internal bool ExistsSameModData(IModData modData)
+        public bool ExistsSameModData(IModData modData)
         {
             return LocalModsData.Any(x => x.Mod == modData.Mod);
         }

@@ -21,6 +21,8 @@ namespace BSModManager.Interfaces
         void UpdateDescription(IModData modData);
         void UpdateURL(IModData modData);
 
+        bool ExistsSameModData(IModData modData);
+
         IEnumerable<IModData> ReturnCheckedModsData();
     }
 }

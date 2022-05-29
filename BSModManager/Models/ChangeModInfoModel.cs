@@ -284,8 +284,8 @@ namespace BSModManager.Models
             else
             {
                 Latest = new Version("0.0.0");
-                Updated = Url == "" ? "?" : "---";
-                Description = Url == "" ? "?" : "---";
+                Updated = Url == string.Empty ? "?" : "---";
+                Description = Url == string.Empty ? "?" : "---";
             }
         }
 

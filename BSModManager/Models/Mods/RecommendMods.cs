@@ -166,7 +166,7 @@ namespace BSModManager.Models
             RecommendModsData.Remove(RecommendModsData.First(x => x.Mod == modData.Mod));
         }
 
-        internal bool ExistsSameModData(IModData modData)
+        public bool ExistsSameModData(IModData modData)
         {
             return RecommendModsData.Any(x => x.Mod == modData.Mod);
         }
