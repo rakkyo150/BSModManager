@@ -14,7 +14,7 @@ namespace BSModManager.Models
     {
         readonly string myselfUrl = "https://github.com/rakkyo150/BSModManager";
 
-        private string gitHubToken = "";
+        private string gitHubToken = string.Empty;
         public string GitHubToken
         {
             get => gitHubToken;
@@ -141,7 +141,7 @@ namespace BSModManager.Models
                     };
                 }
 
-                string temp = url.Replace("https://github.com/", "");
+                string temp = url.Replace("https://github.com/", string.Empty);
                 int nextSlashPosition = temp.IndexOf('/');
 
                 if (nextSlashPosition == -1)

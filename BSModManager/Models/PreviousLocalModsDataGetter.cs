@@ -17,7 +17,7 @@ namespace BSModManager.Models
         readonly ModCsvHandler modCsv;
         readonly Refresher refresher;
         readonly DateTime now = DateTime.Now;
-        string updated = "";
+        string updated = string.Empty;
 
         public PreviousLocalModsDataGetter(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc, Refresher r)
         {
@@ -82,10 +82,10 @@ namespace BSModManager.Models
                     {
                         Mod = previousData.Mod,
                         Latest = new Version("0.0.0"),
-                        Updated = previousData.Url == "" ? "?" : "---",
+                        Updated = previousData.Url == string.Empty ? "?" : "---",
                         Original = original,
                         MA = "×",
-                        Description = previousData.Url == "" ? "?" : "---",
+                        Description = previousData.Url == string.Empty ? "?" : "---",
                         Url = previousData.Url
                     });
 

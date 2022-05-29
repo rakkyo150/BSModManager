@@ -16,7 +16,7 @@ namespace BSModManager.Models.Mods.Structures
     public class PastModData : BindableBase, IModData, IDestructible
     {
         private bool c = false;
-        private string mod = "";
+        private string mod = string.Empty;
         private Version installed = new Version("0.0.0");
         private Version latest = new Version("0.0.0");
         private string updated = "?";
@@ -24,7 +24,7 @@ namespace BSModManager.Models.Mods.Structures
         private string mA = "×";
         private string description = "?";
         private Brush installedColor = Brushes.Green;
-        private string url = "";
+        private string url = string.Empty;
         readonly Refresher refresher;
 
         public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();

@@ -10,14 +10,14 @@ namespace BSModManager.Static
     {
         internal static Logger Instance { get; set; } = new Logger();
 
-        private string allLog = "";
+        private string allLog = string.Empty;
 
         private string LogFilePath
         {
             get { return Path.Combine(Folder.Instance.logFolder, $"{DateTime.Now:yyyy.MM.dd.HH.mm.ss}.log"); }
         }
 
-        private string infoLog = "";
+        private string infoLog = string.Empty;
         public string InfoLog
         {
             get { return infoLog; }

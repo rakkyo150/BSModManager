@@ -56,7 +56,7 @@ namespace BSModManager.Models
                         {
                             mod.name = "BS_Utils";
                         }
-                        mod.name = mod.name.Replace(" ", "");
+                        mod.name = mod.name.Replace(" ", string.Empty);
                     }
                 }
                 catch (Exception ex) { Logger.Instance.Error($"{ex.Message}\nModAssistantのデータの取得に失敗しました"); }

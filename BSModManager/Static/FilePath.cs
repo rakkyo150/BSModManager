@@ -12,7 +12,7 @@ namespace BSModManager.Static
         public readonly string configFilePath = Path.Combine(Environment.CurrentDirectory, "config.json");
         public readonly string mAModCsvPath = Path.Combine(Folder.Instance.dataFolder, "ModAssistantModData.csv");
 
-        private string mAExePath = "";
+        private string mAExePath = string.Empty;
         public string MAExePath
         {
             get { return mAExePath; }

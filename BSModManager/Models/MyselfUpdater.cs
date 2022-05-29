@@ -16,7 +16,7 @@ namespace BSModManager.Models
             set { SetProperty(ref latestMyselfVersion, value); }
         }
 
-        private string latestMyselfDescription = "";
+        private string latestMyselfDescription = string.Empty;
         public string LatestMyselfDescription
         {
             get { return latestMyselfDescription; }
