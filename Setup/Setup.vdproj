@@ -1641,8 +1641,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BSModManager"
-        "ProductCode" = "8:{D272E68A-887F-4588-91F9-DBA35E30A04A}"
-        "PackageCode" = "8:{11B2A336-B9D5-47D7-A784-A1E9C3180CA2}"
+        "ProductCode" = "8:{4C71CCE7-C452-458F-AFC2-6CA24C71343A}"
+        "PackageCode" = "8:{9056C76C-6284-4F65-8555-DDDCA0EC87A4}"
         "UpgradeCode" = "8:{5FE953BB-8CC4-419E-B28F-F364C78A00E1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2191,7 +2191,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_08F77CF9EB864F4AB72DE64C0E8C829E"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\Updater\\obj\\Release\\Updater.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_59277A6650C1411EBC3EBDD838943DC2"
@@ -2219,7 +2219,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3EC786D8AF7D41679CFF4D9DAD4123E8"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\BSModManager\\obj\\Release\\BSModManager.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_59277A6650C1411EBC3EBDD838943DC2"
