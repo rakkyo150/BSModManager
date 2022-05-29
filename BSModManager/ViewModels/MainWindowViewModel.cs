@@ -125,6 +125,7 @@ namespace BSModManager.ViewModels
         readonly PreviousLocalModsDataGetter localModsDataFetcher;
         readonly Refresher refresher;
         readonly MainModsSetter mainModsChanger;
+        readonly MyselfUpdater myselfUpdater;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
@@ -151,7 +152,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ModInstaller mi, Refresher r, ChangeModInfoModel cmim, MainModsSetter mmc,
+            ModInstaller mi, Refresher r, ChangeModInfoModel cmim, MainModsSetter mmc,MyselfUpdater myu,
             GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataGetter lmdf,
             ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {
@@ -169,6 +170,7 @@ namespace BSModManager.ViewModels
             refresher = r;
             changeModInfoModel = cmim;
             mainModsChanger = mmc;
+            myselfUpdater = myu;
 
             dialogService = ds;
 
@@ -281,7 +283,8 @@ namespace BSModManager.ViewModels
 
             if (!canUpdate) return;
 
-            if (MessageBoxResult.Yes != MessageBox.Show("更新版を発見しました。更新しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
+            if (MessageBoxResult.Yes != MessageBox.Show($"更新バージョン{myselfUpdater.LatestMyselfVersion}を発見しました。\n\n" +
+                $"★リリース文\n{myselfUpdater.LatestMyselfDescription}\n\n更新しますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
             {
                 return;
             }

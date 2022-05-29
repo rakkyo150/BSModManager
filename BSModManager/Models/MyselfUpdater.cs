@@ -1,4 +1,5 @@
 ﻿using BSModManager.Static;
+using Octokit;
 using Prism.Mvvm;
 using System;
 using System.IO;
@@ -13,6 +14,17 @@ namespace BSModManager.Models
         {
             get { return latestMyselfVersion; }
             set { SetProperty(ref latestMyselfVersion, value); }
+        }
+
+        private string latestMyselfDescription = "";
+        public string LatestMyselfDescription
+        {
+            get { return latestMyselfDescription; }
+        }
+
+        public void SetLatestMyselfDescription(Release release)
+        {
+            latestMyselfDescription = release.Body;
         }
 
         public void UpdateUpdater()
