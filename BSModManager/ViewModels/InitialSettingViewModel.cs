@@ -42,7 +42,7 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(SettingsVerifier sv, ConfigFileHandler cf,GitHubApi gha)
+        internal InitialSettingViewModel(SettingsVerifier sv, ConfigFileHandler cf, GitHubApi gha)
         {
             settingsVerifier = sv;
             configFile = cf;
