@@ -70,6 +70,8 @@ namespace BSModManager.ViewModels
                 canCloseDialog = false;
                 changeModInfoPropertyModel.ChangeInfo();
             }).AddTo(Disposables);
+
+            changeModInfoPropertyModel.IsUrlTextBoxReadOnly();
         }
 
         public string Title => "Change Mod Info";

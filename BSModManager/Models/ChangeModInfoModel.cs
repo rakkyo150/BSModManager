@@ -121,6 +121,23 @@ namespace BSModManager.Models
             }
         }
 
+        internal void IsUrlTextBoxReadOnly()
+        {
+            if (!Original)
+            {
+                ExistInMA = false;
+                return;
+            }
+
+            if (!mAMod.ExistsData(new MAModData() { name = modName }))
+            {
+                ExistInMA = false;
+                return;
+            }
+
+            ExistInMA = true;
+        }
+
         private string mA = "?";
         public string MA
         {
