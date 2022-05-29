@@ -42,10 +42,11 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(SettingsVerifier sv, ConfigFileHandler cf)
+        internal InitialSettingViewModel(SettingsVerifier sv, ConfigFileHandler cf,GitHubApi gha)
         {
             settingsVerifier = sv;
             configFile = cf;
+            gitHubApi = gha;
 
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             BSFolderPath = Folder.Instance.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(Disposables);
@@ -135,6 +136,7 @@ namespace BSModManager.ViewModels
             VerifyGitHubTokenCommand.Subscribe((x) =>
             {
                 gitHubApi.GitHubToken = ((PasswordBox)x).Password;
+                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
             }).AddTo(Disposables);
         }
 
