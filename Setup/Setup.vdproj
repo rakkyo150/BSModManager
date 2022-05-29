@@ -196,6 +196,18 @@
         "Entry"
         {
         "MsmKey" = "8:_C418E2EAAC3B6B8B4079EB1DBC91364D"
+        "OwnerKey" = "8:_BEADECC24E592FDCF86A2C9580F51787"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C418E2EAAC3B6B8B4079EB1DBC91364D"
+        "OwnerKey" = "8:_7DB45F675AA74BCB112F3A4094C27245"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C418E2EAAC3B6B8B4079EB1DBC91364D"
         "OwnerKey" = "8:_3EC786D8AF7D41679CFF4D9DAD4123E8"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1629,15 +1641,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BSModManager"
-        "ProductCode" = "8:{6BD3A9A0-589A-4BD1-9849-55F9CD13EB01}"
-        "PackageCode" = "8:{E5B6C77B-B1E4-42E9-A3BB-3BC8B35364BA}"
+        "ProductCode" = "8:{D272E68A-887F-4588-91F9-DBA35E30A04A}"
+        "PackageCode" = "8:{11B2A336-B9D5-47D7-A784-A1E9C3180CA2}"
         "UpgradeCode" = "8:{5FE953BB-8CC4-419E-B28F-F364C78A00E1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.0.1"
+        "ProductVersion" = "8:1.0.0"
         "Manufacturer" = "8:Rakkyo150"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -2179,7 +2191,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_08F77CF9EB864F4AB72DE64C0E8C829E"
             {
-            "SourcePath" = "8:..\\Updater\\obj\\Debug\\Updater.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_59277A6650C1411EBC3EBDD838943DC2"
@@ -2207,7 +2219,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3EC786D8AF7D41679CFF4D9DAD4123E8"
             {
-            "SourcePath" = "8:..\\BSModManager\\obj\\Debug\\BSModManager.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_59277A6650C1411EBC3EBDD838943DC2"
