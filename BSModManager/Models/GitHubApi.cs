@@ -126,11 +126,20 @@ namespace BSModManager.Models
 
             try
             {
-                var credential = new Credentials(GitHubToken);
-                GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
+                GitHubClient gitHub;
+
+                if (GitHubToken == string.Empty)
                 {
-                    Credentials = credential
-                };
+                    gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"));
+                }
+                else
+                {
+                    var credential = new Credentials(GitHubToken);
+                    gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
+                    {
+                        Credentials = credential
+                    };
+                }
 
                 string temp = url.Replace("https://github.com/", "");
                 int nextSlashPosition = temp.IndexOf('/');
