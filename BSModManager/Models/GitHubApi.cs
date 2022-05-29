@@ -42,7 +42,8 @@ namespace BSModManager.Models
 
             if (response == null) return false;
 
-            myselfUpdater.LatestMyselfVersion = DetectVersionFromTagName((await GetLatestReleaseInfoAsync(myselfUrl)).TagName);
+            myselfUpdater.LatestMyselfVersion = DetectVersionFromTagName(response.TagName);
+            myselfUpdater.SetLatestMyselfDescription(response);
 
             if (myselfUpdater.LatestMyselfVersion <= currentVersion)
             {
