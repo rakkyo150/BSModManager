@@ -57,7 +57,7 @@ namespace BSModManager.Static
                 using (StreamWriter streamWriter = new StreamWriter(LogFilePath, false, enc))
                 {
                     streamWriter.WriteLine(allLog);
-
+                    streamWriter.Flush();
                 }
             }
             catch (Exception ex)

@@ -20,9 +20,8 @@ namespace BSModManager.Models
         readonly PastMods pastMods;
         readonly GitHubApi gitHubApi;
         readonly RecommendMods recommendMods;
-
-        List<IModData> removedPastModsData = new List<IModData>();
-        List<IModData> removedRecommendModsData = new List<IModData>();
+        readonly List<IModData> removedPastModsData = new List<IModData>();
+        readonly List<IModData> removedRecommendModsData = new List<IModData>();
 
 
         public Refresher(MAMods mam, LocalMods lm, ModCsvHandler mch, PastMods pm, GitHubApi gha, RecommendMods rm)
