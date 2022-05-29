@@ -35,7 +35,7 @@ namespace BSModManager.Models
                 foreach (FileInfo file in files)
                 {
                     if (file.Name.Contains("Updater") && file.Name.Contains("Setup")) continue;
- 
+
                     string tempPath = Path.Combine(Environment.CurrentDirectory, file.Name);
                     file.CopyTo(tempPath, true);
                 }

@@ -1,11 +1,6 @@
 ﻿using BSModManager.Models;
 using BSModManager.Views;
 using Prism.Ioc;
-using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Security.Principal;
-using System.Threading;
 using System.Windows;
 
 namespace BSModManager
