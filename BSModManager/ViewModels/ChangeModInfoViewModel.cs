@@ -53,7 +53,7 @@ namespace BSModManager.ViewModels
             {
                 changeModInfoPropertyModel.Search();
             }).AddTo(Disposables);
-            
+
             ExitCommand.Subscribe(() =>
             {
                 changeModInfoPropertyModel.SetInfoToMods();
@@ -68,7 +68,7 @@ namespace BSModManager.ViewModels
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
                 changeModInfoPropertyModel.ShowChangeModInfoPreviousDialog();
             }).AddTo(Disposables);
-            
+
             NextOrFinishCommand.Subscribe(() =>
             {
                 changeModInfoPropertyModel.SetInfoToMods();

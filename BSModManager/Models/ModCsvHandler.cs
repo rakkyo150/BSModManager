@@ -1,5 +1,4 @@
 ﻿using BSModManager.Interfaces;
-using BSModManager.Static;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ namespace BSModManager.Models
             List<ModCsvIndex> modInformationCsvList = new List<ModCsvIndex>();
 
             foreach (var mod in modEnum)
-            {                
+            {
                 var githubModInstance = new ModCsvIndex()
                 {
                     Mod = mod.Mod,
@@ -31,7 +30,7 @@ namespace BSModManager.Models
             }
 
             if (modInformationCsvList.Count == 0) return;
-            
+
             using (var writer = new StreamWriter(csvPath, false))
             using (var csv = new CsvWriter(writer, new CultureInfo("ja-JP", false)))
             {
