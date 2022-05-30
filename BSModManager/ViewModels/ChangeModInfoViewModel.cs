@@ -17,10 +17,12 @@ namespace BSModManager.ViewModels
         public ReactiveProperty<string> Url { get; }
         public ReadOnlyReactivePropertySlim<bool> ExistInMA { get; }
         public ReactiveProperty<bool> Original { get; }
+        public ReactiveProperty<bool> IsBackButtonEnable { get; }
         public ReadOnlyReactivePropertySlim<string> NextOrFinish { get; }
 
         public ReactiveCommand SearchMod { get; } = new ReactiveCommand();
         public ReactiveCommand ExitCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand BackCommand { get; } = new ReactiveCommand();
         public ReactiveCommand NextOrFinishCommand { get; } = new ReactiveCommand();
 
         private bool canCloseDialog = false;
@@ -43,35 +45,43 @@ namespace BSModManager.ViewModels
             // SetterでModsDataにデータセットされます
             Original = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.Original).AddTo(Disposables);
 
-            NextOrFinish = changeModInfoPropertyModel.ObserveProperty(x => x.NextOrFinish).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
+            IsBackButtonEnable = changeModInfoPropertyModel.ToReactivePropertyAsSynchronized(x => x.IsBackButtonEnable).AddTo(Disposables);
+
+            NextOrFinish = changeModInfoPropertyModel.ObserveProperty(x => x.NextOrFinishButtonText).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
 
             SearchMod.Subscribe(() =>
             {
                 changeModInfoPropertyModel.Search();
             }).AddTo(Disposables);
+            
             ExitCommand.Subscribe(() =>
             {
-                // Exitするので
-                changeModInfoPropertyModel.Position = 1;
+                changeModInfoPropertyModel.SetInfoToMods();
                 canCloseDialog = true;
-                changeModInfoPropertyModel.GetInfo();
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
-                canCloseDialog = false;
-                if (changeModInfoPropertyModel.NextOrFinish == "Finish")
-                {
-                    changeModInfoPropertyModel.NextOrFinish = "Next";
-                }
-            }).AddTo(Disposables);
-            NextOrFinishCommand.Subscribe(() =>
-            {
-                canCloseDialog = true;
-                changeModInfoPropertyModel.GetInfo();
-                RequestClose.Invoke(new DialogResult(ButtonResult.OK));
-                canCloseDialog = false;
-                changeModInfoPropertyModel.ChangeInfo();
             }).AddTo(Disposables);
 
-            changeModInfoPropertyModel.IsUrlTextBoxReadOnly();
+            BackCommand.Subscribe(() =>
+            {
+                changeModInfoPropertyModel.SetInfoToMods();
+                canCloseDialog = true;
+                RequestClose.Invoke(new DialogResult(ButtonResult.OK));
+                changeModInfoPropertyModel.ShowChangeModInfoPreviousDialog();
+            }).AddTo(Disposables);
+            
+            NextOrFinishCommand.Subscribe(() =>
+            {
+                changeModInfoPropertyModel.SetInfoToMods();
+                canCloseDialog = true;
+                RequestClose.Invoke(new DialogResult(ButtonResult.OK));
+
+                if (NextOrFinish.Value == "Next")
+                {
+                    changeModInfoPropertyModel.ShowChangeModInfoNextDialog();
+                }
+            }).AddTo(Disposables);
+
+            changeModInfoPropertyModel.ChangeIsUrlTextBoxReadOnly();
         }
 
         public string Title => "Change Mod Info";
