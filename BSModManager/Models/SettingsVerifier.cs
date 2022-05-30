@@ -46,7 +46,6 @@ namespace BSModManager.Models
                 else BSFolderAndGitHubToken = false;
             };
 
-            Task.Run(async () => { GitHubToken = await gitHubApi.VerifyGitHubToken(); }).GetAwaiter().GetResult();
             BSFolder = GameVersion.Version != "---";
             MAExe = FilePath.Instance.MAExePath.Contains("ModAssistant.exe");
 
