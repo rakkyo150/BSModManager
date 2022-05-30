@@ -45,25 +45,25 @@ namespace BSModManager.Models
 
         private async Task AssistLocalModByIntallMods()
         {
-            foreach(var localMod in localMods.LocalModsData)
+            foreach (var localMod in localMods.LocalModsData)
             {
                 if (localMod.Url != string.Empty) continue;
 
                 if (!removedPastModsData.Any(x => x.Mod == localMod.Mod) && !removedRecommendModsData.Any(x => x.Mod == localMod.Mod))
                     continue;
-                
+
                 if (removedPastModsData.Any(x => x.Mod == localMod.Mod) && !removedRecommendModsData.Any(x => x.Mod == localMod.Mod))
                 {
                     await SetRemovedPastModsDataToLocalMods(localMod);
                     continue;
                 }
-                else if(!removedPastModsData.Any(x => x.Mod == localMod.Mod) && removedRecommendModsData.Any(x => x.Mod == localMod.Mod))
+                else if (!removedPastModsData.Any(x => x.Mod == localMod.Mod) && removedRecommendModsData.Any(x => x.Mod == localMod.Mod))
                 {
                     await SetRemovedRecommendModsDataToLocalMods(localMod);
                     continue;
                 }
 
-                if(removedPastModsData.First(x => x.Mod == localMod.Mod).Url == string.Empty)
+                if (removedPastModsData.First(x => x.Mod == localMod.Mod).Url == string.Empty)
                 {
                     await SetRemovedRecommendModsDataToLocalMods(localMod);
                     continue;
@@ -119,7 +119,7 @@ namespace BSModManager.Models
             localMods.UpdateOriginal(modData);
 
             if (response == null) return;
-            
+
             DateTime now = DateTime.Now;
             string updated = null;
             if ((now - response.CreatedAt).Days >= 1)

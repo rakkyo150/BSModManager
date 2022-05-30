@@ -152,7 +152,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ModInstaller mi, Refresher r, ChangeModInfoModel cmim, MainModsSetter mmc,MyselfUpdater myu,
+            ModInstaller mi, Refresher r, ChangeModInfoModel cmim, MainModsSetter mmc, MyselfUpdater myu,
             GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataGetter lmdf,
             ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
         {

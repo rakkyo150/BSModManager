@@ -194,7 +194,7 @@ namespace BSModManager.Models
         public int NowChangingCheckedIndex
         {
             get { return nowChangingCheckedIndex; }
-            set 
+            set
             {
                 SetProperty(ref nowChangingCheckedIndex, value);
                 if (value >= 1) IsBackButtonEnable = true;
@@ -277,10 +277,10 @@ namespace BSModManager.Models
             else NextOrFinishButtonText = "Next";
 
             IModData checkedMod = AllCheckedMod[NowChangingCheckedIndex];
-            
+
             modName = checkedMod.Mod;
 
-            ModNameAndProgress = checkedMod.Mod + "(" + (NowChangingCheckedIndex+1).ToString()
+            ModNameAndProgress = checkedMod.Mod + "(" + (NowChangingCheckedIndex + 1).ToString()
             + "/" + AllCheckedModCount.ToString() + ")";
             Url = checkedMod.Url;
             if (checkedMod.Original == "?" || checkedMod.Original == "〇")
