@@ -20,6 +20,9 @@ namespace BSModManager.Models
         readonly Refresher refresher;
         readonly MainModsSetter mainModsChanger;
 
+        private List<IModData> AllCheckedMod = new List<IModData>();
+        private int AllCheckedModCount = int.MinValue;
+
         public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MAMods mam, Refresher r, MainModsSetter mmc)
         {
             dialogService = ds;
@@ -99,11 +102,18 @@ namespace BSModManager.Models
             }
         }
 
-        private string nextOrFinish = "Next";
-        public string NextOrFinish
+        private bool isBackButtonEnable = false;
+        public bool IsBackButtonEnable
         {
-            get { return nextOrFinish; }
-            set { SetProperty(ref nextOrFinish, value); }
+            get { return isBackButtonEnable; }
+            set { SetProperty(ref isBackButtonEnable, value); }
+        }
+
+        private string nextOrFinishButtonText = "Next";
+        public string NextOrFinishButtonText
+        {
+            get { return nextOrFinishButtonText; }
+            set { SetProperty(ref nextOrFinishButtonText, value); }
         }
 
         private Version latest = new Version("0.0.0");
@@ -121,7 +131,7 @@ namespace BSModManager.Models
             }
         }
 
-        internal void IsUrlTextBoxReadOnly()
+        internal void ChangeIsUrlTextBoxReadOnly()
         {
             if (!Original)
             {
@@ -178,65 +188,109 @@ namespace BSModManager.Models
             }
         }
 
-        private int position = 1;
+        private int nowChangingCheckedIndex = 0;
         // ModsDataのうち何個目のCheckedのデータを変更するか
         // Exit時や全情報更新終了時に1に戻す
-        public int Position
+        public int NowChangingCheckedIndex
         {
-            get { return position; }
-            set { SetProperty(ref position, value); }
+            get { return nowChangingCheckedIndex; }
+            set 
+            {
+                SetProperty(ref nowChangingCheckedIndex, value);
+                if (value >= 1) IsBackButtonEnable = true;
+                else IsBackButtonEnable = false;
+            }
         }
 
-        public void ChangeInfo()
+        public void ShowChangeModInfoPreviousDialog()
         {
-            // 何個目のCheckedか
-            int count = 0;
-            List<IModData> AllCheckedMod = mainModsChanger.MainMods.AllCheckedMod();
-            int AllChekedModCount = AllCheckedMod.Count();
+            NowChangingCheckedIndex -= 1;
 
-            foreach (var checkedMod in AllCheckedMod)
+            if (NowChangingCheckedIndex + 1 > AllCheckedModCount)
             {
-                // Finishボタン押したとき
-                if (Position > AllChekedModCount)
-                {
-                    break;
-                }
-
-                count++;
-
-                if (count == AllChekedModCount)
-                {
-                    NextOrFinish = "Finish";
-                }
-
-                if (count == Position)
-                {
-                    modName = checkedMod.Mod;
-
-                    ModNameAndProgress = checkedMod.Mod + "(" + Position.ToString()
-                    + "/" + AllChekedModCount.ToString() + ")";
-                    Url = checkedMod.Url;
-                    if (checkedMod.Original == "?" || checkedMod.Original == "〇")
-                    {
-                        Original = true;
-                    }
-                    else
-                    {
-                        Original = false;
-                    }
-
-                    Position++;
-
-                    // ここで表示されるViewでNext/Finishボタンを押すとChangeModInfoが再帰的に呼び出される
-                    // Exitの場合は再帰的な呼び出しはない
-                    dialogService.ShowDialog("ChangeModInfo");
-                    break;
-                }
+                Logger.Instance.Error("[バグ]選択されているModの範囲を超えるロジックです");
+                return;
             }
 
-            // 全情報更新終了したので
-            Position = 1;
-            NextOrFinish = "Next";
+            if (NowChangingCheckedIndex < 0)
+            {
+                Logger.Instance.Error("[バグ]NextCheckedIndexは負の値をとることはできません");
+                return;
+            }
+
+            SetDialogInitialInfo();
+            dialogService.ShowDialog("ChangeModInfo");
+        }
+
+        public void ShowChangeModInfoInitialDialog()
+        {
+            AllCheckedMod = mainModsChanger.MainMods.AllCheckedMod();
+            AllCheckedModCount = AllCheckedMod.Count();
+
+            if (AllCheckedModCount == 0)
+            {
+                Logger.Instance.Info("Modが選択されていません");
+                return;
+            }
+
+            NowChangingCheckedIndex = 0;
+
+            if (NowChangingCheckedIndex + 1 > AllCheckedModCount)
+            {
+                Logger.Instance.Error("[バグ]選択されているModの範囲を超えるロジックです");
+                return;
+            }
+
+            if (NowChangingCheckedIndex < 0)
+            {
+                Logger.Instance.Error("[バグ]NextCheckedIndexは負の値をとることはできません");
+                return;
+            }
+
+            SetDialogInitialInfo();
+            dialogService.ShowDialog("ChangeModInfo");
+        }
+
+        public void ShowChangeModInfoNextDialog()
+        {
+            NowChangingCheckedIndex += 1;
+
+            if (NowChangingCheckedIndex + 1 > AllCheckedModCount)
+            {
+                Logger.Instance.Error("[バグ]選択されているModの範囲を超えるロジックです");
+                return;
+            }
+
+            if (NowChangingCheckedIndex < 0)
+            {
+                Logger.Instance.Error("[バグ]NextCheckedIndexは負の値をとることはできません");
+                return;
+            }
+
+            SetDialogInitialInfo();
+            dialogService.ShowDialog("ChangeModInfo");
+        }
+
+        private void SetDialogInitialInfo()
+        {
+            if (NowChangingCheckedIndex + 1 == AllCheckedModCount) NextOrFinishButtonText = "Finish";
+            else NextOrFinishButtonText = "Next";
+
+            IModData checkedMod = AllCheckedMod[NowChangingCheckedIndex];
+            
+            modName = checkedMod.Mod;
+
+            ModNameAndProgress = checkedMod.Mod + "(" + (NowChangingCheckedIndex+1).ToString()
+            + "/" + AllCheckedModCount.ToString() + ")";
+            Url = checkedMod.Url;
+            if (checkedMod.Original == "?" || checkedMod.Original == "〇")
+            {
+                Original = true;
+            }
+            else
+            {
+                Original = false;
+            }
         }
 
         public void Search()
@@ -257,7 +311,7 @@ namespace BSModManager.Models
             }
         }
 
-        public void GetInfo()
+        public void SetInfoToMods()
         {
             if (ExistInMA) return;
 
