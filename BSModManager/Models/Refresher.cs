@@ -193,6 +193,8 @@ namespace BSModManager.Models
 
                 notInstalledRecommendList.Remove(notInstalledRecommendList.First(x => x.Mod == localMod.Mod));
 
+                if (!recommendMods.ExistsSameModData(localMod)) continue;
+
                 recommendMods.Remove(localMod);
             }
 
@@ -237,6 +239,8 @@ namespace BSModManager.Models
                 });
 
                 previousDataListAddedToPastModsDataCue.Remove(previousDataListAddedToPastModsDataCue.Find(x => x.Mod == localMod.Mod));
+
+                if (!pastMods.ExistsSameModData(localMod)) continue;
 
                 // MAや手動でMod追加したときの更新のため
                 pastMods.Remove(localMod);
