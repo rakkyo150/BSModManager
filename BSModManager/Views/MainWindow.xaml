@@ -43,7 +43,7 @@
                 </ToolTipService.ToolTip>
             </Button>
             <Button Width="100" Margin="5 5 5 10"  Padding="5" Background="LightGoldenrodYellow" DockPanel.Dock="right" IsEnabled="{Binding ModRepositoryButtonEnable}" Command="{Binding ModRepositoryButtonCommand}">
-                <Image Source="URL.png" Width="30"/>
+                <Image Source="Resources/URL.png" Width="30"/>
                 <ToolTipService.ToolTip>
                     <ToolTip FontSize="15" Content="Open URL"/>
                 </ToolTipService.ToolTip>

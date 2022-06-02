@@ -243,13 +243,7 @@
     <Resource Include="Views\Resources\Install.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Views\URL.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Views\Resources\Check.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Views\Update.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Views\Resources\Setting.png" />
