@@ -1,6 +1,11 @@
-﻿using BSModManager.Static;
+﻿using BSModManager.Interfaces;
+using BSModManager.Models.Mods.Structures;
+using BSModManager.Static;
 using Octokit;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BSModManager.Models
@@ -26,26 +31,30 @@ namespace BSModManager.Models
         {
             bool openMA = false;
 
-            foreach (var a in localModsDataModel.LocalModsData)
+            IEnumerable<IModData> CheckedModsData =localModsDataModel.ReturnCheckedModsData();
+
+            if (CheckedModsData.Count() == 0) return;
+
+            foreach (var checkedModData in CheckedModsData)
             {
-                Release response = null;
+                if (checkedModData.Installed >= checkedModData.Latest) continue;
 
-                if (!a.Checked) continue;
-
-                if (a.Installed >= a.Latest) continue;
-
-                if (a.MA == "〇")
+                if (checkedModData.MA == "〇")
                 {
                     openMA = true;
                     continue;
                 }
 
-                response = await gitHubApi.GetLatestReleaseInfoAsync(a.Url);
-                if (response != null)
+                await gitHubApi.DownloadAsync(checkedModData.Url, Folder.Instance.tmpFolder);
+                modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.tmpFolder);
+                IModData checkedModDataPlusFileHash = SetFileHashToLocalMods(checkedModData);
+                modDisposer.MoveFolder(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath);
+                localModsDataModel.UpdateDownloadedFileHash(checkedModDataPlusFileHash);
+                localModsDataModel.UpdateInstalled(new LocalModData(refresher)
                 {
-                    await gitHubApi.DownloadAsync(a.Url, Folder.Instance.tmpFolder);
-                    modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath);
-                }
+                    Mod = checkedModDataPlusFileHash.Mod,
+                    Installed = checkedModDataPlusFileHash.Latest
+                });
             }
 
             await refresher.Refresh();
@@ -61,6 +70,29 @@ namespace BSModManager.Models
                     Logger.Instance.Error(e.Message);
                 }
             }
+        }
+
+        private IModData SetFileHashToLocalMods(IModData modData)
+        {
+            if (!Directory.Exists(Path.Combine(Folder.Instance.tmpFolder, "Plugins")))
+            {
+                return modData;
+            }
+
+            IModData modDataPlusFileHash = new LocalModData(refresher);
+
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(Folder.Instance.tmpFolder, "Plugins"));
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                if (!file.Name.Contains(".dll")) continue;
+
+                modDataPlusFileHash = modData;
+
+                modDataPlusFileHash.DownloadedFileHash = FileHashProvider.ComputeFileHash(file.FullName);
+            }
+
+            return modDataPlusFileHash;
         }
     }
 }
