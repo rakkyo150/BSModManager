@@ -193,7 +193,7 @@ namespace BSModManager.Models
 
                 notInstalledRecommendList.Remove(notInstalledRecommendList.First(x => x.Mod == localMod.Mod));
 
-                if (!recommendMods.ExistsSameModData(localMod)) continue;
+                if (!recommendMods.ExistsSameModNameData(localMod)) continue;
 
                 recommendMods.Remove(localMod);
             }
@@ -202,7 +202,7 @@ namespace BSModManager.Models
 
             foreach (var a in rawRecommendModData)
             {
-                if (recommendMods.ExistsSameModData(a))
+                if (recommendMods.ExistsSameModNameData(a))
                 {
                     recommendMods.UpdateDescription(new RecommendModData(this)
                     {
@@ -240,7 +240,7 @@ namespace BSModManager.Models
 
                 previousDataListAddedToPastModsDataCue.Remove(previousDataListAddedToPastModsDataCue.Find(x => x.Mod == localMod.Mod));
 
-                if (!pastMods.ExistsSameModData(localMod)) continue;
+                if (!pastMods.ExistsSameModNameData(localMod)) continue;
 
                 // MAや手動でMod追加したときの更新のため
                 pastMods.Remove(localMod);
@@ -384,42 +384,43 @@ namespace BSModManager.Models
 
         private void LocalModsDataRefresh()
         {
-            Dictionary<string, Version> localModNameAndVersionDic = GetLocalModsNameAndVersion();
+            List<LocalModFile> localModFilesData = GetLocalModFilesData();
 
-            UpdateLocalModsData(localModNameAndVersionDic);
+            UpdateLocalModsData(localModFilesData);
 
-            RemoveNotExistingModsData(localModNameAndVersionDic);
+            RemoveNotExistingModsData(localModFilesData);
 
             localMods.SortByName();
         }
 
-        private void UpdateLocalModsData(Dictionary<string, Version> localModNameAndVersionDic)
+        private void UpdateLocalModsData(List<LocalModFile> localModsFileData)
         {
-            foreach (KeyValuePair<string, Version> localModNameAndVersion in localModNameAndVersionDic)
+            foreach (LocalModFile localModFileData in localModsFileData)
             {
-                if (localMods.ExistsSameModData(new LocalModData(this) { Mod = localModNameAndVersion.Key }))
+                if (localMods.PermissionToChangeInstalledVersion(new LocalModData(this) { Mod = localModFileData.ModName,
+                    DownloadedFileHash=localModFileData.FileHash }))
                 {
                     localMods.UpdateInstalled(new LocalModData(this)
                     {
-                        Mod = localModNameAndVersion.Key,
-                        Installed = localModNameAndVersion.Value
+                        Mod = localModFileData.ModName,
+                        Installed = localModFileData.Version
                     });
 
                     continue;
                 }
 
-                if (!mAMods.ExistsData(new MAModData() { name = localModNameAndVersion.Key }))
+                if (!mAMods.ExistsData(new MAModData() { name = localModFileData.ModName }))
                 {
                     localMods.Add(new LocalModData(this)
                     {
-                        Mod = localModNameAndVersion.Key,
-                        Installed = localModNameAndVersion.Value
+                        Mod = localModFileData.ModName,
+                        Installed = localModFileData.Version
                     });
 
                     continue;
                 }
 
-                var temp = Array.Find(mAMods.ModAssistantAllMods, x => x.name == localModNameAndVersion.Key);
+                var temp = Array.Find(mAMods.ModAssistantAllMods, x => x.name == localModFileData.ModName);
 
                 DateTime now = DateTime.Now;
                 DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
@@ -435,8 +436,8 @@ namespace BSModManager.Models
 
                 localMods.Add(new LocalModData(this)
                 {
-                    Mod = localModNameAndVersion.Key,
-                    Installed = localModNameAndVersion.Value,
+                    Mod = localModFileData.ModName,
+                    Installed = localModFileData.Version,
                     Latest = new Version(temp.version),
                     Updated = updated,
                     Original = "〇",
@@ -447,14 +448,14 @@ namespace BSModManager.Models
             }
         }
 
-        private void RemoveNotExistingModsData(Dictionary<string, Version> localModNameAndVersionDic)
+        private void RemoveNotExistingModsData(List<LocalModFile> localModFilesData)
         {
             if (NoLocalModsData()) return;
 
             List<IModData> removeList = new List<IModData>();
             foreach (var data in localMods.LocalModsData)
             {
-                if (HasRemovedFromLocal(localModNameAndVersionDic, data))
+                if (HasRemovedFromLocal(localModFilesData, data))
                 {
                     removeList.Add(data);
                 }
@@ -468,7 +469,7 @@ namespace BSModManager.Models
             }
         }
 
-        private static Dictionary<string, Version> GetLocalModsNameAndVersion()
+        private static List<LocalModFile> GetLocalModFilesData()
         {
             string pluginFolderPath = Path.Combine(Folder.Instance.BSFolderPath, "Plugins");
             string pendingPluginFolderPath = Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins");
@@ -489,7 +490,7 @@ namespace BSModManager.Models
             }
 
 
-            Dictionary<string, Version> localModNameAndVersionDic = new Dictionary<string, Version>();
+            List<LocalModFile> localModFilesData = new List<LocalModFile>();
 
             if (filesName != null)
             {
@@ -499,8 +500,9 @@ namespace BSModManager.Models
 
                     System.Diagnostics.FileVersionInfo vi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginPath);
                     Version installedModVersion = new Version(vi.FileVersion);
+                    string fileHash = FileHashProvider.ComputeFileHash(pluginPath);
 
-                    localModNameAndVersionDic.Add(f.Name.Replace(".dll", string.Empty), installedModVersion);
+                    localModFilesData.Add(new LocalModFile(f.Name.Replace(".dll", string.Empty), installedModVersion,fileHash));
                 }
             }
 
@@ -512,21 +514,25 @@ namespace BSModManager.Models
 
                     System.Diagnostics.FileVersionInfo pendingVi = System.Diagnostics.FileVersionInfo.GetVersionInfo(pendingPluginPath);
                     Version pendingInstalledModVersion = new Version(pendingVi.FileVersion);
+                    string pendingFileHash = FileHashProvider.ComputeFileHash(pendingPluginPath);
 
-                    if (!localModNameAndVersionDic.ContainsKey(pendingF.Name.Replace(".dll", string.Empty)))
+                    if (!localModFilesData.Any(x=>x.ModName==pendingF.Name.Replace(".dll", string.Empty)))
                     {
-                        localModNameAndVersionDic.Add(pendingF.Name.Replace(".dll", string.Empty), pendingInstalledModVersion);
+                        localModFilesData.Add(new LocalModFile(pendingF.Name.Replace(".dll", string.Empty), pendingInstalledModVersion,pendingFileHash));
                         continue;
                     }
 
-                    if (pendingInstalledModVersion > localModNameAndVersionDic[pendingF.Name.Replace(".dll", string.Empty)])
+                    LocalModFile sameModNameFile = localModFilesData.Find(x => x.ModName == pendingF.Name.Replace(".dll", string.Empty));
+
+                    if (pendingInstalledModVersion > sameModNameFile.Version)
                     {
-                        localModNameAndVersionDic[pendingF.Name.Replace(".dll", string.Empty)] = pendingInstalledModVersion;
+                        localModFilesData.Remove(sameModNameFile);
+                        localModFilesData.Add(new LocalModFile(pendingF.Name.Replace(".dll", string.Empty), pendingInstalledModVersion, pendingFileHash));
                     }
                 }
             }
 
-            return localModNameAndVersionDic;
+            return localModFilesData;
         }
 
         private bool NoLocalModsData()
@@ -540,9 +546,9 @@ namespace BSModManager.Models
         }
 
 
-        private bool HasRemovedFromLocal(Dictionary<string, Version> localModNameAndVersionDic, IModData data)
+        private bool HasRemovedFromLocal(List<LocalModFile> localModFilesData, IModData data)
         {
-            return !localModNameAndVersionDic.Keys.Any(x => x == data.Mod);
+            return !localModFilesData.Any(x => x.ModName == data.Mod);
         }
 
         private static void UpdateDataToExistsInMAVersion(List<ModCsvIndex> previousDataList, MAModData modAssistantMod)

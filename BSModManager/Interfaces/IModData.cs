@@ -25,6 +25,11 @@ namespace BSModManager.Interfaces
             get;
             set;
         }
+        string DownloadedFileHash
+        {
+            get;
+            set;
+        }
         string Original
         {
             get;

@@ -19,6 +19,7 @@ namespace BSModManager.Models.Mods.Structures
         private string mod = string.Empty;
         private Version installed = new Version("0.0.0");
         private Version latest = new Version("0.0.0");
+        private string downloadedFileHash = string.Empty;
         private string updated = "?";
         private string original = "〇";
         private string mA = "×";
@@ -72,6 +73,14 @@ namespace BSModManager.Models.Mods.Structures
                 else if (Installed > Latest) InstalledColor = Brushes.Orange;
 
                 if (Latest == new Version("0.0.0")) InstalledColor = Brushes.Blue;
+            }
+        }
+        public string DownloadedFileHash
+        {
+            get { return downloadedFileHash; }
+            set
+            {
+                SetProperty(ref downloadedFileHash, value);
             }
         }
         public string Original

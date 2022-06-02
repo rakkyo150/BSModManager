@@ -70,7 +70,7 @@ namespace BSModManager.Models
 
         public void Add(IModData modData)
         {
-            if (ExistsSameModData(modData))
+            if (ExistsSameModNameData(modData))
             {
                 Logger.Instance.Debug($"{modData.Mod}と被るデータがあるためAddはキャンセルされます");
                 return;
@@ -81,7 +81,7 @@ namespace BSModManager.Models
 
         public void UpdateInstalled(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
@@ -91,7 +91,7 @@ namespace BSModManager.Models
 
         public void UpdateLatest(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
@@ -99,9 +99,19 @@ namespace BSModManager.Models
             LocalModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
         }
 
+        public void UpdateDownloadedFileHash(IModData modData)
+        {
+            if (!ExistsSameModNameData(modData))
+            {
+                Add(modData);
+                return;
+            }
+            LocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
+        }
+
         public void UpdateOriginal(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
@@ -111,7 +121,7 @@ namespace BSModManager.Models
 
         public void UpdateUpdated(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
@@ -121,7 +131,7 @@ namespace BSModManager.Models
 
         public void UpdateMA(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
@@ -131,7 +141,7 @@ namespace BSModManager.Models
 
         public void UpdateDescription(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
@@ -141,7 +151,7 @@ namespace BSModManager.Models
 
         public void UpdateURL(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
@@ -151,7 +161,7 @@ namespace BSModManager.Models
 
         public void Remove(IModData modData)
         {
-            if (!ExistsSameModData(modData))
+            if (!ExistsSameModNameData(modData))
             {
                 Logger.Instance.Debug($"{modData.Mod}は{LocalModsData}に存在しないので削除できません");
                 return;
@@ -160,9 +170,19 @@ namespace BSModManager.Models
             LocalModsData.Remove(LocalModsData.First(x => x.Mod == modData.Mod));
         }
 
-        public bool ExistsSameModData(IModData modData)
+        public bool ExistsSameModNameData(IModData modData)
         {
             return LocalModsData.Any(x => x.Mod == modData.Mod);
+        }
+
+        public bool PermissionToChangeInstalledVersion(IModData modData)
+        {
+            if (!LocalModsData.Any(x => x.Mod == modData.Mod)) return false;
+
+            // 初期化が必要なので
+            if(LocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash == string.Empty) return true;
+            
+            return !LocalModsData.Any(x => x.DownloadedFileHash == modData.DownloadedFileHash);
         }
 
         public IEnumerable<IModData> ReturnCheckedModsData()
