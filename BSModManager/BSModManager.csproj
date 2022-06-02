@@ -272,7 +272,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Views\Resources\GitHubMark.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icon.ico" />
   </ItemGroup>

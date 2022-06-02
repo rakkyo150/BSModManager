@@ -3,28 +3,62 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"             
              prism:ViewModelLocator.AutoWireViewModel="True">
+    <UserControl.Resources>
+        <!--https://github.com/tkns3/MyBeatSaberScore/blob/master/MyBeatSaberScore/PageMain.xaml#L19-L27-->
+        <Style TargetType="{x:Type Button}" x:Key="ImageButtonStyle">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <ContentPresenter/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <Button Style="{StaticResource ImageButtonStyle}" Command="{Binding OpenBSModManagerRepositoryCommand}" DockPanel.Dock="Top">
+                    <Image Height="40" Width="40">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Image.Source" Value="Resources/GitHubMark.png"/>
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="False">
+                                        <Setter Property="Image.Source" Value="Resources/GitHubMark.png"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <ToolTipService.ToolTip>
+                        <ToolTip FontSize="15" Content="Open BSModManager Repository"/>
+                    </ToolTipService.ToolTip>
+                </Button>
+            </DockPanel>
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
 
-            <TextBlock
+                <TextBlock
                 Text="Settings"
                 Grid.Row="0"
                 Grid.Column="0"
@@ -32,14 +66,14 @@
                 HorizontalAlignment="Left"
                 FontSize="24"
                 FontWeight="Bold"/>
-            <TextBlock
+                <TextBlock
                 Grid.Row="1"
                 Margin="5"
                 HorizontalAlignment="Left"
                 FontSize="16"
                 FontWeight="Bold"
                 Text="Install Folder" />
-            <Border
+                <Border
             Grid.Row="2"
             Grid.ColumnSpan="2"
             Height="30"
@@ -47,22 +81,22 @@
             Margin="5"
             Background="LightGray"
             BorderThickness="1">
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Left">
-                        <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
-                            <TextBlock Text="{Binding VerifyBSFolder.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyBSFolderColor.Value}" FontSize="16"></TextBlock>
-                        </Border>
-                    </DockPanel>
-                    <TextBlock
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Left">
+                            <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
+                                <TextBlock Text="{Binding VerifyBSFolder.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyBSFolderColor.Value}" FontSize="16"></TextBlock>
+                            </Border>
+                        </DockPanel>
+                        <TextBlock
                     Name="DirectoryTextBlock"
                     Margin="5"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="16"
                     Text="{Binding BSFolderPath.Value}" />
-                </DockPanel>
-            </Border>
-            <Button
+                    </DockPanel>
+                </Border>
+                <Button
             Grid.Row="2"
             Grid.Column="2"
             Height="30"
@@ -70,7 +104,7 @@
             Padding="5"
             Content="Select Folder"
             Command="{Binding SelectBSFolder}"/>
-            <Button
+                <Button
             Grid.Row="2"
             Grid.Column="3"
             Height="30"
@@ -78,14 +112,14 @@
             Padding="5"
             Content="Open Folder"
             Command="{Binding OpenBSFolder}"/>
-            <TextBlock
+                <TextBlock
                 Grid.Row="3"
                 Margin="5"
                 HorizontalAlignment="Left"
                 FontSize="16"
                 FontWeight="Bold"
                 Text="GitHub Token" />
-            <Border
+                <Border
             Grid.Row="4"
             Grid.ColumnSpan="2"
             Height="30"
@@ -93,11 +127,11 @@
             Margin="5"
             Background="LightGray"
             BorderThickness="1">
-                <DockPanel DockPanel.Dock="Left">
-                    <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
-                        <TextBlock Text="{Binding VerifyGitHubToken.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyGitHubTokenColor.Value}" FontSize="16" ></TextBlock>
-                    </Border>
-                    <PasswordBox
+                    <DockPanel DockPanel.Dock="Left">
+                        <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
+                            <TextBlock Text="{Binding VerifyGitHubToken.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyGitHubTokenColor.Value}" FontSize="16" ></TextBlock>
+                        </Border>
+                        <PasswordBox
                     x:Name="GitHubToken"
                     Height="30"
                     MinWidth="450"
@@ -108,9 +142,9 @@
                     Background="LightGray"
                     FontSize="16"
                     BorderThickness="1"/>
-                </DockPanel>
-            </Border>
-            <Button
+                    </DockPanel>
+                </Border>
+                <Button
             Grid.Row="4"
             Grid.Column="2"
             Height="30"
@@ -119,14 +153,14 @@
             Content="Change Token"
             CommandParameter="{Binding ElementName=GitHubToken}"
             Command="{Binding ChangeToken}"/>
-            <TextBlock
+                <TextBlock
                 Grid.Row="5"
                 Margin="5"
                 HorizontalAlignment="Left"
                 FontSize="16"
                 FontWeight="Bold"
                 Text="ModAssistant.exe" />
-            <Border
+                <Border
             Grid.Row="6"
             Grid.ColumnSpan="2"
             Height="30"
@@ -134,21 +168,21 @@
             Margin="5"
             Background="LightGray"
             BorderThickness="1">
-                <DockPanel>
-                    <DockPanel DockPanel.Dock="Left">
-                        <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
-                            <TextBlock Text="{Binding VerifyMAExe.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyMAExeColor.Value}" FontSize="16" ></TextBlock>
-                        </Border>
-                    </DockPanel>
-                    <TextBlock
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Left">
+                            <Border Background="White" BorderBrush="Gray" BorderThickness="1" Width="25">
+                                <TextBlock Text="{Binding VerifyMAExe.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyMAExeColor.Value}" FontSize="16" ></TextBlock>
+                            </Border>
+                        </DockPanel>
+                        <TextBlock
                     Margin="5"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="16"
                     Text="{Binding MAExePath.Value}" />
-                </DockPanel>
-            </Border>
-            <Button
+                    </DockPanel>
+                </Border>
+                <Button
             Grid.Row="6"
             Grid.Column="2"
             Height="30"
@@ -156,7 +190,7 @@
             Padding="5"
             Content="Select Exe"
             Command="{Binding SelectMAExe}"/>
-            <Button
+                <Button
             Grid.Row="6"
             Grid.Column="3"
             Height="30"
@@ -164,7 +198,7 @@
             Padding="5"
             Content="Open MA Folder"
             Command="{Binding OpenMAFolder}"/>
-            <TextBlock
+                <TextBlock
             Grid.Row="7"
             Grid.Column="0"
             Margin="50,5,5,5"
@@ -173,13 +207,13 @@
             FontWeight="Bold"
             Text="Get Prerelease(Unimplemented)"
             Foreground="Gray"/>
-            <CheckBox
+                <CheckBox
             Grid.Row="7"
             Grid.Column="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center" 
             IsEnabled="False"/>
-            <TextBlock
+                <TextBlock
                 Text="Diagnostic"
                 Grid.Row="8"
                 Grid.Column="0"
@@ -187,43 +221,44 @@
                 HorizontalAlignment="Left"
                 FontSize="24"
                 FontWeight="Bold"/>
-            <StackPanel 
+                <StackPanel 
             Grid.Row="9"
             Grid.Column="0"
             Orientation="Horizontal">
-                <Button
+                    <Button
                 Height="30"
                 Margin="5"
                 Padding="5"
                 Command="{Binding OpenLogFolder}"
                 Content="Open Log" />
-                <Button
+                    <Button
                 HorizontalAlignment="Left"
                 Height="30"
                 Margin="5"
                 Padding="5"
                 Command="{Binding OpenDataFolder}"
                 Content="Open Data" />
-                <Button
+                    <Button
                 Height="30"
                 Margin="5"
                 Padding="5"
                 Command="{Binding OpenBackupFolder}"
                 Content="Open Backup" />
-                <Button
+                    <Button
                 Height="30"
                 Margin="5"
                 Padding="5"
                 Command="{Binding OpenModTempFolder}"
                 Content="Open Temp" />
-                <Button
+                    <Button
                 Height="30"
                 Margin="5"
                 Padding="5"
                 Content="Console Version(Unimplemented)"
                 Background="LightGreen"
                 IsEnabled="False"/>
-            </StackPanel>
-        </Grid>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
     </ScrollViewer>
 </UserControl>
