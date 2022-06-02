@@ -1,6 +1,20 @@
 # BSModManager
 ModAssistantで管理できないBeat SaberのModを管理するツール
 
+## ModAssistantとの違い
+
+||ModAssistant|BSModManager|
+|:--|:--:|:--:|
+|BeatMods(ModAssistant)にないModの管理|できない|できる|
+|過去に使っていたMod情報の管理|不可|可|
+|依存Modの自動ダウンロード|可|不可|
+|GitHubアカウント|不要|必要|
+|各Modの情報の登録|不要|一部必要|
+|Pluginsフォルダに本体があるModの管理|可|不可|
+
+ModAssistantでできないことができたり、逆にできることができなかったりします。<br>
+うまく使ってください。
+
 ## 実行環境
 .Net Frameworkの4.8が必要です。
 
@@ -14,8 +28,7 @@ GitHubのPersonal access Tokenが必要です。<br>
 GitHubのPersonal access tokenは、GitHubのアカウントを作成の上、Settings->Developer settings->Personal access tokensから生成してください。<br>
 Select Scopesは設定しなくて大丈夫です。<br>
 
-また、起動する前にModAssistantでModを入れて一度Beat Saberを起動しておくと安心です。
-そうでない場合のテストはしてないので。
+また、各Modの依存Modは自動的にダウンロードされないので、起動する前に少なくともModAssistantでチェックが固定されているModを入れて一度Beat Saberを起動しておくと安心です。<br>
 
 起動はBSModManager.exeやインストーラーで生成されたショートカットから行ってください。<br>
 初期設定ダイアログに従って初期設定をしてください。
@@ -51,7 +64,8 @@ URL情報からModをダウンロード可能な場合、LatestがInstalledよ�
 すると、[Mod情報変更ダイアログ](#Mod情報変更ダイアログ)が出てきます。
 
 また、アップデートするにはAll Check/UncheckボタンですべてのModにチェックしてUpdateボタンを押すだけでOKです<br>
-ローカルのバージョン情報はメタデータを参照しているので、メタデータの更新を忘れているModの場合はアップデートが成功していても画面上のバージョンは変わらなかったりします。<br>
+ローカルのバージョン情報はメタデータを参照してい~~るので、メタデータの更新を忘れているModの場合はアップデートが成功していても画面上のバージョンは変わらなかったりします。~~ ます。<br>
+v1.1.0からはメタデータの更新を忘れているModでも一度ダウンロードすれば適切に表示されるようになりました。<br>
 ModAssistantで管理できるModに関しては、更新バージョンがありModAssistantのパスが設定されている場合、ModAssistantが開くのでそこでアップデートしてください。<br>
 GitHubのリポジトリのURLが設定されていなどの場合は、対象のModにチェックを付けて、Open URLボタンを押してURLに飛んで手動でアップデートの確認をしてください。<br>
 ModAssistantでアップデートしたり手動アップデートをした場合、Refreshボタン(下の右から５番目のボタン)を押すと反映されます。<br>
