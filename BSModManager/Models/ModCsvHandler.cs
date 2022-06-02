@@ -56,7 +56,7 @@ namespace BSModManager.Models
             };
 
             using (var reader = new StreamReader(csvPath))
-            using(var csv = new CsvReader(reader, config))
+            using (var csv = new CsvReader(reader, config))
             {
                 await Task.Run(() =>
                 {

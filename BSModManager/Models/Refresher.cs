@@ -397,8 +397,11 @@ namespace BSModManager.Models
         {
             foreach (LocalModFile localModFileData in localModsFileData)
             {
-                if (localMods.PermissionToChangeInstalledVersion(new LocalModData(this) { Mod = localModFileData.ModName,
-                    DownloadedFileHash=localModFileData.FileHash }))
+                if (localMods.PermissionToChangeInstalledVersion(new LocalModData(this)
+                {
+                    Mod = localModFileData.ModName,
+                    DownloadedFileHash = localModFileData.FileHash
+                }))
                 {
                     localMods.UpdateInstalled(new LocalModData(this)
                     {
@@ -502,7 +505,7 @@ namespace BSModManager.Models
                     Version installedModVersion = new Version(vi.FileVersion);
                     string fileHash = FileHashProvider.ComputeFileHash(pluginPath);
 
-                    localModFilesData.Add(new LocalModFile(f.Name.Replace(".dll", string.Empty), installedModVersion,fileHash));
+                    localModFilesData.Add(new LocalModFile(f.Name.Replace(".dll", string.Empty), installedModVersion, fileHash));
                 }
             }
 
@@ -516,9 +519,9 @@ namespace BSModManager.Models
                     Version pendingInstalledModVersion = new Version(pendingVi.FileVersion);
                     string pendingFileHash = FileHashProvider.ComputeFileHash(pendingPluginPath);
 
-                    if (!localModFilesData.Any(x=>x.ModName==pendingF.Name.Replace(".dll", string.Empty)))
+                    if (!localModFilesData.Any(x => x.ModName == pendingF.Name.Replace(".dll", string.Empty)))
                     {
-                        localModFilesData.Add(new LocalModFile(pendingF.Name.Replace(".dll", string.Empty), pendingInstalledModVersion,pendingFileHash));
+                        localModFilesData.Add(new LocalModFile(pendingF.Name.Replace(".dll", string.Empty), pendingInstalledModVersion, pendingFileHash));
                         continue;
                     }
 
