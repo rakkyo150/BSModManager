@@ -12,23 +12,13 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="Checked" MinWidth="10" Binding="{Binding Checked}">
-                    <!--https://stackoverflow.com/questions/67082078/datagridcheckboxcolumn-with-elementstyle-loses-binding-->
-                    <DataGridCheckBoxColumn.ElementStyle>
-                        <Style TargetType="CheckBox" BasedOn="{x:Static DataGridCheckBoxColumn.DefaultElementStyle}">
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                        </Style>
-                    </DataGridCheckBoxColumn.ElementStyle>
-                    <DataGridCheckBoxColumn.EditingElementStyle>
-                        <Style TargetType="CheckBox" BasedOn="{x:Static DataGridCheckBoxColumn.DefaultEditingElementStyle}">
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <!--https://social.msdn.microsoft.com/Forums/en-US/7bdaacc3-199f-43ae-9bca-aff2dfcd8abe/bug-with-data-grid-column-element-styles-and-data-binding?forum=wpf-->
-                            <Setter Property="IsChecked" Value="{Binding Checked}"/>
-                        </Style>
-                    </DataGridCheckBoxColumn.EditingElementStyle>
-                </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn Header="Checked" MinWidth="10">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Path=Checked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Mod" MinWidth="100" Binding="{Binding Mod}" IsReadOnly="True" FontSize="15">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
