@@ -101,6 +101,24 @@ namespace BSModManager.Models
                     updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
                 }
 
+                if (previousData.DownloadedFileHash != string.Empty)
+                {
+                    localMods.LocalModsData.Add(new LocalModData(refresher)
+                    {
+                        Mod = previousData.Mod,
+                        Installed=new Version(previousData.LatestVersion),
+                        Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
+                        DownloadedFileHash = previousData.DownloadedFileHash,
+                        Updated = updated,
+                        Original = original,
+                        MA = "×",
+                        Description = response.Body,
+                        Url = previousData.Url
+                    });
+
+                    continue;
+                }
+
                 localMods.LocalModsData.Add(new LocalModData(refresher)
                 {
                     Mod = previousData.Mod,

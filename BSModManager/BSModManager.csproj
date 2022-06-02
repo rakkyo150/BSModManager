@@ -94,6 +94,7 @@
     <Compile Include="Interfaces\IMods.cs" />
     <Compile Include="Interfaces\IModData.cs" />
     <Compile Include="Models\ConfigFileHandler.cs" />
+    <Compile Include="Models\LocalModFile.cs" />
     <Compile Include="Models\MainModsSetter.cs" />
     <Compile Include="Models\Mods\RecommendModsJsonStructure.cs" />
     <Compile Include="Models\Mods\Structures\LocalModData.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Models\Refresher.cs" />
     <Compile Include="Models\SettingsVerifier.cs" />
     <Compile Include="Models\ChangeModInfoModel.cs" />
+    <Compile Include="Static\FileHashProvider.cs" />
     <Compile Include="Static\GameVersion.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

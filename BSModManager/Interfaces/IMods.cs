@@ -15,13 +15,14 @@ namespace BSModManager.Interfaces
 
         void UpdateInstalled(IModData modData);
         void UpdateLatest(IModData modData);
+        void UpdateDownloadedFileHash(IModData modData);
         void UpdateOriginal(IModData modData);
         void UpdateUpdated(IModData modData);
         void UpdateMA(IModData modData);
         void UpdateDescription(IModData modData);
         void UpdateURL(IModData modData);
 
-        bool ExistsSameModData(IModData modData);
+        bool ExistsSameModNameData(IModData modData);
 
         IEnumerable<IModData> ReturnCheckedModsData();
     }

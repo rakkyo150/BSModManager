@@ -1,5 +1,7 @@
 ﻿using BSModManager.Interfaces;
+using BSModManager.Static;
 using CsvHelper;
+using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,9 +24,10 @@ namespace BSModManager.Models
                     Mod = mod.Mod,
                     LocalVersion = mod.Installed.ToString(),
                     LatestVersion = mod.Latest.ToString(),
+                    DownloadedFileHash = mod.DownloadedFileHash,
                     Original = mod.Original != "×",
                     Ma = mod.MA != "×",
-                    Url = mod.Url,
+                    Url = mod.Url
                 };
                 modInformationCsvList.Add(githubModInstance);
             }
@@ -43,8 +46,17 @@ namespace BSModManager.Models
         {
             List<ModCsvIndex> output = null;
 
+            var config = new CsvConfiguration(new CultureInfo("ja-JP", false))
+            {
+                HeaderValidated = null,
+                MissingFieldFound = (e) =>
+                {
+                    Logger.Instance.Info($"{e.Context}のデータが不足しています。");
+                }
+            };
+
             using (var reader = new StreamReader(csvPath))
-            using (var csv = new CsvReader(reader, new CultureInfo("ja-JP", false)))
+            using(var csv = new CsvReader(reader, config))
             {
                 await Task.Run(() =>
                 {
@@ -52,22 +64,25 @@ namespace BSModManager.Models
                 });
             }
 
+            // DownloadFileHashのデータがないならstring.Emptyを返す
             return output;
         }
 
         public class ModCsvIndex
         {
-            [Index(0)]
+            [Name("Mod")]
             public string Mod { get; set; }
-            [Index(1)]
+            [Name("LocalVersion")]
             public string LocalVersion { get; set; }
-            [Index(2)]
+            [Name("LatestVersion")]
             public string LatestVersion { get; set; }
-            [Index(3)]
+            [Name("DownloadedFileHash")]
+            public string DownloadedFileHash { get; set; }
+            [Name("Original")]
             public bool Original { get; set; }
-            [Index(4)]
+            [Name("Ma")]
             public bool Ma { get; set; }
-            [Index(5)]
+            [Name("Url")]
             public string Url { get; set; }
         }
     }
