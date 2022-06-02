@@ -28,7 +28,7 @@ namespace BSModManager.Models
             refresher = r;
         }
 
-        internal async Task GetData()
+        internal async Task GetCsvData()
         {
             string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
@@ -134,6 +134,8 @@ namespace BSModManager.Models
 
         private bool ExistsModDataInMA(ModCsvIndex previousData)
         {
+            if (previousData.Original != true) return false;
+            
             return Array.Exists(mAMods.ModAssistantAllMods, x => x.name == previousData.Mod);
         }
     }

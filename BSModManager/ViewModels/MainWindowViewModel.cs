@@ -227,7 +227,7 @@ namespace BSModManager.ViewModels
 
                     mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
 
-                    await localModsDataFetcher.GetData();
+                    await localModsDataFetcher.GetCsvData();
 
                     await refresher.Refresh();
 
