@@ -5,6 +5,7 @@ using Prism.Navigation;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reactive.Disposables;
 using System.Windows.Controls;
@@ -20,6 +21,7 @@ namespace BSModManager.ViewModels
 
         CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
+        public ReactiveCommand OpenBSModManagerRepositoryCommand { get; } = new ReactiveCommand();
         public ReactiveCommand SelectBSFolder { get; } = new ReactiveCommand();
         public ReactiveCommand OpenBSFolder { get; }
         public ReactiveCommand ChangeToken { get; } = new ReactiveCommand();
@@ -74,6 +76,24 @@ namespace BSModManager.ViewModels
                 configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
             };
 
+            OpenBSModManagerRepositoryCommand.Subscribe(() =>
+            {
+                try
+                {
+                    string searchUrl = $"https://github.com/rakkyo150/BSModManager";
+                    ProcessStartInfo pi = new ProcessStartInfo()
+                    {
+                        FileName = searchUrl,
+                        UseShellExecute = true,
+                    };
+                    Process.Start(pi);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Error(ex.Message + "\nBSModManagerのリポジトリを開けませんでした");
+                }
+            }).AddTo(Disposables);
+            
             SelectBSFolder.Subscribe(_ =>
             {
                 Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
