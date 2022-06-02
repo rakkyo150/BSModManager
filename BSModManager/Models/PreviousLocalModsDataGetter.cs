@@ -106,7 +106,7 @@ namespace BSModManager.Models
                     localMods.LocalModsData.Add(new LocalModData(refresher)
                     {
                         Mod = previousData.Mod,
-                        Installed=new Version(previousData.LatestVersion),
+                        Installed = new Version(previousData.LatestVersion),
                         Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
                         DownloadedFileHash = previousData.DownloadedFileHash,
                         Updated = updated,
@@ -135,7 +135,7 @@ namespace BSModManager.Models
         private bool ExistsModDataInMA(ModCsvIndex previousData)
         {
             if (previousData.Original != true) return false;
-            
+
             return Array.Exists(mAMods.ModAssistantAllMods, x => x.name == previousData.Mod);
         }
     }

@@ -21,19 +21,19 @@ namespace BSModManager.Models
         public void MoveFolder(string sourceDirFullPath, string destDirFullPath)
         {
             DirectoryInfo sourceDir = new DirectoryInfo(sourceDirFullPath);
-            
+
             DirectoryInfo[] dirs = sourceDir.GetDirectories();
 
             if (dirs.Length == 0) return;
 
-            foreach(var dir in dirs)
+            foreach (var dir in dirs)
             {
                 try
                 {
-                    Folder.Instance.Copy(dir.FullName, Path.Combine(destDirFullPath,dir.Name), true);
+                    Folder.Instance.Copy(dir.FullName, Path.Combine(destDirFullPath, dir.Name), true);
                     Directory.Delete(dir.FullName, true);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.Instance.Info($"{ex.Message}\nダウンロードしたディレクトリの配置に失敗しました");
                 }
@@ -45,7 +45,7 @@ namespace BSModManager.Models
             IEnumerable<string> zipFilesPath = Directory.EnumerateFiles(sourceDirFullPath, "*.zip", SearchOption.TopDirectoryOnly);
 
             if (zipFilesPath.Count() == 0) return;
-            
+
             foreach (var zipFileName in Directory.EnumerateFiles(sourceDirFullPath, "*.zip", SearchOption.TopDirectoryOnly))
             {
                 try

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
@@ -12,7 +8,7 @@ namespace BSModManager.Models
         private readonly Version _version;
         private readonly string _fileHash;
 
-        internal LocalModFile(string modName,Version version,string fileHash)
+        internal LocalModFile(string modName, Version version, string fileHash)
         {
             _modName = modName;
             _version = version;

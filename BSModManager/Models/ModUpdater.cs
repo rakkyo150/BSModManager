@@ -1,7 +1,6 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
-using Octokit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,7 +30,7 @@ namespace BSModManager.Models
         {
             bool openMA = false;
 
-            IEnumerable<IModData> CheckedModsData =localModsDataModel.ReturnCheckedModsData();
+            IEnumerable<IModData> CheckedModsData = localModsDataModel.ReturnCheckedModsData();
 
             if (CheckedModsData.Count() == 0) return;
 

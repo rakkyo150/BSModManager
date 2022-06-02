@@ -1,7 +1,6 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
-using Octokit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -76,7 +75,7 @@ namespace BSModManager.Models
                 return modData;
             }
 
-            IModData modDataPlusFileHashAndInstalled=new LocalModData(refresher);
+            IModData modDataPlusFileHashAndInstalled = new LocalModData(refresher);
 
             DirectoryInfo dir = new DirectoryInfo(Path.Combine(Folder.Instance.tmpFolder, "Plugins"));
             FileInfo[] files = dir.GetFiles();
@@ -85,10 +84,11 @@ namespace BSModManager.Models
                 if (!file.Name.Contains(".dll")) continue;
 
                 modDataPlusFileHashAndInstalled = modData;
-                
+
                 modDataPlusFileHashAndInstalled.DownloadedFileHash = FileHashProvider.ComputeFileHash(file.FullName);
                 modDataPlusFileHashAndInstalled.Installed = modData.Latest;
-;            }
+                ;
+            }
 
             return modDataPlusFileHashAndInstalled;
         }

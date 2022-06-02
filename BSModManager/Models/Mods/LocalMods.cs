@@ -180,8 +180,8 @@ namespace BSModManager.Models
             if (!LocalModsData.Any(x => x.Mod == modData.Mod)) return false;
 
             // 初期化が必要なので
-            if(LocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash == string.Empty) return true;
-            
+            if (LocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash == string.Empty) return true;
+
             return !LocalModsData.Any(x => x.DownloadedFileHash == modData.DownloadedFileHash);
         }
 

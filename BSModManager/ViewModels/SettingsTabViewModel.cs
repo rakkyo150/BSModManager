@@ -93,7 +93,7 @@ namespace BSModManager.ViewModels
                     Logger.Instance.Error(ex.Message + "\nBSModManagerのリポジトリを開けませんでした");
                 }
             }).AddTo(Disposables);
-            
+
             SelectBSFolder.Subscribe(_ =>
             {
                 Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
