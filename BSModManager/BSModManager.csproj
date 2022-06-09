@@ -237,24 +237,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Views\Resources\URL.png" />
-    <Resource Include="Views\Resources\Refresh.png" />
-    <Resource Include="Views\Resources\Update.png" />
-    <Resource Include="Views\Resources\Install.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Views\Resources\Check.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Views\Resources\Setting.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Views\Resources\ChangeData.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Views\Resources\Execute.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.8 %28x86 および x64%29</ProductName>
@@ -267,10 +249,18 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Views\Resources\GitHubMark.png" />
+    <None Include="Resources\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\icon.ico" />
+    <Resource Include="Views\Resources\ChangeData.png" />
+    <Resource Include="Views\Resources\Check.png" />
+    <Resource Include="Views\Resources\Execute.png" />
+    <Resource Include="Views\Resources\GitHubMark.png" />
+    <Resource Include="Views\Resources\Install.png" />
+    <Resource Include="Views\Resources\Refresh.png" />
+    <Resource Include="Views\Resources\Setting.png" />
+    <Resource Include="Views\Resources\Update.png" />
+    <Resource Include="Views\Resources\URL.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
