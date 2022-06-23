@@ -5,12 +5,12 @@ ModAssistantで管理できないBeat SaberのModを管理するツール
 
 ||ModAssistant|BSModManager|
 |:--|:--:|:--:|
-|BeatMods(ModAssistant)にないModの管理|できない|できる|
+|BeatMods(ModAssistant)にないModの管理|不可|可|
 |過去に使っていたMod情報の管理|不可|可|
 |依存Modの自動ダウンロード|可|不可|
 |GitHubアカウント|不要|必要|
 |各Modの情報の登録|不要|一部必要|
-|Pluginsフォルダに本体があるModの管理|可|不可|
+|Pluginsフォルダでないところに本体があるModの管理|可|不可|
 
 ModAssistantでできないことができたり、逆にできることができなかったりします。<br>
 うまく使ってください。
