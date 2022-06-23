@@ -40,10 +40,10 @@ namespace BSModManager.Models
             await PastModsDataRefresh();
             await RecommendModDataRefreash();
 
-            await AssistLocalModByIntallMods();
+            await AssistLocalModDataByRemovedPastOrRecommendMods();
         }
 
-        private async Task AssistLocalModByIntallMods()
+        private async Task AssistLocalModDataByRemovedPastOrRecommendMods()
         {
             foreach (var localMod in localMods.LocalModsData)
             {
@@ -397,7 +397,7 @@ namespace BSModManager.Models
         {
             foreach (LocalModFile localModFileData in localModsFileData)
             {
-                if (localMods.PermissionToChangeInstalledVersion(new LocalModData(this)
+                if (localMods.ShouldChangeInstalledVersionToFileItselfVersion(new LocalModData(this)
                 {
                     Mod = localModFileData.ModName,
                     DownloadedFileHash = localModFileData.FileHash
