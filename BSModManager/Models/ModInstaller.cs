@@ -32,25 +32,25 @@ namespace BSModManager.Models
         {
             bool openMA = false;
 
-            IEnumerable<IModData> CheckedModsData = mainModsSetter.MainMods.ReturnCheckedModsData();
+            IEnumerable<IModData> CheckedLocalModsData = mainModsSetter.MainMods.ReturnCheckedModsData();
 
-            if (CheckedModsData.Count() == 0) return;
+            if (CheckedLocalModsData.Count() == 0) return;
 
-            foreach (var checkedModData in CheckedModsData)
+            foreach (var checkedLocalModData in CheckedLocalModsData)
             {
-                if (checkedModData.Installed >= checkedModData.Latest) continue;
+                if (checkedLocalModData.Installed >= checkedLocalModData.Latest) continue;
 
-                if (checkedModData.MA == "〇")
+                if (checkedLocalModData.MA == "〇")
                 {
                     openMA = true;
                     continue;
                 }
 
-                await gitHubApi.DownloadAsync(checkedModData.Url, Folder.Instance.tmpFolder);
+                await gitHubApi.DownloadAsync(checkedLocalModData.Url, Folder.Instance.tmpFolder);
                 modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.tmpFolder);
-                IModData checkedModDataPlusFileHash = SetFileHashToCheckedLocalMods(checkedModData);
+                IModData checkedLocalModDataWithNewInstalledVersionAndFileHash = SetInstalledVersionAndFileHash(checkedLocalModData);
                 modDisposer.MoveFolder(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath);
-                localModsDataModel.Add(checkedModDataPlusFileHash);
+                localModsDataModel.Add(checkedLocalModDataWithNewInstalledVersionAndFileHash);
             }
 
             await refresher.Refresh();
@@ -68,29 +68,28 @@ namespace BSModManager.Models
             }
         }
 
-        private IModData SetFileHashToCheckedLocalMods(IModData modData)
+        private IModData SetInstalledVersionAndFileHash(IModData modData)
         {
             if (!Directory.Exists(Path.Combine(Folder.Instance.tmpFolder, "Plugins")))
             {
                 return modData;
             }
 
-            IModData modDataPlusFileHashAndInstalled = new LocalModData(refresher);
+            IModData modDataWithNewInstalledVersionAndFileHash = modData;
 
             DirectoryInfo dir = new DirectoryInfo(Path.Combine(Folder.Instance.tmpFolder, "Plugins"));
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
-                if (!file.Name.Contains(".dll")) continue;
+                // 場合によってはPluginsフォルダの中に複数のdllファイルが入っているのでファイル名を確定させる
+                if (file.Name != $"{modData.Mod}.dll") continue;
 
-                modDataPlusFileHashAndInstalled = modData;
-
-                modDataPlusFileHashAndInstalled.DownloadedFileHash = FileHashProvider.ComputeFileHash(file.FullName);
-                modDataPlusFileHashAndInstalled.Installed = modData.Latest;
-                ;
+                modDataWithNewInstalledVersionAndFileHash.Installed = modDataWithNewInstalledVersionAndFileHash.Latest;
+                modDataWithNewInstalledVersionAndFileHash.DownloadedFileHash = FileHashProvider.ComputeFileHash(file.FullName);
+                break;
             }
 
-            return modDataPlusFileHashAndInstalled;
+            return modDataWithNewInstalledVersionAndFileHash;
         }
     }
 }

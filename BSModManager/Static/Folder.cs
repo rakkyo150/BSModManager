@@ -68,7 +68,7 @@ namespace BSModManager.Static
             }
             catch (Exception ex)
             {
-                Logger.Instance.Error(ex.Message);
+                Logger.Instance.Error($"{ex.Message}\nフォルダを開くのに失敗しました");
             }
         }
 

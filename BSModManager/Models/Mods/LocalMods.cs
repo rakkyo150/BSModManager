@@ -175,7 +175,7 @@ namespace BSModManager.Models
             return LocalModsData.Any(x => x.Mod == modData.Mod);
         }
 
-        public bool PermissionToChangeInstalledVersion(IModData modData)
+        public bool ShouldChangeInstalledVersionToFileItselfVersion(IModData modData)
         {
             if (!LocalModsData.Any(x => x.Mod == modData.Mod)) return false;
 
