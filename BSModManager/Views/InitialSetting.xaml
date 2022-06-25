@@ -17,9 +17,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
             <Label Content="Install Directroy" Grid.Column="0"></Label>
             <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Width="25" Grid.Column="1">
                 <TextBlock Text="{Binding VerifyBSFolder.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyBSFolderColor.Value}" Width="25" ></TextBlock>
@@ -34,9 +31,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
             <Label Content="GitHub Token" Grid.Column="0"></Label>
             <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Width="25" Grid.Column="1">
                 <TextBlock Text="{Binding VerifyGitHubToken.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyGitHubTokenColor.Value}" Width="25" Background="LightGray" Grid.Column="1"></TextBlock>
@@ -51,9 +45,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
             <Label Content="MA Path" Grid.Column="0"></Label>
             <Border Background="LightGray" BorderBrush="Gray" BorderThickness="1" Width="25" Grid.Column="1">
                 <TextBlock Text="{Binding VerifyMAExe.Value}" TextAlignment="Center" VerticalAlignment="Center" Foreground="{Binding VerifyMAExeColor.Value}" Width="25" ></TextBlock>
@@ -65,9 +56,6 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
             <Button HorizontalAlignment="Center" Content="Finish" Command="{Binding SettingFinishCommand}" Grid.Column="0" />
         </Grid>
     </Grid>
