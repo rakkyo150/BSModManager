@@ -247,7 +247,7 @@ namespace BSModManager.Models
                 };
 
                 string owner = "rakkyo150";
-                string name = "GithubModUpdateCheckerConsole";
+                string name = "BSModManager";
 
                 var response = await gitHub.Repository.Release.GetLatest(owner, name);
                 return true;

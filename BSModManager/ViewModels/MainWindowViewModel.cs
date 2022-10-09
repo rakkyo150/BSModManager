@@ -236,6 +236,7 @@ namespace BSModManager.ViewModels
                 catch (Exception ex)
                 {
                     Logger.Instance.Error(ex.Message);
+                    AllButtonEnable();
                 }
             });
 

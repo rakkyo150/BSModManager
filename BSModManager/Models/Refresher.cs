@@ -119,6 +119,9 @@ namespace BSModManager.Models
             localMods.UpdateOriginal(modData);
 
             if (response == null) return;
+            
+            // リリース情報に不備がある場合
+            if (response.TagName == null) return;
 
             DateTime now = DateTime.Now;
             string updated = null;
