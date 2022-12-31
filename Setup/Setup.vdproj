@@ -63,12 +63,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_20BE3709C09D954F7481601A727361A6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_2755C0A3E2FA03D69B4A12FE012E074D"
         "OwnerKey" = "8:_9942860CAFA9E3A65D67D9A50602682D"
         "MsmSig" = "8:_UNDEFINED"
@@ -88,7 +82,7 @@
         "Entry"
         {
         "MsmKey" = "8:_3BB667170A71A28A3C4F706AB389FAE4"
-        "OwnerKey" = "8:_DE926581180747C1AA9DBB42E0F2C5B9"
+        "OwnerKey" = "8:_BDE348ECA7D1493AC45935C5216B3227"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -100,7 +94,7 @@
         "Entry"
         {
         "MsmKey" = "8:_3BB667170A71A28A3C4F706AB389FAE4"
-        "OwnerKey" = "8:_BDE348ECA7D1493AC45935C5216B3227"
+        "OwnerKey" = "8:_DE926581180747C1AA9DBB42E0F2C5B9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -394,13 +388,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DCBCCF022778A289ADABD1F651BAC046"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CD327B76ABE8A35D4ED586D7C55621C7"
+        "OwnerKey" = "8:_BDE348ECA7D1493AC45935C5216B3227"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -484,7 +472,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BDE348ECA7D1493AC45935C5216B3227"
+        "OwnerKey" = "8:_DCBCCF022778A289ADABD1F651BAC046"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CD327B76ABE8A35D4ED586D7C55621C7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -605,12 +599,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3BB667170A71A28A3C4F706AB389FAE4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_20BE3709C09D954F7481601A727361A6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -796,11 +784,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0DB5F9C6696498136B7544923EED0E86"
-                    {
-                    "Name" = "8:Microsoft.Bcl.HashCode.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.Bcl.HashCode.dll"
             "TargetName" = "8:"
@@ -827,11 +810,6 @@
             "AssemblyAsmDisplayName" = "8:ReactiveProperty, Version=8.1.1.0, Culture=neutral, PublicKeyToken=910d1732782c71cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_13ABFCAF5798948B583EAC3A238E3C21"
-                    {
-                    "Name" = "8:ReactiveProperty.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ReactiveProperty.dll"
             "TargetName" = "8:"
@@ -889,11 +867,6 @@
             "AssemblyAsmDisplayName" = "8:DryIoc, Version=4.7.7.0, Culture=neutral, PublicKeyToken=dfbf2bd50fcf7768, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_19420EEE8144111E0C0B3D339BD5BA35"
-                    {
-                    "Name" = "8:DryIoc.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:DryIoc.dll"
             "TargetName" = "8:"
@@ -927,37 +900,6 @@
                     }
                 }
             "SourcePath" = "8:System.Net.Sockets.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_59277A6650C1411EBC3EBDD838943DC2"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_20BE3709C09D954F7481601A727361A6"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_20BE3709C09D954F7481601A727361A6"
-                    {
-                    "Name" = "8:System.Runtime.CompilerServices.Unsafe.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Runtime.CompilerServices.Unsafe.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_59277A6650C1411EBC3EBDD838943DC2"
@@ -1044,11 +986,6 @@
             "AssemblyAsmDisplayName" = "8:System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_3BB667170A71A28A3C4F706AB389FAE4"
-                    {
-                    "Name" = "8:System.Threading.Tasks.Extensions.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Threading.Tasks.Extensions.dll"
             "TargetName" = "8:"
@@ -1075,11 +1012,6 @@
             "AssemblyAsmDisplayName" = "8:System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4373DB3652998E7DCD508612872763C2"
-                    {
-                    "Name" = "8:System.Buffers.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Buffers.dll"
             "TargetName" = "8:"
@@ -1106,11 +1038,6 @@
             "AssemblyAsmDisplayName" = "8:Prism.DryIoc.Wpf, Version=8.1.97.5141, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4377C7B6593DB8A1280162FB68B03667"
-                    {
-                    "Name" = "8:Prism.DryIoc.Wpf.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Prism.DryIoc.Wpf.dll"
             "TargetName" = "8:"
@@ -1168,11 +1095,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4BA721A0120242A5B244A7F05955F5B7"
-                    {
-                    "Name" = "8:Microsoft.Expression.Interactions.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\BSModManager\\bin\\Debug\\Microsoft.Expression.Interactions.dll"
             "TargetName" = "8:"
@@ -1199,11 +1121,6 @@
             "AssemblyAsmDisplayName" = "8:Prism.Wpf, Version=8.1.97.5141, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4DB3879E7CE5718F0171FEEC2F36B43B"
-                    {
-                    "Name" = "8:Prism.Wpf.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Prism.Wpf.dll"
             "TargetName" = "8:"
@@ -1250,11 +1167,6 @@
             "AssemblyAsmDisplayName" = "8:System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_521D09085681348E525AF450D1821584"
-                    {
-                    "Name" = "8:System.Memory.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Memory.dll"
             "TargetName" = "8:"
@@ -1301,11 +1213,6 @@
             "AssemblyAsmDisplayName" = "8:System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5AC28D33378748B2A1812F07162D6403"
-                    {
-                    "Name" = "8:System.ComponentModel.Annotations.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\BSModManager\\bin\\Debug\\System.ComponentModel.Annotations.dll"
             "TargetName" = "8:"
@@ -1332,11 +1239,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5CCDC48F21F3073638E9520316992AB1"
-                    {
-                    "Name" = "8:Microsoft.Xaml.Behaviors.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.Xaml.Behaviors.dll"
             "TargetName" = "8:"
@@ -1363,11 +1265,6 @@
             "AssemblyAsmDisplayName" = "8:System.Reactive, Version=5.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5EA161452E07F60AE56180C42D27A97E"
-                    {
-                    "Name" = "8:System.Reactive.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Reactive.dll"
             "TargetName" = "8:"
@@ -1394,11 +1291,6 @@
             "AssemblyAsmDisplayName" = "8:System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_644A103D70564DA098ECC6B0669E1049"
-                    {
-                    "Name" = "8:System.Runtime.CompilerServices.Unsafe.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\BSModManager\\bin\\Debug\\System.Runtime.CompilerServices.Unsafe.dll"
             "TargetName" = "8:"
@@ -1425,11 +1317,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_714945FD69D3AE94490A7B3F32BCD933"
-                    {
-                    "Name" = "8:Microsoft.Bcl.AsyncInterfaces.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.Bcl.AsyncInterfaces.dll"
             "TargetName" = "8:"
@@ -1549,11 +1436,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A1D71528ACD8F22E8CBCA74C4C98CB40"
-                    {
-                    "Name" = "8:Microsoft.WindowsAPICodePack.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.WindowsAPICodePack.dll"
             "TargetName" = "8:"
@@ -1611,11 +1493,6 @@
             "AssemblyAsmDisplayName" = "8:Octokit, Version=0.51.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_AA0321E3B5F69A524940C1FCB7BC7878"
-                    {
-                    "Name" = "8:Octokit.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Octokit.dll"
             "TargetName" = "8:"
@@ -1659,14 +1536,9 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Updater, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Updater, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_AEE68E4EF3994395965356999DD44411"
-                    {
-                    "Name" = "8:Updater.exe"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\Updater\\bin\\Debug\\Updater.exe"
             "TargetName" = "8:"
@@ -1690,14 +1562,9 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:BSModManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:BSModManager, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BB9781B9C38047EA8E348F6AB56FA86A"
-                    {
-                    "Name" = "8:BSModManager.exe"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\BSModManager\\bin\\Debug\\BSModManager.exe"
             "TargetName" = "8:"
@@ -1724,11 +1591,6 @@
             "AssemblyAsmDisplayName" = "8:CsvHelper, Version=27.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BDE348ECA7D1493AC45935C5216B3227"
-                    {
-                    "Name" = "8:CsvHelper.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:CsvHelper.dll"
             "TargetName" = "8:"
@@ -1910,11 +1772,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_DE926581180747C1AA9DBB42E0F2C5B9"
-                    {
-                    "Name" = "8:Microsoft.Bcl.AsyncInterfaces.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:..\\BSModManager\\bin\\Debug\\Microsoft.Bcl.AsyncInterfaces.dll"
             "TargetName" = "8:"
@@ -1941,11 +1798,6 @@
             "AssemblyAsmDisplayName" = "8:System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E80EAC5E293FB19218FB15D721BB0D42"
-                    {
-                    "Name" = "8:System.Windows.Interactivity.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Windows.Interactivity.dll"
             "TargetName" = "8:"
@@ -2003,11 +1855,6 @@
             "AssemblyAsmDisplayName" = "8:Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_EE2B5750BDAFD51370E33891F9C8F28A"
-                    {
-                    "Name" = "8:Microsoft.WindowsAPICodePack.Shell.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Microsoft.WindowsAPICodePack.Shell.dll"
             "TargetName" = "8:"
@@ -2034,11 +1881,6 @@
             "AssemblyAsmDisplayName" = "8:Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F31CECAE5924126DF2E66BEAFD8B5606"
-                    {
-                    "Name" = "8:Newtonsoft.Json.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Newtonsoft.Json.dll"
             "TargetName" = "8:"
@@ -2065,11 +1907,6 @@
             "AssemblyAsmDisplayName" = "8:System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F5D8DF74842ACF9CEEF7610A2675758D"
-                    {
-                    "Name" = "8:System.Numerics.Vectors.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Numerics.Vectors.dll"
             "TargetName" = "8:"
@@ -2127,11 +1964,6 @@
             "AssemblyAsmDisplayName" = "8:Prism, Version=8.1.97.5141, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_FDC03C77CD437EA8F18D3EEE38F07284"
-                    {
-                    "Name" = "8:Prism.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Prism.dll"
             "TargetName" = "8:"
@@ -2158,11 +1990,6 @@
             "AssemblyAsmDisplayName" = "8:ReactiveProperty.Core, Version=8.1.1.0, Culture=neutral, PublicKeyToken=910d1732782c71cb, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_FDE9E6859E56EAECFE9511D35B575E96"
-                    {
-                    "Name" = "8:ReactiveProperty.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:ReactiveProperty.Core.dll"
             "TargetName" = "8:"
@@ -2269,15 +2096,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BSModManager"
-        "ProductCode" = "8:{C90B4C04-0AFD-48E2-A874-C4A554EE7A46}"
-        "PackageCode" = "8:{FFBAD13A-40F5-4CD8-BC70-43B885F7B233}"
+        "ProductCode" = "8:{C00027E3-6DAF-4FA2-9086-DE5F4A3B71BE}"
+        "PackageCode" = "8:{A4D717F9-E3C0-4831-B115-54B21E5E3CA0}"
         "UpgradeCode" = "8:{5FE953BB-8CC4-419E-B28F-F364C78A00E1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.0"
+        "ProductVersion" = "8:1.2.0"
         "Manufacturer" = "8:Rakkyo150"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
