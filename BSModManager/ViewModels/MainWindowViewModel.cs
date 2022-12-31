@@ -75,6 +75,13 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref showSettingsTabViewEnable, value); }
         }
 
+        private bool showLicenseTabViewEnable = true;
+        public bool ShowLicenseTabViewEnable
+        {
+            get { return showLicenseTabViewEnable; }
+            set { SetProperty(ref showLicenseTabViewEnable, value); }
+        }
+
         private bool updateOrInstallButtonEnable = true;
         public bool UpdateOrInstallButtonEnable
         {
@@ -129,6 +136,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowInstallTabViewCommand { get; private set; }
         public DelegateCommand<string> ShowSettingsTabViewCommand { get; private set; }
+        public DelegateCommand<string> ShowLicenseTabViewCommand { get; private set; }
         public DelegateCommand<string> UpdateOrInstallButtonCommand { get; private set; }
 
         private DelegateCommand allCheckedButtonCommand;
@@ -387,6 +395,18 @@ namespace BSModManager.ViewModels
                 ShowInstallTabViewEnable = true;
                 ShowSettingsTabViewEnable = true;
                 ShowUpdateTabViewEnable = true;
+                ShowLicenseTabViewEnable = true;
+                RegionManager.RequestNavigate("ContentRegion", x);
+            });
+
+            ShowLicenseTabViewCommand = new DelegateCommand<string>((x) =>
+            {
+                Logger.Instance.Info("License");
+                AllButtonDisable();
+                ShowInstallTabViewEnable = true;
+                ShowSettingsTabViewEnable = true;
+                ShowUpdateTabViewEnable = true;
+                ShowLicenseTabViewEnable = true;
                 RegionManager.RequestNavigate("ContentRegion", x);
             });
         }
@@ -396,6 +416,7 @@ namespace BSModManager.ViewModels
             ShowInstallTabViewEnable = false;
             ShowSettingsTabViewEnable = false;
             ShowUpdateTabViewEnable = false;
+            ShowLicenseTabViewEnable = false;
             UpdateOrInstallButtonEnable = false;
             ModRepositoryButtonEnable = false;
             ChangeModInfoButtonEnable = false;
@@ -408,6 +429,7 @@ namespace BSModManager.ViewModels
             ShowInstallTabViewEnable = true;
             ShowSettingsTabViewEnable = true;
             ShowUpdateTabViewEnable = true;
+            ShowLicenseTabViewEnable = true;
             UpdateOrInstallButtonEnable = true;
             ModRepositoryButtonEnable = true;
             ChangeModInfoButtonEnable = true;

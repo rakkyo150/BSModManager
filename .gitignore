@@ -361,6 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# https://icooon-mono.com
 /BSModManager/Views/Resources
 # https://kitunechan.hatenablog.jp/entry/2016/05/27/103118
 /Setup/DISABLEADVTSHORTCUTS.vbs

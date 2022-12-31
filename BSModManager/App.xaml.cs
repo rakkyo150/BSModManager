@@ -42,6 +42,7 @@ namespace BSModManager
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();
             containerRegistry.RegisterForNavigation<SettingsTab>();
+            containerRegistry.RegisterForNavigation<LicenseTab>();
 
             containerRegistry.RegisterDialog<InitialSetting>();
             containerRegistry.RegisterDialog<ChangeModInfo>();

@@ -25,6 +25,12 @@
                     <ToolTip FontSize="15" Content="Settings"/>
                 </ToolTipService.ToolTip>
             </Button>
+            <Button Command="{Binding ShowLicenseTabViewCommand}" IsEnabled="{Binding ShowLicenseTabViewEnable}" CommandParameter="LicenseTab" Margin="10 0 10 10" Height="70" Width="70" DockPanel.Dock="Top">
+                <Image Source="Resources/License.png" Width="40"/>
+                <ToolTipService.ToolTip>
+                    <ToolTip FontSize="15" Content="License Info"/>
+                </ToolTipService.ToolTip>
+            </Button>
             <TextBlock Text="{Binding MyselfVersion}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" Margin="5 5 5 10" DockPanel.Dock="Bottom"/>
             <TextBlock Text="{Binding DisplayedGameVersion}" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center" Margin="5" DockPanel.Dock="Bottom"/>
             <TextBlock Text=""/>

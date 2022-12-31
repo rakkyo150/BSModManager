@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="BSModManager.Views.LicenseTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <TextBlock Background="LightGray" FontSize="20">
+            - BSModManager<LineBreak />
+            Copyright (c) 2022 rakkyo150<LineBreak />
+            Binary : Microsoft Public License (Ms-PL)<LineBreak />
+            Source code : MIT License<LineBreak/>
+            https://github.com/rakkyo150/BSModManager/blob/master/LICENSE<LineBreak/>
+            <LineBreak />
+            - ModAssistant<LineBreak/>
+            Copyright (c) 2019-2020 Assistant<LineBreak/>
+            MIT License<LineBreak/>
+            https://github.com/Assistant/ModAssistant/blob/master/LICENSE <LineBreak/>
+            <LineBreak/>
+            - CsvHelper<LineBreak />
+            Copyright (c) 2009-2022 Josh Close<LineBreak />
+            Microsoft Public License (Ms-PL) or Apache License, Version 2.0<LineBreak />
+            https://github.com/JoshClose/CsvHelper/blob/master/LICENSE.txt <LineBreak/>
+            <LineBreak/>
+            - Microsoft.Bcl.AsyncInterfaces<LineBreak/>
+            (c) Microsoft Corporation. All rights reserved.<LineBreak />
+            MIT License<LineBreak/>
+            https://www.nuget.org/packages/Microsoft.Bcl.AsyncInterfaces <LineBreak/>
+            https://licenses.nuget.org/MIT <LineBreak/>
+            <LineBreak/>
+            - Newtonsoft.Json<LineBreak/>
+            Copyright (c) James Newton-King 2008<LineBreak/>
+            MIT License<LineBreak/>
+            https://www.nuget.org/packages/Newtonsoft.Json/13.0.2#show-readme-container <LineBreak/>
+            https://licenses.nuget.org/MIT <LineBreak/>
+            <LineBreak/>
+            - Octokit<LineBreak/>
+            Copyright (c) 2017 GitHub, Inc.<LineBreak/>
+            MIT License<LineBreak/>
+            https://github.com/octokit/octokit.net/blob/main/LICENSE.txt <LineBreak/>
+            <LineBreak/>
+            - ReactiveProperty<LineBreak/>
+            Copyright (c) 2018 neuecc, xin9le, okazuki<LineBreak/>
+            MIT License<LineBreak/>
+            https://github.com/runceel/ReactiveProperty/blob/main/LICENSE.txt <LineBreak/>
+            </TextBlock>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
