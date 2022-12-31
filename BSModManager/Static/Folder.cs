@@ -6,7 +6,7 @@ using System.IO;
 namespace BSModManager.Static
 {
     // 起動時にも使うのでstaticにした
-    internal class Folder : BindableBase
+    internal class Folder
     {
         internal static Folder Instance { get; set; } = new Folder();
 
@@ -14,16 +14,6 @@ namespace BSModManager.Static
         public string backupFolder = Path.Combine(Environment.CurrentDirectory, "Backup");
         public string dataFolder = Path.Combine(Environment.CurrentDirectory, "Data");
         public string tmpFolder = Path.Combine(Path.GetTempPath(), "BSModManager");
-
-        private string bSFolderPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Saber";
-        public string BSFolderPath
-        {
-            get { return bSFolderPath; }
-            set
-            {
-                SetProperty(ref bSFolderPath, value);
-            }
-        }
 
         public Folder()
         {

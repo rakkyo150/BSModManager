@@ -14,7 +14,7 @@ namespace BSModManager.Models
 {
     public class Refresher
     {
-        readonly MAMods mAMods;
+        readonly MA mAMods;
         readonly ModCsvHandler modCsvHandler;
         readonly LocalMods localMods;
         readonly PastMods pastMods;
@@ -24,7 +24,7 @@ namespace BSModManager.Models
         readonly List<IModData> removedRecommendModsData = new List<IModData>();
 
 
-        public Refresher(MAMods mam, LocalMods lm, ModCsvHandler mch, PastMods pm, GitHubApi gha, RecommendMods rm)
+        public Refresher(MA mam, LocalMods lm, ModCsvHandler mch, PastMods pm, GitHubApi gha, RecommendMods rm)
         {
             mAMods = mam;
             localMods = lm;
@@ -98,7 +98,7 @@ namespace BSModManager.Models
             IModData assignedModData = new LocalModData(this)
             {
                 Mod = localMod.Mod,
-                Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
+                Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
                 Updated = updated,
                 Description = response.Body
             };
@@ -137,7 +137,7 @@ namespace BSModManager.Models
             IModData assignedModData = new LocalModData(this)
             {
                 Mod = localMod.Mod,
-                Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
+                Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
                 Updated = updated,
                 Description = response.Body
             };
@@ -374,7 +374,7 @@ namespace BSModManager.Models
                     mods.Add(new PastModData(this)
                     {
                         Mod = localData.Mod,
-                        Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
+                        Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
                         Updated = updated,
                         Original = original,
                         MA = "×",
@@ -477,8 +477,8 @@ namespace BSModManager.Models
 
         private static List<LocalModFile> GetLocalModFilesData()
         {
-            string pluginFolderPath = Path.Combine(Folder.Instance.BSFolderPath, "Plugins");
-            string pendingPluginFolderPath = Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins");
+            string pluginFolderPath = Path.Combine(Config.Instance.BSFolderPath, "Plugins");
+            string pendingPluginFolderPath = Path.Combine(Config.Instance.BSFolderPath, "IPA", "Pending", "Plugins");
 
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(pluginFolderPath);
             System.IO.DirectoryInfo pendingDi = new System.IO.DirectoryInfo(pendingPluginFolderPath);

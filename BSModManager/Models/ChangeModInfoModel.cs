@@ -16,14 +16,14 @@ namespace BSModManager.Models
     {
         readonly IDialogService dialogService;
         readonly GitHubApi gitHubManager;
-        readonly MAMods mAMod;
+        readonly MA mAMod;
         readonly Refresher refresher;
         readonly MainModsSetter mainModsChanger;
 
         private List<IModData> AllCheckedMod = new List<IModData>();
         private int AllCheckedModCount = int.MinValue;
 
-        public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MAMods mam, Refresher r, MainModsSetter mmc)
+        public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MA mam, Refresher r, MainModsSetter mmc)
         {
             dialogService = ds;
             gitHubManager = ghm;
@@ -323,7 +323,7 @@ namespace BSModManager.Models
                 var releaseCreatedAt = response.CreatedAt;
                 DateTimeOffset now = DateTimeOffset.UtcNow;
 
-                Latest = gitHubManager.DetectVersionFromTagName(response.TagName);
+                Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName);
 
                 if ((now - releaseCreatedAt).Days >= 1)
                 {

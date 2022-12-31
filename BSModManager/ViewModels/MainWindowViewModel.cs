@@ -33,7 +33,7 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref title, value); }
         }
 
-        private string displayedGameVersion = GameVersion.DisplayedVersion;
+        private string displayedGameVersion = VersionExtractor.DisplayedGameVersion;
         public string DisplayedGameVersion
         {
             get { return displayedGameVersion; }
@@ -118,9 +118,7 @@ namespace BSModManager.ViewModels
         readonly InitialDirectorySetup initializer;
         readonly MyselfUpdater mySelfUpdater;
         readonly ModUpdater modUpdater;
-        readonly MAMods mAMod;
-        readonly ConfigFileHandler configFile;
-        readonly SettingsVerifier settingsVerifier;
+        readonly MA mAMod;
         readonly ModInstaller modInstaller;
         readonly PreviousLocalModsDataGetter localModsDataFetcher;
         readonly Refresher refresher;
@@ -153,8 +151,8 @@ namespace BSModManager.ViewModels
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
             ModInstaller mi, Refresher r, ChangeModInfoModel cmim, MainModsSetter mmc, MyselfUpdater myu,
-            GitHubApi gha, LocalMods lmdm, ConfigFileHandler cf, SettingsVerifier sv, PreviousLocalModsDataGetter lmdf,
-            ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MAMods mam)
+            GitHubApi gha, LocalMods lmdm, PreviousLocalModsDataGetter lmdf,
+            ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MA mam)
         {
             localMods = lmdm;
             gitHubApi = gha;
@@ -164,8 +162,6 @@ namespace BSModManager.ViewModels
             mySelfUpdater = u;
             modUpdater = mu;
             mAMod = mam;
-            configFile = cf;
-            settingsVerifier = sv;
             modInstaller = mi;
             refresher = r;
             changeModInfoModel = cmim;
@@ -181,23 +177,18 @@ namespace BSModManager.ViewModels
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             this.Debug = Logger.Instance.ObserveProperty(x => x.InfoLog).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
 
-            Folder.Instance.PropertyChanged += (sender, e) =>
-            {
-                DisplayedGameVersion = GameVersion.DisplayedVersion;
-            };
-
             mainModsChanger.ChangeModInfoButtonEnable = this.ToReactivePropertyAsSynchronized(x => x.ChangeModInfoButtonEnable).AddTo(Disposables);
 
             SetMyselfVersion();
 
             ButtonCommandSubscribe(regionManager);
 
-            Dictionary<string, string> tempDictionary = configFile.Load();
+            Dictionary<string, string> tempDictionary = Config.Instance.Load();
             if (tempDictionary["BSFolderPath"] != string.Empty && tempDictionary["GitHubToken"] != string.Empty)
             {
-                Folder.Instance.BSFolderPath = tempDictionary["BSFolderPath"];
-                gitHubApi.GitHubToken = tempDictionary["GitHubToken"];
-                FilePath.Instance.MAExePath = tempDictionary["MAExePath"];
+                Config.Instance.BSFolderPath = tempDictionary["BSFolderPath"];
+                Config.Instance.GitHubToken = tempDictionary["GitHubToken"];
+                Config.Instance.MAExePath = tempDictionary["MAExePath"];
             }
 
             LoadedCommand = new DelegateCommand(async () =>
@@ -213,7 +204,7 @@ namespace BSModManager.ViewModels
 
                     await MyselfUpdateCheck();
 
-                    if (!settingsVerifier.BSFolderAndGitHubToken)
+                    if (!Config.Instance.BSFolderAndGitHubTokenVerification)
                     {
                         dialogService.ShowDialog("InitialSetting");
                     }
@@ -251,7 +242,7 @@ namespace BSModManager.ViewModels
                     return;
                 }
 
-                if (GameVersion.Version == "---")
+                if (VersionExtractor.GameVersion == "---")
                 {
                     e.Cancel = false;
                     return;
@@ -261,7 +252,7 @@ namespace BSModManager.ViewModels
                 {
                     SaveModsData();
 
-                    configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+                    Config.Instance.Update();
 
                     Logger.Instance.GenerateLogFile();
 
@@ -287,7 +278,7 @@ namespace BSModManager.ViewModels
 
         private void SaveModsData()
         {
-            string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
+            string dataDirectory = Path.Combine(Folder.Instance.dataFolder, VersionExtractor.GameVersion);
             if (!Directory.Exists(dataDirectory))
             {
                 Directory.CreateDirectory(dataDirectory);

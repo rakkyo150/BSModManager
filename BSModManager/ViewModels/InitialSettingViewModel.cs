@@ -14,10 +14,6 @@ namespace BSModManager.ViewModels
 {
     public class InitialSettingViewModel : BindableBase, IDialogAware, IDestructible
     {
-        readonly SettingsVerifier settingsVerifier;
-        readonly GitHubApi gitHubApi;
-        readonly ConfigFileHandler configFile;
-
         CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReactiveProperty<string> VerifyBSFolder { get; }
@@ -42,15 +38,11 @@ namespace BSModManager.ViewModels
         public ReactiveCommand SettingFinishCommand { get; }
         public ReactiveCommand VerifyGitHubTokenCommand { get; } = new ReactiveCommand();
 
-        internal InitialSettingViewModel(SettingsVerifier sv, ConfigFileHandler cf, GitHubApi gha)
+        internal InitialSettingViewModel()
         {
-            settingsVerifier = sv;
-            configFile = cf;
-            gitHubApi = gha;
-
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
-            BSFolderPath = Folder.Instance.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(Disposables);
-            MAExePath = FilePath.Instance.ToReactivePropertyAsSynchronized(x => x.MAExePath).AddTo(Disposables);
+            BSFolderPath = Config.Instance.ToReactivePropertyAsSynchronized(x => x.BSFolderPath).AddTo(Disposables);
+            MAExePath = Config.Instance.ToReactivePropertyAsSynchronized(x => x.MAExePath).AddTo(Disposables);
 
             VerifyBSFolder = new ReactiveProperty<string>("〇").AddTo(Disposables);
             VerifyBSFolderColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(Disposables);
@@ -60,74 +52,23 @@ namespace BSModManager.ViewModels
             VerifyMAExe = new ReactiveProperty<string>("〇").AddTo(Disposables);
             VerifyMAExeColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(Disposables);
 
-            if (!settingsVerifier.BSFolder)
+            Update();
+            
+            Config.Instance.PropertyChanged += (sender, e) =>
             {
-                VerifyBSFolder.Value = "×";
-                VerifyBSFolderColor.Value = Brushes.Red;
-            }
-            if (!settingsVerifier.GitHubToken)
-            {
-                VerifyGitHubToken.Value = "×";
-                VerifyGitHubTokenColor.Value = Brushes.Red;
-            }
-            if (!settingsVerifier.MAExe)
-            {
-                VerifyMAExe.Value = "×";
-                VerifyMAExeColor.Value = Brushes.Red;
-            }
-            if (!settingsVerifier.BSFolderAndGitHubToken)
-            {
-                VerifyBSFolderAndGitHubToken.Value = false;
-            }
-
-            settingsVerifier.PropertyChanged += (sender, e) =>
-            {
-                if (settingsVerifier.BSFolder)
-                {
-                    VerifyBSFolder.Value = "〇";
-                    VerifyBSFolderColor.Value = Brushes.Green;
-                }
-                else
-                {
-                    VerifyBSFolder.Value = "×";
-                    VerifyBSFolderColor.Value = Brushes.Red;
-                }
-
-                if (settingsVerifier.GitHubToken)
-                {
-                    VerifyGitHubToken.Value = "〇";
-                    VerifyGitHubTokenColor.Value = Brushes.Green;
-                }
-                else
-                {
-                    VerifyGitHubToken.Value = "×";
-                    VerifyGitHubTokenColor.Value = Brushes.Red;
-                }
-
-                VerifyBSFolderAndGitHubToken.Value = settingsVerifier.BSFolderAndGitHubToken;
-
-                if (settingsVerifier.MAExe)
-                {
-                    VerifyMAExe.Value = "〇";
-                    VerifyMAExeColor.Value = Brushes.Green;
-                }
-                else
-                {
-                    VerifyMAExe.Value = "×";
-                    VerifyMAExeColor.Value = Brushes.Red;
-                }
+                Update();
             };
 
             SelectBSFolderCommand.Subscribe(() =>
             {
-                Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
-                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+                Config.Instance.BSFolderPath = Folder.Instance.Select(Config.Instance.BSFolderPath);
+                Config.Instance.Update();
             }).AddTo(Disposables);
 
             SelectMAExeCommand.Subscribe(() =>
             {
-                FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
-                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+                Config.Instance.MAExePath = FilePath.Instance.SelectFile(Config.Instance.MAExePath);
+                Config.Instance.Update();
             }).AddTo(Disposables);
 
             SettingFinishCommand = VerifyBSFolderAndGitHubToken.ToReactiveCommand()
@@ -135,9 +76,22 @@ namespace BSModManager.ViewModels
 
             VerifyGitHubTokenCommand.Subscribe((x) =>
             {
-                gitHubApi.GitHubToken = ((PasswordBox)x).Password;
-                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+                Config.Instance.GitHubToken = ((PasswordBox)x).Password;
             }).AddTo(Disposables);
+        }
+
+        private void Update()
+        {
+            BSFolderPath.Value = Config.Instance.BSFolderPath;
+            VerifyBSFolder.Value = Config.Instance.BSFolderVerificationString;
+            VerifyBSFolderColor.Value = Config.Instance.BSFolderVerificationColor;
+            VerifyGitHubToken.Value = Config.Instance.GitHubTokenVerificationString;
+            VerifyGitHubTokenColor.Value = Config.Instance.GitHubTokenVerificationColor;
+            MAExePath.Value = Config.Instance.MAExePath;
+            VerifyMAExe.Value = Config.Instance.MAExeVerificationString;
+            VerifyMAExeColor.Value = Config.Instance.MAExeVerificationColor;
+
+            VerifyBSFolderAndGitHubToken.Value = Config.Instance.BSFolderAndGitHubTokenVerification;
         }
 
         public string Title => "Initial Setting";

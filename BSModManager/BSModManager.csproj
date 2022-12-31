@@ -93,7 +93,7 @@
     </ApplicationDefinition>
     <Compile Include="Interfaces\IMods.cs" />
     <Compile Include="Interfaces\IModData.cs" />
-    <Compile Include="Models\ConfigFileHandler.cs" />
+    <Compile Include="Static\Config.cs" />
     <Compile Include="Models\LocalModFile.cs" />
     <Compile Include="Models\MainModsSetter.cs" />
     <Compile Include="Models\Mods\RecommendModsJsonStructure.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="Models\ModDisposer.cs" />
     <Compile Include="Models\GitHubApi.cs" />
     <Compile Include="Models\ModInstaller.cs" />
-    <Compile Include="Models\Mods\MAMods.cs" />
+    <Compile Include="Models\Mods\MA.cs" />
     <Compile Include="Models\ModCsvHandler.cs" />
     <Compile Include="Models\Mods\LocalMods.cs" />
     <Compile Include="Models\ModUpdater.cs" />
@@ -114,10 +114,9 @@
     <Compile Include="Models\Mods\RecommendMods.cs" />
     <Compile Include="Models\MyselfUpdater.cs" />
     <Compile Include="Models\Refresher.cs" />
-    <Compile Include="Models\SettingsVerifier.cs" />
     <Compile Include="Models\ChangeModInfoModel.cs" />
     <Compile Include="Static\FileHashProvider.cs" />
-    <Compile Include="Static\GameVersion.cs" />
+    <Compile Include="Static\VersionExtractor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

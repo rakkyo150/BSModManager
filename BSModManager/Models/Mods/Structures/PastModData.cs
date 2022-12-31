@@ -117,8 +117,8 @@ namespace BSModManager.Models.Mods.Structures
         public void Uninstall(string modName)
         {
             string modFileName = modName + ".dll";
-            string modFilePath = Path.Combine(Folder.Instance.BSFolderPath, "Plugins", modFileName);
-            string modPendingFilePath = Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins", modFileName);
+            string modFilePath = Path.Combine(Config.Instance.BSFolderPath, "Plugins", modFileName);
+            string modPendingFilePath = Path.Combine(Config.Instance.BSFolderPath, "IPA", "Pending", "Plugins", modFileName);
 
             if (MessageBoxResult.Yes == MessageBox.Show($"{modName}を削除します。よろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Information))
             {

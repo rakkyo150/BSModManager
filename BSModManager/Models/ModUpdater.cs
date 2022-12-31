@@ -15,15 +15,13 @@ namespace BSModManager.Models
         readonly GitHubApi gitHubApi;
         readonly ModDisposer modDisposer;
         readonly Refresher refresher;
-        readonly SettingsVerifier settingsVerifier;
 
-        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md, Refresher r, SettingsVerifier sv)
+        public ModUpdater(LocalMods lmdm, GitHubApi gha, ModDisposer md, Refresher r)
         {
             localModsDataModel = lmdm;
             gitHubApi = gha;
             modDisposer = md;
             refresher = r;
-            settingsVerifier = sv;
         }
 
         public async Task Update()
@@ -47,18 +45,18 @@ namespace BSModManager.Models
                 await gitHubApi.DownloadAsync(checkedLocalModData.Url, Folder.Instance.tmpFolder);
                 modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.tmpFolder);
                 IModData checkedLocalModDataWithNewInstalledVersionAndFileHash = SetNewInstalledVersionAndFileHash(checkedLocalModData);
-                modDisposer.MoveFolder(Folder.Instance.tmpFolder, Folder.Instance.BSFolderPath);
+                modDisposer.MoveFolder(Folder.Instance.tmpFolder, Config.Instance.BSFolderPath);
                 localModsDataModel.UpdateDownloadedFileHash(checkedLocalModDataWithNewInstalledVersionAndFileHash);
                 localModsDataModel.UpdateInstalled(checkedLocalModDataWithNewInstalledVersionAndFileHash);
             }
 
             await refresher.Refresh();
 
-            if (openMA && settingsVerifier.MAExe)
+            if (openMA && Config.Instance.MAExeVerification)
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(FilePath.Instance.MAExePath);
+                    System.Diagnostics.Process.Start(Config.Instance.MAExePath);
                 }
                 catch (Exception e)
                 {

@@ -25,8 +25,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<PastMods>();
             containerRegistry.RegisterSingleton<RecommendMods>();
             containerRegistry.RegisterSingleton<LocalMods>();
-            containerRegistry.RegisterSingleton<MAMods>();
-            containerRegistry.RegisterSingleton<SettingsVerifier>();
+            containerRegistry.RegisterSingleton<MA>();
             containerRegistry.RegisterSingleton<GitHubApi>();
             containerRegistry.RegisterSingleton<MainModsSetter>();
             containerRegistry.RegisterSingleton<ChangeModInfoModel>();
@@ -34,7 +33,6 @@ namespace BSModManager
 
             containerRegistry.Register<Refresher>();
             containerRegistry.Register<ModInstaller>();
-            containerRegistry.Register<ConfigFileHandler>();
             containerRegistry.Register<ModCsvHandler>();
             containerRegistry.Register<ModUpdater>();
             containerRegistry.Register<InitialDirectorySetup>();

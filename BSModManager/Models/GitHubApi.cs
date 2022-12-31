@@ -14,16 +14,6 @@ namespace BSModManager.Models
     {
         readonly string myselfUrl = "https://github.com/rakkyo150/BSModManager";
 
-        private string gitHubToken = string.Empty;
-        public string GitHubToken
-        {
-            get => gitHubToken;
-            set
-            {
-                SetProperty(ref gitHubToken, value);
-            }
-        }
-
         readonly MyselfUpdater myselfUpdater;
 
         public GitHubApi(MyselfUpdater u)
@@ -42,7 +32,7 @@ namespace BSModManager.Models
 
             if (response == null) return false;
 
-            myselfUpdater.LatestMyselfVersion = DetectVersionFromTagName(response.TagName);
+            myselfUpdater.LatestMyselfVersion = VersionExtractor.DetectVersionFromRawVersion(response.TagName);
             myselfUpdater.SetLatestMyselfDescription(response);
 
             if (myselfUpdater.LatestMyselfVersion <= currentVersion)
@@ -128,13 +118,13 @@ namespace BSModManager.Models
             {
                 GitHubClient gitHub;
 
-                if (GitHubToken == string.Empty)
+                if (Config.Instance.GitHubToken == string.Empty)
                 {
                     gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"));
                 }
                 else
                 {
-                    var credential = new Credentials(GitHubToken);
+                    var credential = new Credentials(Config.Instance.GitHubToken);
                     gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
                     {
                         Credentials = credential
@@ -203,59 +193,6 @@ namespace BSModManager.Models
                     Logger.Instance.Debug(ex.Message);
                     return false;
                 }
-            }
-        }
-
-        public Version DetectVersionFromTagName(string tagName)
-        {
-            Version version = null;
-
-            if (tagName == null) return version;
-
-            int versionInfoStartPosition = 0;
-            foreach (char item in tagName)
-            {
-                if (item >= '0' && item <= '9')
-                {
-                    break;
-                }
-                versionInfoStartPosition++;
-            }
-
-            for (int versionInfoFinishPosition = 0; versionInfoFinishPosition <= tagName.Length - versionInfoStartPosition - 1; versionInfoFinishPosition++)
-            {
-                char versionDetector = tagName[versionInfoStartPosition + versionInfoFinishPosition];
-                if (!(versionDetector >= '0' && versionDetector <= '9') && versionDetector != '.')
-                {
-                    version = new Version(tagName.Substring(versionInfoStartPosition, versionInfoFinishPosition));
-                    return version;
-                }
-            }
-
-            version = new Version(tagName.Substring(versionInfoStartPosition));
-            return version;
-        }
-
-        public async Task<bool> VerifyGitHubToken()
-        {
-            try
-            {
-                var credential = new Credentials(GitHubToken);
-                GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
-                {
-                    Credentials = credential
-                };
-
-                string owner = "rakkyo150";
-                string name = "BSModManager";
-
-                var response = await gitHub.Repository.Release.GetLatest(owner, name);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Instance.Info(ex.Message);
-                return false;
             }
         }
     }

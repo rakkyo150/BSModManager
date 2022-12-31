@@ -12,25 +12,25 @@ namespace BSModManager.Models
             string now = DateTime.Now.ToString("yyyyMMddHHmmss");
 
             // なぜかBackupフォルダで一時フォルダ作ると画面固まるのでtempで一時フォルダ作る
-            string zipPath = Path.Combine(Folder.Instance.tmpFolder, $"BS{GameVersion.Version}-{now}");
+            string zipPath = Path.Combine(Folder.Instance.tmpFolder, $"BS{VersionExtractor.GameVersion}-{now}");
             Directory.CreateDirectory(zipPath);
 
-            if (Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "Plugins")))
+            if (Directory.Exists(Path.Combine(Config.Instance.BSFolderPath, "Plugins")))
             {
-                Folder.Instance.Copy(Path.Combine(Folder.Instance.BSFolderPath, "Plugins"),
+                Folder.Instance.Copy(Path.Combine(Config.Instance.BSFolderPath, "Plugins"),
                     Path.Combine(zipPath, "Plugins"), true);
             }
 
-            if (Directory.Exists(Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins")))
+            if (Directory.Exists(Path.Combine(Config.Instance.BSFolderPath, "IPA", "Pending", "Plugins")))
             {
-                Folder.Instance.Copy(Path.Combine(Folder.Instance.BSFolderPath, "IPA", "Pending", "Plugins"),
+                Folder.Instance.Copy(Path.Combine(Config.Instance.BSFolderPath, "IPA", "Pending", "Plugins"),
                     Path.Combine(zipPath, "Plugins"), true);
             }
 
             Folder.Instance.Copy(Folder.Instance.dataFolder, Path.Combine(zipPath, "Data"), true);
             File.Copy(FilePath.Instance.configFilePath, Path.Combine(zipPath, "config.json"), true);
 
-            ZipFile.CreateFromDirectory(zipPath, Path.Combine(Folder.Instance.backupFolder, $"BS{GameVersion.Version}-{now}.zip"));
+            ZipFile.CreateFromDirectory(zipPath, Path.Combine(Folder.Instance.backupFolder, $"BS{VersionExtractor.GameVersion}-{now}.zip"));
             Directory.Delete(zipPath, true);
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
-    public class MAMods
+    public class MA
     {
         public MAModData[] ModAssistantAllMods { get; set; }
 
@@ -15,7 +15,7 @@ namespace BSModManager.Models
         {
             MAModData[] modAssistantMod = null;
 
-            string gameVersion = GameVersion.Version;
+            string gameVersion = VersionExtractor.GameVersion;
 
             string modAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={gameVersion}";
 

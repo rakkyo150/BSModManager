@@ -13,13 +13,13 @@ namespace BSModManager.Models
     {
         readonly LocalMods localMods;
         readonly GitHubApi gitHubApi;
-        readonly MAMods mAMods;
+        readonly MA mAMods;
         readonly ModCsvHandler modCsv;
         readonly Refresher refresher;
         readonly DateTime now = DateTime.Now;
         string updated = string.Empty;
 
-        public PreviousLocalModsDataGetter(LocalMods lm, GitHubApi gha, MAMods mam, ModCsvHandler mc, Refresher r)
+        public PreviousLocalModsDataGetter(LocalMods lm, GitHubApi gha, MA mam, ModCsvHandler mc, Refresher r)
         {
             localMods = lm;
             gitHubApi = gha;
@@ -30,7 +30,7 @@ namespace BSModManager.Models
 
         internal async Task GetCsvData()
         {
-            string dataDirectory = Path.Combine(Folder.Instance.dataFolder, GameVersion.Version);
+            string dataDirectory = Path.Combine(Folder.Instance.dataFolder, VersionExtractor.GameVersion);
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
             List<ModCsvIndex> previousDataList;
 
@@ -107,7 +107,7 @@ namespace BSModManager.Models
                     {
                         Mod = previousData.Mod,
                         Installed = new Version(previousData.LatestVersion),
-                        Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
+                        Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
                         DownloadedFileHash = previousData.DownloadedFileHash,
                         Updated = updated,
                         Original = original,
@@ -122,7 +122,7 @@ namespace BSModManager.Models
                 localMods.LocalModsData.Add(new LocalModData(refresher)
                 {
                     Mod = previousData.Mod,
-                    Latest = gitHubApi.DetectVersionFromTagName(response.TagName),
+                    Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
                     Updated = updated,
                     Original = original,
                     MA = "×",

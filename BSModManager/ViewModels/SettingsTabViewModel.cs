@@ -15,10 +15,6 @@ namespace BSModManager.ViewModels
 {
     public class SettingsTabViewModel : BindableBase, IDestructible
     {
-        readonly ConfigFileHandler configFile;
-        readonly GitHubApi gitHubApi;
-        readonly SettingsVerifier settingsVerifier;
-
         CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReactiveCommand OpenBSModManagerRepositoryCommand { get; } = new ReactiveCommand();
@@ -33,8 +29,8 @@ namespace BSModManager.ViewModels
         public ReactiveCommand OpenModTempFolder { get; } = new ReactiveCommand();
 
 
-        public ReactiveProperty<string> BSFolderPath { get; } = new ReactiveProperty<string>(Folder.Instance.BSFolderPath);
-        public ReactiveProperty<string> MAExePath { get; } = new ReactiveProperty<string>(FilePath.Instance.MAExePath);
+        public ReactiveProperty<string> BSFolderPath { get; } = new ReactiveProperty<string>(Config.Instance.BSFolderPath);
+        public ReactiveProperty<string> MAExePath { get; } = new ReactiveProperty<string>(Config.Instance.MAExePath);
 
         public ReactiveProperty<bool> OpenBSFolderButtonEnable { get; } = new ReactiveProperty<bool>(true);
 
@@ -46,12 +42,8 @@ namespace BSModManager.ViewModels
         public ReactiveProperty<Brush> VerifyMAExeColor { get; } = new ReactiveProperty<Brush>(Brushes.Green);
 
         // IContainerProviderをDIしてResolveで取ってきてもOK
-        public SettingsTabViewModel(ConfigFileHandler cf, GitHubApi gha, SettingsVerifier sv)
+        public SettingsTabViewModel()
         {
-            configFile = cf;
-            gitHubApi = gha;
-            settingsVerifier = sv;
-
             BSFolderPath.AddTo(Disposables);
             MAExePath.AddTo(Disposables);
             OpenBSFolderButtonEnable.AddTo(Disposables);
@@ -62,18 +54,11 @@ namespace BSModManager.ViewModels
             VerifyMAExe.AddTo(Disposables);
             VerifyMAExeColor.AddTo(Disposables);
 
-            Folder.Instance.PropertyChanged += (sender, e) =>
-            {
-                BSFolderPath.Value = Folder.Instance.BSFolderPath;
-                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
-                if (Directory.Exists(Folder.Instance.BSFolderPath)) OpenBSFolderButtonEnable.Value = true;
-                else OpenBSFolderButtonEnable.Value = false;
-            };
+            Update();
 
-            FilePath.Instance.PropertyChanged += (sender, e) =>
+            Config.Instance.PropertyChanged += (sender, e) =>
             {
-                MAExePath.Value = FilePath.Instance.MAExePath;
-                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+                Update();
             };
 
             OpenBSModManagerRepositoryCommand.Subscribe(() =>
@@ -96,8 +81,8 @@ namespace BSModManager.ViewModels
 
             SelectBSFolder.Subscribe(_ =>
             {
-                Folder.Instance.BSFolderPath = Folder.Instance.Select(Folder.Instance.BSFolderPath);
-                Logger.Instance.Info(Folder.Instance.BSFolderPath);
+                Config.Instance.BSFolderPath = Folder.Instance.Select(Config.Instance.BSFolderPath);
+                Logger.Instance.Info(Config.Instance.BSFolderPath);
             }).AddTo(Disposables);
 
             OpenBSFolder = OpenBSFolderButtonEnable
@@ -105,27 +90,26 @@ namespace BSModManager.ViewModels
                 .WithSubscribe(() =>
                 {
                     Logger.Instance.Info("Open BS Folder");
-                    Folder.Instance.Open(Folder.Instance.BSFolderPath);
-                    Logger.Instance.Info(Folder.Instance.BSFolderPath);
+                    Folder.Instance.Open(Config.Instance.BSFolderPath);
+                    Logger.Instance.Info(Config.Instance.BSFolderPath);
                 }).AddTo(Disposables);
 
             ChangeToken.Subscribe((x) =>
             {
-                gitHubApi.GitHubToken = ((PasswordBox)x).Password;
-                configFile.Generate(Folder.Instance.BSFolderPath, gitHubApi.GitHubToken, FilePath.Instance.MAExePath);
+                Config.Instance.GitHubToken = ((PasswordBox)x).Password;
                 Logger.Instance.Info("GitHub Token Changed");
             }).AddTo(Disposables);
 
             SelectMAExe.Subscribe(() =>
             {
                 Logger.Instance.Info("Select ModAssistant.exe");
-                FilePath.Instance.MAExePath = FilePath.Instance.SelectFile(FilePath.Instance.MAExePath);
+                Config.Instance.MAExePath = FilePath.Instance.SelectFile(Config.Instance.MAExePath);
             }).AddTo(Disposables);
 
             OpenMAFolder.Subscribe(() =>
             {
                 Logger.Instance.Info("Open ModAssistant Folder");
-                Folder.Instance.Open(Path.GetDirectoryName(FilePath.Instance.MAExePath));
+                Folder.Instance.Open(Path.GetDirectoryName(Config.Instance.MAExePath));
             }).AddTo(Disposables);
 
             OpenLogFolder.Subscribe(_ =>
@@ -152,66 +136,24 @@ namespace BSModManager.ViewModels
                 Folder.Instance.Open(Folder.Instance.tmpFolder);
             }).AddTo(Disposables);
 
-
-            if (!settingsVerifier.BSFolder)
-            {
-                VerifyBSFolder.Value = "×";
-                VerifyBSFolderColor.Value = Brushes.Red;
-                OpenBSFolderButtonEnable.Value = false;
-            }
-            if (!settingsVerifier.GitHubToken)
-            {
-                VerifyGitHubToken.Value = "×";
-                VerifyGitHubTokenColor.Value = Brushes.Red;
-            }
-            if (!settingsVerifier.MAExe)
-            {
-                VerifyMAExe.Value = "×";
-                VerifyMAExeColor.Value = Brushes.Red;
-            }
-
-            settingsVerifier.PropertyChanged += (sender, e) =>
-            {
-                if (settingsVerifier.BSFolder)
-                {
-                    VerifyBSFolder.Value = "〇";
-                    VerifyBSFolderColor.Value = Brushes.Green;
-                    OpenBSFolderButtonEnable.Value = true;
-                }
-                else
-                {
-                    VerifyBSFolder.Value = "×";
-                    VerifyBSFolderColor.Value = Brushes.Red;
-                    OpenBSFolderButtonEnable.Value = false;
-                }
-
-                if (settingsVerifier.GitHubToken)
-                {
-                    VerifyGitHubToken.Value = "〇";
-                    VerifyGitHubTokenColor.Value = Brushes.Green;
-                }
-                else
-                {
-                    VerifyGitHubToken.Value = "×";
-                    VerifyGitHubTokenColor.Value = Brushes.Red;
-                }
-
-                if (settingsVerifier.MAExe)
-                {
-                    VerifyMAExe.Value = "〇";
-                    VerifyMAExeColor.Value = Brushes.Green;
-                }
-                else
-                {
-                    VerifyMAExe.Value = "×";
-                    VerifyMAExeColor.Value = Brushes.Red;
-                }
-            };
-
             Logger.Instance.Info("Settings");
         }
 
-        public void Destroy()
+        private void Update()
+        {
+            BSFolderPath.Value = Config.Instance.BSFolderPath;
+            VerifyBSFolder.Value = Config.Instance.BSFolderVerificationString;
+            VerifyBSFolderColor.Value = Config.Instance.BSFolderVerificationColor;
+            OpenBSFolderButtonEnable.Value = Config.Instance.BSFolderVerification;
+            VerifyGitHubToken.Value = Config.Instance.GitHubTokenVerificationString;
+            VerifyGitHubTokenColor.Value = Config.Instance.GitHubTokenVerificationColor;
+            MAExePath.Value = Config.Instance.MAExePath;
+            VerifyMAExe.Value = Config.Instance.MAExeVerificationString;
+            VerifyMAExeColor.Value = Config.Instance.MAExeVerificationColor;
+            OpenBSFolderButtonEnable.Value = Config.Instance.MAExeVerification;
+        }
+
+            public void Destroy()
         {
             Disposables.Dispose();
         }
