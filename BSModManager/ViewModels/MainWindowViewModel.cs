@@ -118,18 +118,15 @@ namespace BSModManager.ViewModels
         }
 
         readonly IDialogService dialogService;
-        readonly LocalMods localMods;
-        readonly ChangeModInfoModel changeModInfoModel;
-        readonly GitHubApi gitHubApi;
-        readonly ModCsvHandler modCsv;
-        readonly InitialDirectorySetup initializer;
+        readonly ModDataChanger changeModInfoModel;
+        readonly ModsDataCsv modCsv;
+        readonly InitialSetup initializer;
         readonly MyselfUpdater mySelfUpdater;
         readonly ModUpdater modUpdater;
         readonly MA mAMod;
         readonly ModInstaller modInstaller;
-        readonly PreviousLocalModsDataGetter localModsDataFetcher;
         readonly Refresher refresher;
-        readonly MainModsSetter mainModsChanger;
+        readonly ModsContainerAgent modsDataContainerAgent;
         readonly MyselfUpdater myselfUpdater;
 
         public IRegionManager RegionManager { get; private set; }
@@ -158,13 +155,9 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ModInstaller mi, Refresher r, ChangeModInfoModel cmim, MainModsSetter mmc, MyselfUpdater myu,
-            GitHubApi gha, LocalMods lmdm, PreviousLocalModsDataGetter lmdf,
-            ModCsvHandler mc, InitialDirectorySetup i, MyselfUpdater u, ModUpdater mu, MA mam)
+            ModInstaller mi, Refresher r, ModDataChanger cmim, ModsContainerAgent mmc, MyselfUpdater myu,
+            ModsDataCsv mc, InitialSetup i, MyselfUpdater u, ModUpdater mu, MA mam)
         {
-            localMods = lmdm;
-            gitHubApi = gha;
-            localModsDataFetcher = lmdf;
             modCsv = mc;
             initializer = i;
             mySelfUpdater = u;
@@ -173,7 +166,7 @@ namespace BSModManager.ViewModels
             modInstaller = mi;
             refresher = r;
             changeModInfoModel = cmim;
-            mainModsChanger = mmc;
+            modsDataContainerAgent = mmc;
             myselfUpdater = myu;
 
             dialogService = ds;
@@ -185,7 +178,7 @@ namespace BSModManager.ViewModels
             // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
             this.Debug = Logger.Instance.ObserveProperty(x => x.InfoLog).ToReadOnlyReactivePropertySlim().AddTo(Disposables);
 
-            mainModsChanger.ChangeModInfoButtonEnable = this.ToReactivePropertyAsSynchronized(x => x.ChangeModInfoButtonEnable).AddTo(Disposables);
+            modsDataContainerAgent.ChangeModInfoButtonEnable = this.ToReactivePropertyAsSynchronized(x => x.ChangeModInfoButtonEnable).AddTo(Disposables);
 
             SetMyselfVersion();
 
@@ -226,7 +219,7 @@ namespace BSModManager.ViewModels
 
                     mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
 
-                    await localModsDataFetcher.GetCsvData();
+                    await modsDataContainerAgent.LocalModsContainer.InitializeFromCsvData();
 
                     await refresher.Refresh();
 
@@ -292,12 +285,12 @@ namespace BSModManager.ViewModels
                 Directory.CreateDirectory(dataDirectory);
             }
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-            modCsv.Write(modsDataCsvPath, localMods.LocalModsData);
+            modCsv.Write(modsDataCsvPath, modsDataContainerAgent.LocalModsContainer.LocalModsData);
         }
 
         private async Task MyselfUpdateCheck()
         {
-            bool canUpdate = await gitHubApi.CheckMyselfNewVersion();
+            bool canUpdate = await myselfUpdater.CheckMyselfNewVersion();
 
             if (!canUpdate) return;
 
@@ -307,7 +300,7 @@ namespace BSModManager.ViewModels
                 return;
             }
 
-            bool hasDownloaded = await gitHubApi.DownloadMyselfNewVersion();
+            bool hasDownloaded = await myselfUpdater.DownloadMyselfNewVersion();
 
             if (hasDownloaded && File.Exists(Path.Combine(Environment.CurrentDirectory, "Updater.exe")))
             {
@@ -326,11 +319,11 @@ namespace BSModManager.ViewModels
         private void ButtonCommandSubscribe(IRegionManager regionManager)
         {
             RegionManager = regionManager;
-            RegionManager.RegisterViewWithRegion("ContentRegion", typeof(UpdateTab));
+            regionManager.RegisterViewWithRegion("ContentRegion", typeof(UpdateTab));
 
             AllCheckedButtonCommand = new DelegateCommand(() =>
             {
-                mainModsChanger.MainMods.AllCheckedOrUnchecked();
+                modsDataContainerAgent.ActiveMods.AllCheckedOrUnchecked();
             });
 
             UpdateOrInstallButtonCommand = new DelegateCommand<string>(async (x) =>
@@ -353,7 +346,7 @@ namespace BSModManager.ViewModels
 
             ModRepositoryButtonCommand = new DelegateCommand(() =>
             {
-                mainModsChanger.MainMods.ModRepositoryOpen();
+                modsDataContainerAgent.ActiveMods.ModRepositoryOpen();
             });
 
             RefreshButtonCommand = new DelegateCommand(() =>
@@ -363,7 +356,7 @@ namespace BSModManager.ViewModels
 
             ShowUpdateTabViewCommand = new DelegateCommand<string>((x) =>
             {
-                mainModsChanger.SetLocalMods();
+                modsDataContainerAgent.ActivateLocalModsContainer();
 
                 Logger.Instance.Info("Update");
                 UpdateOrInstall = "Update";
@@ -378,13 +371,13 @@ namespace BSModManager.ViewModels
                 UpdateOrInstall = "Install";
                 RegionManager.RequestNavigate("ContentRegion", x);
 
-                if (mainModsChanger.InstallTabIndex.Value == 0)
+                if (modsDataContainerAgent.InstallTabIndex.Value == 0)
                 {
-                    mainModsChanger.SetPastMods();
+                    modsDataContainerAgent.ActivatePastModsContainer();
                     return;
                 }
 
-                mainModsChanger.SetRecommendMods();
+                modsDataContainerAgent.ActivateRecommendModsContainer();
                 ChangeModInfoButtonEnable = false;
             });
 

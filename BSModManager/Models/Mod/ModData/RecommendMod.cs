@@ -13,7 +13,7 @@ using System.Windows.Media;
 
 namespace BSModManager.Models.Mods.Structures
 {
-    public class RecommendModData : BindableBase, IModData, IDestructible
+    public class RecommendMod : BindableBase, IMod, IDestructible
     {
         private bool c = false;
         private string mod = string.Empty;
@@ -32,7 +32,7 @@ namespace BSModManager.Models.Mods.Structures
 
         public CompositeDisposable disposables = new CompositeDisposable();
 
-        public RecommendModData(Refresher r)
+        public RecommendMod(Refresher r)
         {
             refresher = r;
 

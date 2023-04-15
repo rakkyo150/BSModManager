@@ -91,30 +91,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Interfaces\IMods.cs" />
-    <Compile Include="Interfaces\IModData.cs" />
+    <Compile Include="Interfaces\IModsContainer.cs" />
+    <Compile Include="Interfaces\IMod.cs" />
     <Compile Include="Static\Config.cs" />
-    <Compile Include="Models\LocalModFile.cs" />
-    <Compile Include="Models\MainModsSetter.cs" />
-    <Compile Include="Models\Mods\RecommendModsJsonStructure.cs" />
-    <Compile Include="Models\Mods\Structures\LocalModData.cs" />
-    <Compile Include="Models\Mods\Structures\MAModData.cs" />
-    <Compile Include="Models\Mods\Structures\PastModData.cs" />
-    <Compile Include="Models\Mods\Structures\RecommendModData.cs" />
-    <Compile Include="Models\PreviousLocalModsDataGetter.cs" />
-    <Compile Include="Models\InitialDirectorySetup.cs" />
-    <Compile Include="Models\ModDisposer.cs" />
+    <Compile Include="Models\Mod\ModFile\LocalModFile.cs" />
+    <Compile Include="Models\Mod\ModsContainer\ModsContainerAgent.cs" />
+    <Compile Include="Models\Mod\ModsContainer\RecommendModsJsonStructure.cs" />
+    <Compile Include="Models\Mod\ModData\LocalMod.cs" />
+    <Compile Include="Models\Mod\ModData\PastMod.cs" />
+    <Compile Include="Models\Mod\ModData\RecommendMod.cs" />
+    <Compile Include="Models\InitialSetup.cs" />
+    <Compile Include="Models\Mod\ModFile\ModDisposer.cs" />
     <Compile Include="Models\GitHubApi.cs" />
-    <Compile Include="Models\ModInstaller.cs" />
-    <Compile Include="Models\Mods\MA.cs" />
-    <Compile Include="Models\ModCsvHandler.cs" />
-    <Compile Include="Models\Mods\LocalMods.cs" />
-    <Compile Include="Models\ModUpdater.cs" />
-    <Compile Include="Models\Mods\PastMods.cs" />
-    <Compile Include="Models\Mods\RecommendMods.cs" />
+    <Compile Include="Models\Mod\ModFile\ModInstaller.cs" />
+    <Compile Include="Models\MA.cs" />
+    <Compile Include="Models\Mod\DataFile\ModsDataCsv.cs" />
+    <Compile Include="Models\Mod\ModsContainer\LocalModsContainer.cs" />
+    <Compile Include="Models\Mod\ModFile\ModUpdater.cs" />
+    <Compile Include="Models\Mod\ModsContainer\PastModsContainer.cs" />
+    <Compile Include="Models\Mod\ModsContainer\RecommendModsContainer.cs" />
     <Compile Include="Models\MyselfUpdater.cs" />
-    <Compile Include="Models\Refresher.cs" />
-    <Compile Include="Models\ChangeModInfoModel.cs" />
+    <Compile Include="Models\Mod\Refresher.cs" />
+    <Compile Include="Models\Mod\ModData\ModDataChanger.cs" />
     <Compile Include="Static\FileHashProvider.cs" />
     <Compile Include="Static\VersionExtractor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -209,7 +207,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Models\Mods\RecommendMods.json" />
+    <EmbeddedResource Include="Models\Mod\ModsContainer\RecommendMods.json" />
     <None Include="BSModManager_TemporaryKey.pfx" />
     <None Include="ClassDiagram.cd" />
     <None Include="Properties\Settings.settings">
@@ -273,5 +271,6 @@
   <ItemGroup>
     <Resource Include="Views\Resources\License.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,21 +9,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using static BSModManager.Models.MA;
 
 namespace BSModManager.Models
 {
-    public class ChangeModInfoModel : BindableBase
+    public class ModDataChanger : BindableBase
     {
         readonly IDialogService dialogService;
         readonly GitHubApi gitHubManager;
         readonly MA mAMod;
         readonly Refresher refresher;
-        readonly MainModsSetter mainModsChanger;
+        readonly ModsContainerAgent mainModsChanger;
 
-        private List<IModData> AllCheckedMod = new List<IModData>();
+        private List<IMod> AllCheckedMod = new List<IMod>();
         private int AllCheckedModCount = int.MinValue;
 
-        public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MA mam, Refresher r, MainModsSetter mmc)
+        public ModDataChanger(IDialogService ds, GitHubApi ghm, MA mam, Refresher r, ModsContainerAgent mmc)
         {
             dialogService = ds;
             gitHubManager = ghm;
@@ -49,7 +50,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref url, value);
-                mainModsChanger.MainMods.UpdateURL(new LocalModData(refresher)
+                mainModsChanger.ActiveMods.UpdateURL(new LocalMod()
                 {
                     Mod = modName,
                     Url = value
@@ -64,7 +65,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref updated, value);
-                mainModsChanger.MainMods.UpdateUpdated(new LocalModData(refresher)
+                mainModsChanger.ActiveMods.UpdateUpdated(new LocalMod()
                 {
                     Mod = modName,
                     Updated = value
@@ -82,7 +83,7 @@ namespace BSModManager.Models
                 SetProperty(ref original, value);
                 if (Original)
                 {
-                    mainModsChanger.MainMods.UpdateOriginal(new LocalModData(refresher)
+                    mainModsChanger.ActiveMods.UpdateOriginal(new LocalMod()
                     {
                         Mod = modName,
                         Original = "〇"
@@ -91,7 +92,7 @@ namespace BSModManager.Models
                 }
                 else
                 {
-                    mainModsChanger.MainMods.UpdateOriginal(new LocalModData(refresher)
+                    mainModsChanger.ActiveMods.UpdateOriginal(new LocalMod()
                     {
                         Mod = modName,
                         Original = "×"
@@ -123,7 +124,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref latest, value);
-                mainModsChanger.MainMods.UpdateLatest(new LocalModData(refresher)
+                mainModsChanger.ActiveMods.UpdateLatest(new LocalMod()
                 {
                     Mod = modName,
                     Latest = value
@@ -139,7 +140,7 @@ namespace BSModManager.Models
                 return;
             }
 
-            if (!mAMod.ExistsData(new MAModData() { name = modName }))
+            if (!mAMod.ExistsData(modName))
             {
                 ExistInMA = false;
                 return;
@@ -155,7 +156,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref mA, value);
-                mainModsChanger.MainMods.UpdateMA(new LocalModData(refresher)
+                mainModsChanger.ActiveMods.UpdateMA(new LocalMod()
                 {
                     Mod = modName,
                     MA = value
@@ -180,7 +181,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref description, value);
-                mainModsChanger.MainMods.UpdateDescription(new LocalModData(refresher)
+                mainModsChanger.ActiveMods.UpdateDescription(new LocalMod()
                 {
                     Mod = modName,
                     Description = value
@@ -224,7 +225,7 @@ namespace BSModManager.Models
 
         public void ShowChangeModInfoInitialDialog()
         {
-            AllCheckedMod = mainModsChanger.MainMods.AllCheckedMod();
+            AllCheckedMod = mainModsChanger.ActiveMods.AllCheckedMod();
             AllCheckedModCount = AllCheckedMod.Count();
 
             if (AllCheckedModCount == 0)
@@ -276,7 +277,7 @@ namespace BSModManager.Models
             if (NowChangingCheckedIndex + 1 == AllCheckedModCount) NextOrFinishButtonText = "Finish";
             else NextOrFinishButtonText = "Next";
 
-            IModData checkedMod = AllCheckedMod[NowChangingCheckedIndex];
+            IMod checkedMod = AllCheckedMod[NowChangingCheckedIndex];
 
             modName = checkedMod.Mod;
 
@@ -345,11 +346,11 @@ namespace BSModManager.Models
 
         private void SetInfoForMA()
         {
-            if (!mAMod.ExistsData(new MAModData() { name = modName })) return;
+            if (!mAMod.ExistsData(modName)) return;
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
 
-            MAModData[] a = mAMod.ModAssistantAllMods.Where(x => x.name == modName).ToArray();
+            MAMod[] a = mAMod.ModAssistantAllMods.Where(x => x.name == modName).ToArray();
             ExistInMA = true;
             Latest = new Version(a[0].version);
             Url = a[0].link;

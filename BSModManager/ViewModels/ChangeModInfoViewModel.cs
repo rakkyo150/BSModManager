@@ -28,9 +28,9 @@ namespace BSModManager.ViewModels
         private bool canCloseDialog = false;
 
 
-        public ChangeModInfoModel changeModInfoPropertyModel;
+        public ModDataChanger changeModInfoPropertyModel;
 
-        public ChangeModInfoViewModel(ChangeModInfoModel cmipm)
+        public ChangeModInfoViewModel(ModDataChanger cmipm)
         {
             changeModInfoPropertyModel = cmipm;
 

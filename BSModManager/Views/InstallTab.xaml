@@ -7,7 +7,7 @@
     <TabControl SelectedIndex="{Binding TabIndex}">
         <TabItem Header="Past Data">
             <Grid>
-                <DataGrid ItemsSource="{Binding PastModsData}" AutoGenerateColumns="False" CanUserAddRows="False">
+                <DataGrid ItemsSource="{Binding PastModsContainer}" AutoGenerateColumns="False" CanUserAddRows="False">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -68,7 +68,7 @@
         </TabItem>
         <TabItem Header="Recommend">
             <Grid>
-                <DataGrid ItemsSource="{Binding RecommendModsData}" AutoGenerateColumns="False" CanUserAddRows="False">
+                <DataGrid ItemsSource="{Binding RecommendModsContainer}" AutoGenerateColumns="False" CanUserAddRows="False">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>

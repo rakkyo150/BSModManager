@@ -13,19 +13,15 @@ using System.Windows.Media;
 
 namespace BSModManager.Models.Mods.Structures
 {
-    public class LocalModData : BindableBase, IDestructible, IModData
+    public class LocalMod : BindableBase, IDestructible, IMod
     {
-        readonly Refresher refresher;
-
         public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 
         public CompositeDisposable disposables = new CompositeDisposable();
 
 
-        public LocalModData(Refresher r)
+        public LocalMod()
         {
-            refresher = r;
-
             UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables).AddTo(disposables);
         }
 
@@ -145,8 +141,8 @@ namespace BSModManager.Models.Mods.Structures
                     File.Delete(modPendingFilePath);
                 }
 
-                Task.Run(() => refresher.Refresh()).GetAwaiter().GetResult();
                 Logger.Instance.Info($"Finish Deleting {modFilePath}");
+                this.Destroy();
             }
         }
     }

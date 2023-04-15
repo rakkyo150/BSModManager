@@ -7,11 +7,11 @@
       <FileName>App.xaml.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BSModManager.Models.ChangeModInfoModel" Collapsed="true">
+  <Class Name="BSModManager.Models.ModDataChanger" Collapsed="true">
     <Position X="2.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAABhABIAAwAAADIAgAoQgAAgBIMAgASgIAIEKgSCQ=</HashCode>
-      <FileName>Models\ChangeModInfoModel.cs</FileName>
+      <FileName>Models\Mod\ModData\ModDataChanger.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.ConfigFileHandler" Collapsed="true">
@@ -24,22 +24,22 @@
   <Class Name="BSModManager.Models.GitHubApi" Collapsed="true">
     <Position X="7.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACAAAEQoAAIAAAAAIIAAAAAAAJAAAAAgAAQAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAJAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\GitHubApi.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BSModManager.Models.InitialDirectorySetup" Collapsed="true">
+  <Class Name="BSModManager.Models.InitialSetup" Collapsed="true">
     <Position X="0.5" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
-      <FileName>Models\InitialDirectorySetup.cs</FileName>
+      <FileName>Models\InitialSetup.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.LocalModFile" Collapsed="true">
     <Position X="7.5" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAAAAAAAAAEIAAAAQAAAAAAAAAAAAIAQAAAAAAAAAA=</HashCode>
-      <FileName>Models\LocalModFile.cs</FileName>
+      <FileName>Models\Mod\ModFile\LocalModFile.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.MainModsSetter" Collapsed="true" BaseTypeListCollapsed="true">
@@ -50,84 +50,77 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="BSModManager.Models.ModCsvHandler" Collapsed="true">
+  <Class Name="BSModManager.Models.ModsDataCsv" Collapsed="true">
     <Position X="5.75" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAEAAAA=</HashCode>
-      <FileName>Models\ModCsvHandler.cs</FileName>
+      <FileName>Models\Mod\DataFile\ModsDataCsv.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.ModDisposer" Collapsed="true">
     <Position X="9.25" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAQAAACAAAAAIAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\ModDisposer.cs</FileName>
+      <FileName>Models\Mod\ModFile\ModDisposer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.ModInstaller" Collapsed="true">
     <Position X="7.5" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAIABAAAEAAAAEgAAAAAAAAAAAoAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\ModInstaller.cs</FileName>
+      <HashCode>AAEAAABAAAEAAAAEAAAAAAAAAAAAoAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Mod\ModFile\ModInstaller.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BSModManager.Models.LocalMods" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="BSModManager.Models.LocalModsContainer" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="7.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIKAglAECAJgAAAAAIIABAAAAAAAAEAgAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Mods\LocalMods.cs</FileName>
+      <HashCode>AIOAglAECALgBAACAIIAJAAAAAACAEAgAAAAAEAAAAA=</HashCode>
+      <FileName>Models\Mod\ModsContainer\LocalModsContainer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="BSModManager.Models.MAMods" Collapsed="true">
+  <Class Name="BSModManager.Models.MA" Collapsed="true">
     <Position X="2.25" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Mods\MAMods.cs</FileName>
+      <FileName>Models\MA.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BSModManager.Models.PastMods" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="BSModManager.Models.PastModsContainer" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="2.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAKAglAECABgAAAAAIIABAAAAAAAAEAgAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Mods\PastMods.cs</FileName>
+      <FileName>Models\Mod\ModsContainer\PastModsContainer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="BSModManager.Models.RecommendMods" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="BSModManager.Models.RecommendModsContainer" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="12.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAKAglAECABgAAAAAIIABAAAAAAQAEAgAAAAAAAAAAA=</HashCode>
-      <FileName>Models\Mods\RecommendMods.cs</FileName>
+      <FileName>Models\Mod\ModsContainer\RecommendModsContainer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="BSModManager.Models.ModUpdater" Collapsed="true">
     <Position X="9.25" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAUAIAAAAAAAAAAAgAAAAAAAAAAAoAAIAAAAAAAAAAA=</HashCode>
-      <FileName>Models\ModUpdater.cs</FileName>
+      <HashCode>AAUAAABAAAAAAAAAAAAAAAAAAAAAoAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Mod\ModFile\ModUpdater.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.MyselfUpdater" Collapsed="true">
     <Position X="12.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAQAAAAACAAAAAAAAIAAAAACCAAgAAAAAAAA=</HashCode>
+      <HashCode>AAEAAAQAAQIAAAACAAAAAAAAIAAAAACiAAwAAAAAAAA=</HashCode>
       <FileName>Models\MyselfUpdater.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="BSModManager.Models.PreviousLocalModsDataGetter" Collapsed="true">
-    <Position X="11" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AIEAAAAAAAAAAAACAAAAIAAAAAACIAABAAAAAEAAAEA=</HashCode>
-      <FileName>Models\PreviousLocalModsDataGetter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.Refresher" Collapsed="true">
     <Position X="5.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIEAAACAAIJAQYACgAAAIAIBFAAQAAUAAAAIAgAAAAA=</HashCode>
-      <FileName>Models\Refresher.cs</FileName>
+      <HashCode>AAEAAADAAILAQYACgAAAIAABFAAQAAUAAAAIAgAAAAA=</HashCode>
+      <FileName>Models\Mod\Refresher.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Models.SettingsVerifier" Collapsed="true">
@@ -148,37 +141,30 @@
     <Position X="4" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAQAAAAACAAAAAAAAAQ=</HashCode>
-      <FileName>Models\Mods\RecommendModsJsonStructure.cs</FileName>
+      <FileName>Models\Mod\ModsContainer\RecommendModsJsonStructure.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BSModManager.Models.Mods.Structures.LocalModData" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="BSModManager.Models.Mods.Structures.RecommendMod" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="4" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABBAAgKAwAACAIAAABAAAAIRIoACASgAEAEIABAQ=</HashCode>
-      <FileName>Models\Mods\Structures\LocalModData.cs</FileName>
+      <FileName>Models\Mod\ModData\RecommendMod.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="BSModManager.Models.Mods.Structures.MAModData" Collapsed="true">
-    <Position X="0.5" Y="6.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AgQAACAAAIAAAAABIIBAAIAAAAAEAAAIAAAMAAARAEA=</HashCode>
-      <FileName>Models\Mods\Structures\MAModData.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="BSModManager.Models.Mods.Structures.PastModData" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="BSModManager.Models.Mods.Structures.LocalMod" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="12.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABBAAgKAwAACAIAAABAAAAIRIoACASgAEAEIABAQ=</HashCode>
-      <FileName>Models\Mods\Structures\PastModData.cs</FileName>
+      <HashCode>AAAABBAAgKAwAACAIAAABAAAAIRIgACASgAEAEIABAQ=</HashCode>
+      <FileName>Models\Mod\ModData\LocalMod.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="BSModManager.Models.Mods.Structures.RecommendModData" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="BSModManager.Models.Mods.Structures.PastMod" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="4" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABBAAgKAwAACAIAAABAAAAIRIoACASgAEAEIABAQ=</HashCode>
-      <FileName>Models\Mods\Structures\RecommendModData.cs</FileName>
+      <FileName>Models\Mod\ModData\PastMod.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -204,14 +190,14 @@
   <Class Name="BSModManager.Static.FilePath" Collapsed="true">
     <Position X="5.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAAAAEAAAABAAAAAAAAAJAQAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAJAQAAAAAAAAAA=</HashCode>
       <FileName>Static\FilePath.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.Static.Folder" Collapsed="true">
     <Position X="2.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAMAAAIAAAIAAAAAAAAAAAAgAACAAAQAEAQAABAAA=</HashCode>
+      <HashCode>AAAAMAAAIAAAIAAAAAAAAAAAAgAACAAAQAAAQAAAAAA=</HashCode>
       <FileName>Static\Folder.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -233,7 +219,7 @@
   <Class Name="BSModManager.ViewModels.InitialSettingViewModel" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="11" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAEAAgAIAAAAAEBAgAEABACUBBBAAABAAAIACAgJAAI=</HashCode>
+      <HashCode>EAQAAgAIAAAAAEBAAAEABACUBBBAAABAAAIACAgJAAI=</HashCode>
       <FileName>ViewModels\InitialSettingViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -241,14 +227,14 @@
   <Class Name="BSModManager.ViewModels.InstallTabViewModel" Collapsed="true">
     <Position X="5.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAIgEAAAAIAAAAAAQAHAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAAABAAAAAAICAAAAAAAAAAAAAABAAAAAAAAAAkII=</HashCode>
       <FileName>ViewModels\InstallTabViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BSModManager.ViewModels.MainWindowViewModel" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="9.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BPEYAAAhQAAAAMGCkIARKgDw1AnQYJA5ELQESAAIAIA=</HashCode>
+      <HashCode>BHAYAABhQAAAAMGCEIARCgDw1AnQYJA5EPQESAAAAIA=</HashCode>
       <FileName>ViewModels\MainWindowViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -256,7 +242,7 @@
   <Class Name="BSModManager.ViewModels.SettingsTabViewModel" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="5.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQEAAgIIAQAAAAAAgAEABAGQhBBAAAiAAAIAAAALAwA=</HashCode>
+      <HashCode>AQQAAgIIAQAAAAAAAAEABAGQhBBAAAiAAAIAAAADAwA=</HashCode>
       <FileName>ViewModels\SettingsTabViewModel.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -272,7 +258,7 @@
   <Class Name="BSModManager.ViewModels.UpdateTabViewModel" Collapsed="true">
     <Position X="7.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAIAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAABAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ViewModels\UpdateTabViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -341,18 +327,18 @@
     <Position X="0.5" Y="4.25" Width="1.5" />
     <TypeIdentifier />
   </Class>
-  <Interface Name="BSModManager.Interfaces.IModData" Collapsed="true">
+  <Interface Name="BSModManager.Interfaces.IMod" Collapsed="true">
     <Position X="0.5" Y="9.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAAIAgAACAAAAAAAAAAAQAAACASAAEAAIAAAQ=</HashCode>
-      <FileName>Interfaces\IModData.cs</FileName>
+      <FileName>Interfaces\IMod.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="BSModManager.Interfaces.IMods" Collapsed="true">
+  <Interface Name="BSModManager.Interfaces.IModsContainer" Collapsed="true">
     <Position X="2.25" Y="9.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAKAglAECABgAAAAAIIABAAAAAAAAEAgAAAAAAAAAAA=</HashCode>
-      <FileName>Interfaces\IMods.cs</FileName>
+      <FileName>Interfaces\IModsContainer.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Yu Gothic UI" Size="8.77" />

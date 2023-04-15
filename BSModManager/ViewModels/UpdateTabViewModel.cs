@@ -8,18 +8,18 @@ namespace BSModManager.ViewModels
 {
     public class UpdateTabViewModel : BindableBase
     {
-        readonly LocalMods modsDataModel;
+        readonly ModsContainerAgent modsDataContainerAgent;
 
-        public ObservableCollection<IModData> ModsData { get; }
+        public ObservableCollection<IMod> LocalModsContainer { get; }
 
-        public UpdateTabViewModel(LocalMods mdm)
+        public UpdateTabViewModel(ModsContainerAgent mdca)
         {
-            modsDataModel = mdm;
+            modsDataContainerAgent = mdca;
 
-            ModsData = modsDataModel.LocalModsData;
+            LocalModsContainer = modsDataContainerAgent.LocalModsContainer.LocalModsData;
 
             // https://alfort.online/689
-            BindingOperations.EnableCollectionSynchronization(ModsData, new object());
+            BindingOperations.EnableCollectionSynchronization(LocalModsContainer, new object());
         }
     }
 }

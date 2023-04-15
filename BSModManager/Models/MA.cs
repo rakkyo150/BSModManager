@@ -2,6 +2,7 @@
 using BSModManager.Static;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -9,11 +10,58 @@ namespace BSModManager.Models
 {
     public class MA
     {
-        public MAModData[] ModAssistantAllMods { get; set; }
-
-        public async Task<MAModData[]> GetAllAsync()
+        public class MAMod
         {
-            MAModData[] modAssistantMod = null;
+            public string name;
+            public string version;
+            public string gameVersion;
+            public string _id;
+            public string status;
+            public string authorId;
+            public string uploadedDate;
+            public string updatedDate;
+            public Author author;
+            public string description;
+            public string link;
+            public string category;
+            public DownloadLink[] downloads;
+            public bool required;
+            public Dependency[] dependencies;
+            public List<MAMod> Dependents = new List<MAMod>();
+
+            public class Author
+            {
+                public string _id;
+                public string username;
+                public string lastLogin;
+            }
+
+            public class DownloadLink
+            {
+                public string type;
+                public string url;
+                public FileHashes[] hashMd5;
+            }
+
+            public class FileHashes
+            {
+                public string hash;
+                public string file;
+            }
+
+            public class Dependency
+            {
+                public string name;
+                public string _id;
+                public MAMod Mod;
+            }
+        }
+
+        public MAMod[] ModAssistantAllMods { get; set; }
+
+        public async Task<MAMod[]> GetAllAsync()
+        {
+            MAMod[] modAssistantMod = null;
 
             string gameVersion = VersionExtractor.GameVersion;
 
@@ -24,7 +72,7 @@ namespace BSModManager.Models
                 try
                 {
                     var resp = await httpClient.GetStringAsync(modAssistantModInformationUrl);
-                    modAssistantMod = JsonConvert.DeserializeObject<MAModData[]>(resp);
+                    modAssistantMod = JsonConvert.DeserializeObject<MAMod[]>(resp);
 
                     Version retryGameVersion = new Version(gameVersion);
 
@@ -42,7 +90,7 @@ namespace BSModManager.Models
                         string retryModAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={retryGameVersion}";
 
                         var retryResp = await httpClient.GetStringAsync(retryModAssistantModInformationUrl);
-                        modAssistantMod = JsonConvert.DeserializeObject<MAModData[]>(retryResp);
+                        modAssistantMod = JsonConvert.DeserializeObject<MAMod[]>(retryResp);
                     }
 
                     foreach (var mod in modAssistantMod)
@@ -65,9 +113,9 @@ namespace BSModManager.Models
             return modAssistantMod;
         }
 
-        internal bool ExistsData(MAModData mAModData)
+        internal bool ExistsData(string modName)
         {
-            return Array.Exists(ModAssistantAllMods, x => x.name == mAModData.name);
+            return Array.Exists(ModAssistantAllMods, x => x.name == modName);
         }
     }
 }

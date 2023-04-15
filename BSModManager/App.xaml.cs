@@ -22,22 +22,21 @@ namespace BSModManager
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterSingleton<PastMods>();
-            containerRegistry.RegisterSingleton<RecommendMods>();
-            containerRegistry.RegisterSingleton<LocalMods>();
+            containerRegistry.RegisterSingleton<PastModsContainer>();
+            containerRegistry.RegisterSingleton<RecommendModsContainer>();
+            containerRegistry.RegisterSingleton<LocalModsContainer>();
             containerRegistry.RegisterSingleton<MA>();
             containerRegistry.RegisterSingleton<GitHubApi>();
-            containerRegistry.RegisterSingleton<MainModsSetter>();
-            containerRegistry.RegisterSingleton<ChangeModInfoModel>();
+            containerRegistry.RegisterSingleton<ModsContainerAgent>();
+            containerRegistry.RegisterSingleton<ModDataChanger>();
             containerRegistry.RegisterSingleton<MyselfUpdater>();
 
             containerRegistry.Register<Refresher>();
             containerRegistry.Register<ModInstaller>();
-            containerRegistry.Register<ModCsvHandler>();
+            containerRegistry.Register<ModsDataCsv>();
             containerRegistry.Register<ModUpdater>();
-            containerRegistry.Register<InitialDirectorySetup>();
+            containerRegistry.Register<InitialSetup>();
             containerRegistry.Register<ModDisposer>();
-            containerRegistry.Register<PreviousLocalModsDataGetter>();
 
             containerRegistry.RegisterForNavigation<UpdateTab>();
             containerRegistry.RegisterForNavigation<InstallTab>();

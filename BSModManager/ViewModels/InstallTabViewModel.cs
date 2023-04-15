@@ -10,23 +10,24 @@ namespace BSModManager.ViewModels
 {
     public class InstallTabViewModel : BindableBase
     {
-        public ObservableCollection<IModData> PastModsData { get; }
-        public ObservableCollection<IModData> RecommendModsData { get; }
+        public ObservableCollection<IMod> PastModsContainer { get; }
+        public ObservableCollection<IMod> RecommendModsContainer { get; }
+
+        internal ReactiveProperty<int> InstallTabIndex { get; set; } = new ReactiveProperty<int>(0);
+        internal ReactiveProperty<bool> ChangeModInfoButtonEnable { get; set; } = new ReactiveProperty<bool>(true);
 
         public DelegateCommand LoadedCommand { get; }
 
-        readonly MainModsSetter mainModsChanger;
+        readonly ModsContainerAgent modsDataContainerAgent;
 
-        public InstallTabViewModel(MainModsSetter mmc, PastMods pmdm, RecommendMods rmdm)
+        public InstallTabViewModel(ModsContainerAgent mdca)
         {
-            pastModsDataModel = pmdm;
-            recommendModsDataModel = rmdm;
-            mainModsChanger = mmc;
+            modsDataContainerAgent = mdca;
 
-            PastModsData = pastModsDataModel.PastModsData;
-            RecommendModsData = recommendModsDataModel.RecommendModsData;
+            PastModsContainer = modsDataContainerAgent.PastModsContainer.PastModsData;
+            RecommendModsContainer = modsDataContainerAgent.RecommendModsContainer.RecommendModsData;
 
-            mainModsChanger.InstallTabIndex = this.ObserveProperty(x => x.TabIndex).ToReactiveProperty();
+            InstallTabIndex = this.ObserveProperty(x => x.TabIndex).ToReactiveProperty();
         }
 
         private int tabIndex = 0;
@@ -38,23 +39,15 @@ namespace BSModManager.ViewModels
                 SetProperty(ref tabIndex, value);
                 if (value == 0)
                 {
-                    mainModsChanger.SetPastMods();
-                    mainModsChanger.ChangeModInfoButtonEnable.Value = true;
+                    modsDataContainerAgent.ActivatePastModsContainer();
+                    ChangeModInfoButtonEnable.Value = true;
                 }
                 else
                 {
-                    mainModsChanger.SetRecommendMods();
-                    mainModsChanger.ChangeModInfoButtonEnable.Value = false;
+                    modsDataContainerAgent.ActivateRecommendModsContainer();
+                    ChangeModInfoButtonEnable.Value = false;
                 }
             }
-        }
-
-        readonly PastMods pastModsDataModel;
-        readonly RecommendMods recommendModsDataModel;
-
-        public void Install()
-        {
-
         }
     }
 }

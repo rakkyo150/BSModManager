@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace BSModManager.Interfaces
 {
-    public interface IModData
+    public interface IMod
     {
         bool Checked
         {

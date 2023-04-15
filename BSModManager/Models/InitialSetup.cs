@@ -5,7 +5,7 @@ using System.IO.Compression;
 
 namespace BSModManager.Models
 {
-    public class InitialDirectorySetup
+    public class InitialSetup
     {
         public void Backup()
         {

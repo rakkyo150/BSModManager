@@ -1,8 +1,11 @@
 ﻿using BSModManager.Interfaces;
+using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
+using Octokit;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -11,15 +14,15 @@ using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
-    public class ModCsvHandler
+    public class ModsDataCsv
     {
-        public void Write(string csvPath, IEnumerable<IModData> modEnum)
+        public void Write(string csvPath, IEnumerable<IMod> modEnum)
         {
-            List<ModCsvIndex> modInformationCsvList = new List<ModCsvIndex>();
+            List<ModsDataCsvIndex> modInformationCsvList = new List<ModsDataCsvIndex>();
 
             foreach (var mod in modEnum)
             {
-                var githubModInstance = new ModCsvIndex()
+                var githubModInstance = new ModsDataCsvIndex()
                 {
                     Mod = mod.Mod,
                     LocalVersion = mod.Installed.ToString(),
@@ -42,9 +45,9 @@ namespace BSModManager.Models
             }
         }
 
-        public async Task<List<ModCsvIndex>> Read(string csvPath)
+        public async Task<List<ModsDataCsvIndex>> Read(string csvPath)
         {
-            List<ModCsvIndex> output = null;
+            List<ModsDataCsvIndex> output = null;
 
             var config = new CsvConfiguration(new CultureInfo("ja-JP", false))
             {
@@ -60,7 +63,7 @@ namespace BSModManager.Models
             {
                 await Task.Run(() =>
                 {
-                    output = csv.GetRecords<ModCsvIndex>().ToList();
+                    output = csv.GetRecords<ModsDataCsvIndex>().ToList();
                 });
             }
 
@@ -68,7 +71,7 @@ namespace BSModManager.Models
             return output;
         }
 
-        public class ModCsvIndex
+        public class ModsDataCsvIndex
         {
             [Name("Mod")]
             public string Mod { get; set; }

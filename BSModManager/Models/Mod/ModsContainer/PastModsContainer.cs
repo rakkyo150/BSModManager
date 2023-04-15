@@ -10,38 +10,38 @@ using System.Windows.Data;
 
 namespace BSModManager.Models
 {
-    public class RecommendMods : BindableBase, IMods
+    public class PastModsContainer : BindableBase, IModsContainer
     {
-        public ObservableCollection<IModData> RecommendModsData = new ObservableCollection<IModData>();
+        internal ObservableCollection<IMod> PastModsData = new ObservableCollection<IMod>();
 
-        public RecommendMods()
+        public PastModsContainer()
         {
-            BindingOperations.EnableCollectionSynchronization(RecommendModsData, new object());
+            BindingOperations.EnableCollectionSynchronization(PastModsData, new object());
         }
 
         public void AllCheckedOrUnchecked()
         {
             int i = 0;
-            if (RecommendModsData.Count(x => x.Checked == true) * 2 > RecommendModsData.Count)
+            if (PastModsData.Count(x => x.Checked == true) * 2 > PastModsData.Count)
             {
-                foreach (var _ in RecommendModsData)
+                foreach (var _ in PastModsData)
                 {
-                    RecommendModsData[i].Checked = false;
+                    PastModsData[i].Checked = false;
                     i++;
                 }
                 return;
             }
 
-            foreach (var _ in RecommendModsData)
+            foreach (var _ in PastModsData)
             {
-                RecommendModsData[i].Checked = true;
+                PastModsData[i].Checked = true;
                 i++;
             }
         }
 
         public void ModRepositoryOpen()
         {
-            foreach (var a in RecommendModsData)
+            foreach (var a in PastModsData)
             {
                 if (!a.Checked) continue;
 
@@ -62,19 +62,19 @@ namespace BSModManager.Models
             }
         }
 
-        public List<IModData> AllCheckedMod()
+        public List<IMod> AllCheckedMod()
         {
-            return RecommendModsData.Where(x => x.Checked == true).ToList();
+            return PastModsData.Where(x => x.Checked == true).ToList();
         }
 
         public void SortByName()
         {
-            var sorted = this.RecommendModsData.OrderBy(x => x.Mod).ToList();
-            this.RecommendModsData.Clear();
-            foreach (var item in sorted) this.RecommendModsData.Add(item);
+            var sorted = this.PastModsData.OrderBy(x => x.Mod).ToList();
+            this.PastModsData.Clear();
+            foreach (var item in sorted) this.PastModsData.Add(item);
         }
 
-        public void Add(IModData modData)
+        public void Add(IMod modData)
         {
             if (ExistsSameModNameData(modData))
             {
@@ -82,108 +82,108 @@ namespace BSModManager.Models
                 return;
             }
 
-            RecommendModsData.Add(modData);
+            PastModsData.Add(modData);
         }
 
-        public void UpdateInstalled(IModData modData)
+        public void UpdateInstalled(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
+            PastModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
         }
 
-        public void UpdateLatest(IModData modData)
+        public void UpdateLatest(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
+            PastModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
         }
 
-        public void UpdateDownloadedFileHash(IModData modData)
+        public void UpdateDownloadedFileHash(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
+            PastModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
         }
 
-        public void UpdateOriginal(IModData modData)
+        public void UpdateOriginal(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
+            PastModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
         }
 
-        public void UpdateUpdated(IModData modData)
+        public void UpdateUpdated(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
+            PastModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
         }
 
-        public void UpdateMA(IModData modData)
+        public void UpdateMA(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
+            PastModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
         }
 
-        public void UpdateDescription(IModData modData)
+        public void UpdateDescription(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
+            PastModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
         }
 
-        public void UpdateURL(IModData modData)
+        public void UpdateURL(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
+            PastModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
         }
 
-        public void Remove(IModData modData)
+        public void Remove(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
-                Logger.Instance.Debug($"{modData.Mod}は{RecommendModsData}に存在しないので削除できません");
+                Logger.Instance.Debug($"{modData.Mod}は{PastModsData}に存在しないので削除できません");
                 return;
             }
 
-            RecommendModsData.Remove(RecommendModsData.First(x => x.Mod == modData.Mod));
+            PastModsData.Remove(PastModsData.First(x => x.Mod == modData.Mod));
         }
 
-        public bool ExistsSameModNameData(IModData modData)
+        public bool ExistsSameModNameData(IMod modData)
         {
-            return RecommendModsData.Any(x => x.Mod == modData.Mod);
+            return PastModsData.Any(x => x.Mod == modData.Mod);
         }
 
-        public IEnumerable<IModData> ReturnCheckedModsData()
+        public IEnumerable<IMod> ReturnCheckedModsData()
         {
-            return RecommendModsData.Where(x => x.Checked == true);
+            return PastModsData.Where(x => x.Checked == true);
         }
     }
 }
