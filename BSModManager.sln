@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32407.337
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSModManager", "BSModManager\BSModManager.csproj", "{BEECC195-C98C-4A43-BACD-F8C5021BC118}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{4C249860-B51B-4274-8C68-989AA54F1841}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{900A0954-1480-40FA-9E98-5B571F65B54B}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{6B30860C-2248-4E52-BDAA-8D94DE3345D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,8 +23,8 @@ Global
 		{4C249860-B51B-4274-8C68-989AA54F1841}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C249860-B51B-4274-8C68-989AA54F1841}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C249860-B51B-4274-8C68-989AA54F1841}.Release|Any CPU.Build.0 = Release|Any CPU
-		{900A0954-1480-40FA-9E98-5B571F65B54B}.Debug|Any CPU.ActiveCfg = Debug
-		{900A0954-1480-40FA-9E98-5B571F65B54B}.Release|Any CPU.ActiveCfg = Release
+		{6B30860C-2248-4E52-BDAA-8D94DE3345D9}.Debug|Any CPU.ActiveCfg = Debug
+		{6B30860C-2248-4E52-BDAA-8D94DE3345D9}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
