@@ -35,24 +35,23 @@ namespace Updater
                     Console.WriteLine("BSModManager.exeが終了しました");
                 }
 
-                DirectoryInfo dir = new DirectoryInfo(downloadPath);
-
-                FileInfo[] files = dir.GetFiles();
-                foreach (FileInfo file in files)
+                // Setup.msiを起動する
+                ProcessStartInfo processStartInfo = new ProcessStartInfo
                 {
-                    if (file.Name.Contains("Updater") || file.Name.Contains("Setup")) continue;
+                    FileName = Path.Combine(downloadPath, "Setup.msi"),
+                };
+                Process process = Process.Start(processStartInfo);
+                process.WaitForExit();
+                Console.WriteLine("ExitCode : " + process.ExitCode);
 
-                    string tempPath = Path.Combine(Environment.CurrentDirectory, file.Name);
-                    file.CopyTo(tempPath, true);
-                }
                 Console.WriteLine("本体のアップデート完了");
                 Console.WriteLine("Enterで本体を再起動します");
                 Console.ReadLine();
-                ProcessStartInfo processStartInfo = new ProcessStartInfo
+                processStartInfo = new ProcessStartInfo
                 {
                     FileName = Path.Combine(Environment.CurrentDirectory, "BSModManager.exe")
                 };
-                Process process = Process.Start(processStartInfo);
+                Process.Start(processStartInfo);
                 Environment.Exit(0);
             }
             catch (Exception ex)
