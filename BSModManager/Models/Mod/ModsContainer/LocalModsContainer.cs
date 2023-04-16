@@ -197,7 +197,7 @@ namespace BSModManager.Models
 
             if (!File.Exists(modsDataCsvPath)) return;
 
-            previousDataList = await modsDataCsv.Read(modsDataCsvPath);
+            previousDataList = modsDataCsv.Read(modsDataCsvPath);
             foreach (var previousData in previousDataList)
             {
                 if (ExistsModDataInMA(previousData))

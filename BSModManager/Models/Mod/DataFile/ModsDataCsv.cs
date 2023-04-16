@@ -1,11 +1,7 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
-using Octokit;
-using System;
+using Csv;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -17,12 +13,12 @@ namespace BSModManager.Models
     public class ModsDataCsv
     {
         public void Write(string csvPath, IEnumerable<IMod> modEnum)
-        {
+        {          
             List<ModsDataCsvIndex> modInformationCsvList = new List<ModsDataCsvIndex>();
 
-            foreach (var mod in modEnum)
+            foreach (IMod mod in modEnum)
             {
-                var githubModInstance = new ModsDataCsvIndex()
+                ModsDataCsvIndex githubModInstance = new ModsDataCsvIndex()
                 {
                     Mod = mod.Mod,
                     LocalVersion = mod.Installed.ToString(),
@@ -37,33 +33,34 @@ namespace BSModManager.Models
 
             if (modInformationCsvList.Count == 0) return;
 
-            using (var writer = new StreamWriter(csvPath, false))
-            using (var csv = new CsvWriter(writer, new CultureInfo("ja-JP", false)))
-            {
-                csv.WriteRecords(modInformationCsvList);
-                csv.Flush();
-            }
+            // List<ModsDataCsvIndex>をIEnumerable<string[]>に変換する
+            string csv = CsvWriter.WriteToText(
+                ModsDataCsvIndex.GetPropertyNames(), 
+                modInformationCsvList.Select(x => new string[] { x.Mod, x.LocalVersion, x.LatestVersion, x.DownloadedFileHash, x.Original.ToString(), x.Ma.ToString(), x.Url }),
+                ','
+                );
+
+            File.WriteAllText(csvPath, csv);
         }
 
-        public async Task<List<ModsDataCsvIndex>> Read(string csvPath)
+        public List<ModsDataCsvIndex> Read(string csvPath)
         {
-            List<ModsDataCsvIndex> output = null;
+            List<ModsDataCsvIndex> output = new List<ModsDataCsvIndex>();
 
-            var config = new CsvConfiguration(new CultureInfo("ja-JP", false))
-            {
-                HeaderValidated = null,
-                MissingFieldFound = (e) =>
-                {
-                    Logger.Instance.Info($"{e.Context}のデータが不足しています。");
-                }
-            };
+            string csv = File.ReadAllText(csvPath);
+            IEnumerable<ICsvLine> data = CsvReader.ReadFromText(csv);
 
-            using (var reader = new StreamReader(csvPath))
-            using (var csv = new CsvReader(reader, config))
+            foreach(ICsvLine item in data)
             {
-                await Task.Run(() =>
+                output.Add(new ModsDataCsvIndex()
                 {
-                    output = csv.GetRecords<ModsDataCsvIndex>().ToList();
+                    Mod = item["Mod"],
+                    LocalVersion = item["LocalVersion"],
+                    LatestVersion = item["LatestVersion"],
+                    DownloadedFileHash = item["DownloadedFileHash"],
+                    Original = System.Convert.ToBoolean(item["Original"]),
+                    Ma = System.Convert.ToBoolean(item["Ma"]),
+                    Url = item["Url"]
                 });
             }
 
@@ -73,20 +70,20 @@ namespace BSModManager.Models
 
         public class ModsDataCsvIndex
         {
-            [Name("Mod")]
             public string Mod { get; set; }
-            [Name("LocalVersion")]
             public string LocalVersion { get; set; }
-            [Name("LatestVersion")]
             public string LatestVersion { get; set; }
-            [Name("DownloadedFileHash")]
             public string DownloadedFileHash { get; set; }
-            [Name("Original")]
             public bool Original { get; set; }
-            [Name("Ma")]
             public bool Ma { get; set; }
-            [Name("Url")]
             public string Url { get; set; }
+
+            // ModsDataCsvIndexの全プロパティ名を配列にして出力する
+            public static string[] GetPropertyNames()
+            {
+                return typeof(ModsDataCsvIndex).GetProperties().Select(x => x.Name).ToArray();
+            }
+
         }
     }
 }

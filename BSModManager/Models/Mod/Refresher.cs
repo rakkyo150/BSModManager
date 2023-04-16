@@ -224,7 +224,7 @@ namespace BSModManager.Models
 
             if (AllPastVersion.Count() == 0) return;
 
-            await GetPreviousDataList(previousDataListAddedToPastModsDataCue, AllPastVersion);
+            GetPreviousDataList(previousDataListAddedToPastModsDataCue, AllPastVersion);
 
             foreach (var localMod in modsDataContainerAgent.LocalModsContainer.LocalModsData)
             {
@@ -253,7 +253,7 @@ namespace BSModManager.Models
             modsDataContainerAgent.PastModsContainer.SortByName();
         }
 
-        private async Task GetPreviousDataList(List<ModsDataCsvIndex> previousDataList, string[] AllPastVersion)
+        private void GetPreviousDataList(List<ModsDataCsvIndex> previousDataList, string[] AllPastVersion)
         {
             foreach (string pastVersion in AllPastVersion)
             {
@@ -263,7 +263,7 @@ namespace BSModManager.Models
                 if (!File.Exists(modsDataCsvPath)) continue;
 
                 List<ModsDataCsvIndex> tempDataList = new List<ModsDataCsvIndex>();
-                tempDataList = await modsDataCsv.Read(modsDataCsvPath);
+                tempDataList = modsDataCsv.Read(modsDataCsvPath);
 
                 var exceptDataList = tempDataList.Except(previousDataList);
 
