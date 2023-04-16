@@ -8,7 +8,7 @@
             <TextBlock Background="LightGray" FontSize="20">
             - BSModManager<LineBreak />
             Copyright (c) 2022 rakkyo150<LineBreak />
-            Binary : Microsoft Public License (Ms-PL)<LineBreak />
+            Binary : MIT License<LineBreak />
             Source code : MIT License<LineBreak/>
             https://github.com/rakkyo150/BSModManager/blob/master/LICENSE<LineBreak/>
             <LineBreak />
@@ -17,10 +17,10 @@
             MIT License<LineBreak/>
             https://github.com/Assistant/ModAssistant/blob/master/LICENSE <LineBreak/>
             <LineBreak/>
-            - CsvHelper<LineBreak />
-            Copyright (c) 2009-2022 Josh Close<LineBreak />
-            Microsoft Public License (Ms-PL) or Apache License, Version 2.0<LineBreak />
-            https://github.com/JoshClose/CsvHelper/blob/master/LICENSE.txt <LineBreak/>
+            - Csv<LineBreak />
+            Copyright (c) 2015 Steve Hansen<LineBreak />
+            Mit License<LineBreak />
+            https://raw.githubusercontent.com/stevehansen/csv/master/LICENSE <LineBreak/>
             <LineBreak/>
             - Microsoft.Bcl.AsyncInterfaces<LineBreak/>
             (c) Microsoft Corporation. All rights reserved.<LineBreak />
