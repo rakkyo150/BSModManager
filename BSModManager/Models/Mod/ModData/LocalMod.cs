@@ -18,10 +18,13 @@ namespace BSModManager.Models.Mods.Structures
 
         public CompositeDisposable disposables = new CompositeDisposable();
 
+        private readonly LocalModsContainer localModsContainer;
 
-        public LocalMod()
+
+        public LocalMod(LocalModsContainer localModsContainer)
         {
-            UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables).AddTo(disposables);
+            UninstallCommand.Subscribe((x) => Uninstall(x)).AddTo(disposables);
+            this.localModsContainer = localModsContainer;
         }
 
         private bool c = false;
@@ -140,8 +143,8 @@ namespace BSModManager.Models.Mods.Structures
                     File.Delete(modPendingFilePath);
                 }
 
+                localModsContainer.Remove(this);
                 Logger.Instance.Info($"Finish Deleting {modFilePath}");
-                this.Destroy();
             }
         }
     }

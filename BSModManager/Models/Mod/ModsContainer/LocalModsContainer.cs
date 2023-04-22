@@ -251,7 +251,7 @@ namespace BSModManager.Models
                         updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                     }
 
-                    LocalModsData.Add(new LocalMod()
+                    LocalModsData.Add(new LocalMod(this)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version(temp.version),
@@ -273,7 +273,7 @@ namespace BSModManager.Models
 
                 if (response == null)
                 {
-                    LocalModsData.Add(new LocalMod()
+                    LocalModsData.Add(new LocalMod(this)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version("0.0.0"),
@@ -298,7 +298,7 @@ namespace BSModManager.Models
 
                 if (previousData.DownloadedFileHash != string.Empty)
                 {
-                    LocalModsData.Add(new LocalMod()
+                    LocalModsData.Add(new LocalMod(this)
                     {
                         Mod = previousData.Mod,
                         Installed = new Version(previousData.LatestVersion),
@@ -314,7 +314,7 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                LocalModsData.Add(new LocalMod()
+                LocalModsData.Add(new LocalMod(this)
                 {
                     Mod = previousData.Mod,
                     Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),

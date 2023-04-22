@@ -2,7 +2,9 @@
 using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System.Reactive.Disposables;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BSModManager.Models
 {

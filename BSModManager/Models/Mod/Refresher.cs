@@ -17,7 +17,7 @@ namespace BSModManager.Models
     {
         private readonly MA mAMods;
         private readonly GitHubApi gitHubApi;
-        private readonly ModsContainerAgent modsDataContainerAgent;
+        private readonly ModsContainerAgent modsContainerAgent;
         private readonly ModsDataCsv modsDataCsv;
         private readonly List<IMod> removedPastModsData = new List<IMod>();
         private readonly List<IMod> removedRecommendModsData = new List<IMod>();
@@ -28,7 +28,12 @@ namespace BSModManager.Models
             mAMods = mam;
             modsDataCsv = mch;
             gitHubApi = gha;
-            modsDataContainerAgent = mdca;
+            modsContainerAgent = mdca;
+
+            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged += async (sender, e) => 
+            { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await PastModsDataRefresh(); };
+            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged += async (sender, e) =>
+            { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await RecommendModDataRefreash(); };
         }
 
         public async Task Refresh()
@@ -42,7 +47,7 @@ namespace BSModManager.Models
 
         private async Task AssistLocalModDataByRemovedPastOrRecommendMods()
         {
-            foreach (IMod localMod in modsDataContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.LocalModsData)
             {
                 if (localMod.Url != string.Empty) continue;
 
@@ -76,8 +81,8 @@ namespace BSModManager.Models
 
             Release response = await gitHubApi.GetLatestReleaseInfoAsync(modData.Url);
 
-            modsDataContainerAgent.LocalModsContainer.UpdateURL(modData);
-            modsDataContainerAgent.LocalModsContainer.UpdateOriginal(modData);
+            modsContainerAgent.LocalModsContainer.UpdateURL(modData);
+            modsContainerAgent.LocalModsContainer.UpdateOriginal(modData);
 
             if (response == null) return;
 
@@ -92,7 +97,7 @@ namespace BSModManager.Models
                 updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
             }
 
-            IMod assignedModData = new LocalMod()
+            IMod assignedModData = new LocalMod(modsContainerAgent.LocalModsContainer)
             {
                 Mod = localMod.Mod,
                 Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
@@ -101,9 +106,9 @@ namespace BSModManager.Models
             };
 
 
-            modsDataContainerAgent.LocalModsContainer.UpdateLatest(assignedModData);
-            modsDataContainerAgent.LocalModsContainer.UpdateUpdated(assignedModData);
-            modsDataContainerAgent.LocalModsContainer.UpdateDescription(assignedModData);
+            modsContainerAgent.LocalModsContainer.UpdateLatest(assignedModData);
+            modsContainerAgent.LocalModsContainer.UpdateUpdated(assignedModData);
+            modsContainerAgent.LocalModsContainer.UpdateDescription(assignedModData);
         }
 
         private async Task SetRemovedPastModsDataToLocalMods(IMod localMod)
@@ -112,8 +117,8 @@ namespace BSModManager.Models
 
             Release response = await gitHubApi.GetLatestReleaseInfoAsync(modData.Url);
 
-            modsDataContainerAgent.LocalModsContainer.UpdateURL(modData);
-            modsDataContainerAgent.LocalModsContainer.UpdateOriginal(modData);
+            modsContainerAgent.LocalModsContainer.UpdateURL(modData);
+            modsContainerAgent.LocalModsContainer.UpdateOriginal(modData);
 
             if (response == null) return;
 
@@ -131,7 +136,7 @@ namespace BSModManager.Models
                 updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
             }
 
-            IMod assignedModData = new LocalMod()
+            IMod assignedModData = new LocalMod(modsContainerAgent.LocalModsContainer)
             {
                 Mod = localMod.Mod,
                 Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
@@ -140,9 +145,9 @@ namespace BSModManager.Models
             };
 
 
-            modsDataContainerAgent.LocalModsContainer.UpdateLatest(assignedModData);
-            modsDataContainerAgent.LocalModsContainer.UpdateUpdated(assignedModData);
-            modsDataContainerAgent.LocalModsContainer.UpdateDescription(assignedModData);
+            modsContainerAgent.LocalModsContainer.UpdateLatest(assignedModData);
+            modsContainerAgent.LocalModsContainer.UpdateUpdated(assignedModData);
+            modsContainerAgent.LocalModsContainer.UpdateDescription(assignedModData);
         }
 
         private async Task RecommendModDataRefreash()
@@ -179,7 +184,7 @@ namespace BSModManager.Models
                 UpdateDataToExistsInMAVersion(notInstalledRecommendList, modAssistantMod);
             }
 
-            foreach (IMod localMod in modsDataContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.LocalModsData)
             {
                 if (!notInstalledRecommendList.Any(x => x.Mod == localMod.Mod)) continue;
                 if (!(notInstalledRecommendList.First(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇"))) continue;
@@ -193,18 +198,18 @@ namespace BSModManager.Models
 
                 notInstalledRecommendList.Remove(notInstalledRecommendList.First(x => x.Mod == localMod.Mod));
 
-                if (!modsDataContainerAgent.RecommendModsContainer.ExistsSameModNameData(localMod)) continue;
+                if (!modsContainerAgent.RecommendModsContainer.ExistsSameModNameData(localMod)) continue;
 
-                modsDataContainerAgent.RecommendModsContainer.Remove(localMod);
+                modsContainerAgent.RecommendModsContainer.Remove(localMod);
             }
 
-            await AddRemoteDataToModsData(modsDataContainerAgent.RecommendModsContainer, notInstalledRecommendList);
+            await AddRemoteDataToModsData(modsContainerAgent.RecommendModsContainer, notInstalledRecommendList);
 
             foreach (RecommendMod a in rawRecommendModData)
             {
-                if (modsDataContainerAgent.RecommendModsContainer.ExistsSameModNameData(a))
+                if (modsContainerAgent.RecommendModsContainer.ExistsSameModNameData(a))
                 {
-                    modsDataContainerAgent.RecommendModsContainer.UpdateDescription(new RecommendMod(this)
+                    modsContainerAgent.RecommendModsContainer.UpdateDescription(new RecommendMod(this)
                     {
                         Mod = a.Mod,
                         Description = a.Description
@@ -212,7 +217,7 @@ namespace BSModManager.Models
                 }
             }
 
-            modsDataContainerAgent.RecommendModsContainer.SortByName();
+            modsContainerAgent.RecommendModsContainer.SortByName();
         }
 
         private async Task PastModsDataRefresh()
@@ -226,7 +231,7 @@ namespace BSModManager.Models
 
             GetPreviousDataList(previousDataListAddedToPastModsDataCue, AllPastVersion);
 
-            foreach (IMod localMod in modsDataContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.LocalModsData)
             {
                 if (!previousDataListAddedToPastModsDataCue.Any(x => x.Mod == localMod.Mod)) continue;
                 if (!previousDataListAddedToPastModsDataCue.Find(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇")) continue;
@@ -240,17 +245,17 @@ namespace BSModManager.Models
 
                 previousDataListAddedToPastModsDataCue.Remove(previousDataListAddedToPastModsDataCue.Find(x => x.Mod == localMod.Mod));
 
-                if (!modsDataContainerAgent.PastModsContainer.ExistsSameModNameData(localMod)) continue;
+                if (!modsContainerAgent.PastModsContainer.ExistsSameModNameData(localMod)) continue;
 
                 // MAや手動でMod追加したときの更新のため
-                modsDataContainerAgent.PastModsContainer.Remove(localMod);
+                modsContainerAgent.PastModsContainer.Remove(localMod);
             }
 
             if (NoPreviousData(previousDataListAddedToPastModsDataCue)) return;
 
-            await AddRemoteDataToModsData(modsDataContainerAgent.PastModsContainer, previousDataListAddedToPastModsDataCue);
+            await AddRemoteDataToModsData(modsContainerAgent.PastModsContainer, previousDataListAddedToPastModsDataCue);
 
-            modsDataContainerAgent.PastModsContainer.SortByName();
+            modsContainerAgent.PastModsContainer.SortByName();
         }
 
         private void GetPreviousDataList(List<ModsDataCsvIndex> previousDataList, string[] AllPastVersion)
@@ -390,20 +395,20 @@ namespace BSModManager.Models
 
             UpdateLocalModsData(localModFilesData);
 
-            await modsDataContainerAgent.LocalModsContainer.SortByNameAndSupplementUrl();
+            await modsContainerAgent.LocalModsContainer.SortByNameAndSupplementUrl();
         }
 
         private void UpdateLocalModsData(List<LocalModFile> localModsFileData)
         {
             foreach (LocalModFile localModFileData in localModsFileData)
             {
-                if (modsDataContainerAgent.LocalModsContainer.ShouldChangeInstalledVersionToFileItselfVersion(new LocalMod()
+                if (modsContainerAgent.LocalModsContainer.ShouldChangeInstalledVersionToFileItselfVersion(new LocalMod(modsContainerAgent.LocalModsContainer)
                 {
                     Mod = localModFileData.ModName,
                     DownloadedFileHash = localModFileData.FileHash
                 }))
                 {
-                    modsDataContainerAgent.LocalModsContainer.UpdateInstalled(new LocalMod()
+                    modsContainerAgent.LocalModsContainer.UpdateInstalled(new LocalMod(modsContainerAgent.LocalModsContainer)
                     {
                         Mod = localModFileData.ModName,
                         Installed = localModFileData.Version
@@ -414,7 +419,7 @@ namespace BSModManager.Models
 
                 if (!mAMods.ExistsData(localModFileData.ModName))
                 {
-                    modsDataContainerAgent.LocalModsContainer.Add(new LocalMod()
+                    modsContainerAgent.LocalModsContainer.Add(new LocalMod(modsContainerAgent.LocalModsContainer)
                     {
                         Mod = localModFileData.ModName,
                         Installed = localModFileData.Version
@@ -437,7 +442,7 @@ namespace BSModManager.Models
                     updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                 }
 
-                modsDataContainerAgent.LocalModsContainer.Add(new LocalMod()
+                modsContainerAgent.LocalModsContainer.Add(new LocalMod(modsContainerAgent.LocalModsContainer)
                 {
                     Mod = localModFileData.ModName,
                     Installed = localModFileData.Version,
@@ -456,7 +461,7 @@ namespace BSModManager.Models
             if (NoLocalModsData()) return;
 
             List<IMod> removeList = new List<IMod>();
-            foreach (IMod data in modsDataContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod data in modsContainerAgent.LocalModsContainer.LocalModsData)
             {
                 if (HasRemovedFromLocal(localModFilesData, data))
                 {
@@ -468,7 +473,7 @@ namespace BSModManager.Models
 
             foreach (IMod removeData in removeList)
             {
-                modsDataContainerAgent.LocalModsContainer.Remove(removeData);
+                modsContainerAgent.LocalModsContainer.Remove(removeData);
             }
         }
 
@@ -540,7 +545,7 @@ namespace BSModManager.Models
 
         private bool NoLocalModsData()
         {
-            return modsDataContainerAgent.LocalModsContainer.LocalModsData.Count == 0;
+            return modsContainerAgent.LocalModsContainer.LocalModsData.Count == 0;
         }
 
         private bool NoPreviousData(List<ModsDataCsvIndex> previousDataListAddedToPastModsData)

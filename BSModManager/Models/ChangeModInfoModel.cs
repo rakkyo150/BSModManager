@@ -48,7 +48,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref url, value);
-                modsContainerAgent.ActiveMods.UpdateURL(new LocalMod()
+                modsContainerAgent.ActiveMods.UpdateURL(new LocalMod(modsContainerAgent.LocalModsContainer)
                 {
                     Mod = nowModName,
                     Url = value
@@ -63,7 +63,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref updated, value);
-                modsContainerAgent.ActiveMods.UpdateUpdated(new LocalMod()
+                modsContainerAgent.ActiveMods.UpdateUpdated(new LocalMod(modsContainerAgent.LocalModsContainer)
                 {
                     Mod = nowModName,
                     Updated = value
@@ -81,7 +81,7 @@ namespace BSModManager.Models
                 SetProperty(ref original, value);
                 if (Original)
                 {
-                    modsContainerAgent.ActiveMods.UpdateOriginal(new LocalMod()
+                    modsContainerAgent.ActiveMods.UpdateOriginal(new LocalMod(modsContainerAgent.LocalModsContainer)
                     {
                         Mod = nowModName,
                         Original = "〇"
@@ -90,7 +90,7 @@ namespace BSModManager.Models
                 }
                 else
                 {
-                    modsContainerAgent.ActiveMods.UpdateOriginal(new LocalMod()
+                    modsContainerAgent.ActiveMods.UpdateOriginal(new LocalMod(modsContainerAgent.LocalModsContainer)
                     {
                         Mod = nowModName,
                         Original = "×"
@@ -122,7 +122,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref latest, value);
-                modsContainerAgent.ActiveMods.UpdateLatest(new LocalMod()
+                modsContainerAgent.ActiveMods.UpdateLatest(new LocalMod(modsContainerAgent.LocalModsContainer)
                 {
                     Mod = nowModName,
                     Latest = value
@@ -137,7 +137,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref mA, value);
-                modsContainerAgent.ActiveMods.UpdateMA(new LocalMod()
+                modsContainerAgent.ActiveMods.UpdateMA(new LocalMod(modsContainerAgent.LocalModsContainer)
                 {
                     Mod = nowModName,
                     MA = value
@@ -162,7 +162,7 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref description, value);
-                modsContainerAgent.ActiveMods.UpdateDescription(new LocalMod()
+                modsContainerAgent.ActiveMods.UpdateDescription(new LocalMod(modsContainerAgent.LocalModsContainer)
                 {
                     Mod = nowModName,
                     Description = value
