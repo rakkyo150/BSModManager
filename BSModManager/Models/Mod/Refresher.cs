@@ -13,7 +13,7 @@ using static BSModManager.Models.ModsDataCsv;
 
 namespace BSModManager.Models
 {
-    public class Refresher
+    public class Refresher: IDisposable
     {
         private readonly MA mAMods;
         private readonly GitHubApi gitHubApi;
@@ -564,6 +564,27 @@ namespace BSModManager.Models
             previousDataList.Find(x => x.Mod == modAssistantMod.name).Ma = true;
             previousDataList.Find(x => x.Mod == modAssistantMod.name).LatestVersion = modAssistantMod.version;
             previousDataList.Find(x => x.Mod == modAssistantMod.name).Url = modAssistantMod.link;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing) { }
+
+            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged -= async (sender, e) =>
+            { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await PastModsDataRefresh(); };
+            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged -= async (sender, e) =>
+            { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await RecommendModDataRefreash(); };
+        }
+
+        ~Refresher()
+        {
+            Dispose(false);
         }
     }
 }
