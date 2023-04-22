@@ -112,7 +112,7 @@
     <Compile Include="Models\Mod\ModsContainer\RecommendModsContainer.cs" />
     <Compile Include="Models\MyselfUpdater.cs" />
     <Compile Include="Models\Mod\Refresher.cs" />
-    <Compile Include="Models\Mod\ModData\ModDataChanger.cs" />
+    <Compile Include="Models\Mod\ModDataChanger.cs" />
     <Compile Include="Static\FileHashProvider.cs" />
     <Compile Include="Static\VersionExtractor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

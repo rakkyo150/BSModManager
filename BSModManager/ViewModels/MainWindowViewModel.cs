@@ -118,7 +118,7 @@ namespace BSModManager.ViewModels
         }
 
         readonly IDialogService dialogService;
-        readonly ModDataChanger changeModInfoModel;
+        readonly Models.ModDataChanger changeModInfoModel;
         readonly ModsDataCsv modCsv;
         readonly InitialSetup initializer;
         readonly MyselfUpdater mySelfUpdater;
@@ -155,7 +155,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ModInstaller mi, Refresher r, ModDataChanger cmim, ModsContainerAgent mmc, MyselfUpdater myu,
+            ModInstaller mi, Refresher r, Models.ModDataChanger cmim, ModsContainerAgent mmc, MyselfUpdater myu,
             ModsDataCsv mc, InitialSetup i, MyselfUpdater u, ModUpdater mu, MA mam)
         {
             modCsv = mc;
@@ -218,8 +218,6 @@ namespace BSModManager.ViewModels
                     Logger.Instance.Info("Finish Cleanup ModsTemp");
 
                     mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
-
-                    await modsDataContainerAgent.LocalModsContainer.InitializeFromCsvData();
 
                     await refresher.Refresh();
 

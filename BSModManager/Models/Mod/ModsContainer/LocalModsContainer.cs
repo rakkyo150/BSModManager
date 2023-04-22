@@ -82,8 +82,45 @@ namespace BSModManager.Models
         public void SortByName()
         {
             var sorted = this.LocalModsData.OrderBy(x => x.Mod).ToList();
-            this.LocalModsData.Clear();
+            LocalModsData.Clear();
             foreach (var item in sorted) this.LocalModsData.Add(item);
+        }
+
+        public async Task SortByNameAndSupplementUrl()
+        {
+            var sorted = LocalModsData.OrderBy(x => x.Mod).ToList();
+            LocalModsData.Clear();
+            foreach (var sortedMod in sorted)
+            {
+                if(sortedMod.Url != string.Empty || sortedMod.MA != "×")
+                {
+                    LocalModsData.Add(sortedMod);
+                    continue;
+                }
+
+                sortedMod.Url = await gitHubApi.GetTopRepository(sortedMod.Mod);
+
+                Release response = await gitHubApi.GetLatestReleaseInfoAsync(sortedMod.Url);
+
+                if (response == null)
+                {
+                    LocalModsData.Add(sortedMod);
+
+                    continue;
+                }
+
+                if ((now - response.CreatedAt).Days >= 1)
+                {
+                    sortedMod.Updated = (now - response.CreatedAt).Days + "D ago";
+                }
+                else
+                {
+                    sortedMod.Updated = (now - response.CreatedAt).Hours + "H" + (now - response.CreatedAt).Minutes + "m ago";
+                }
+
+                sortedMod.Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName);
+                LocalModsData.Add(sortedMod);
+            }
         }
 
         public void Add(IMod modData)
@@ -228,7 +265,6 @@ namespace BSModManager.Models
 
                     continue;
                 }
-
 
                 Release response = await gitHubApi.GetLatestReleaseInfoAsync(previousData.Url);
                 string original = null;

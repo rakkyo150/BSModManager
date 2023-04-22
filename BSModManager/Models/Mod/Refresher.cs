@@ -33,7 +33,7 @@ namespace BSModManager.Models
 
         public async Task Refresh()
         {
-            LocalModsDataRefresh();
+            await LocalModsDataRefresh();
             await PastModsDataRefresh();
             await RecommendModDataRefreash();
 
@@ -382,15 +382,15 @@ namespace BSModManager.Models
             }
         }
 
-        private void LocalModsDataRefresh()
+        private async Task LocalModsDataRefresh()
         {
             List<LocalModFile> localModFilesData = GetLocalModFilesData();
 
-            UpdateLocalModsData(localModFilesData);
-
             RemoveNotExistingModsData(localModFilesData);
 
-            modsDataContainerAgent.LocalModsContainer.SortByName();
+            UpdateLocalModsData(localModFilesData);
+
+            await modsDataContainerAgent.LocalModsContainer.SortByNameAndSupplementUrl();
         }
 
         private void UpdateLocalModsData(List<LocalModFile> localModsFileData)

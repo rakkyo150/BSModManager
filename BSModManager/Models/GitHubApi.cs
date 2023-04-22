@@ -11,6 +11,37 @@ namespace BSModManager.Models
 {
     public class GitHubApi : BindableBase
     {
+        public async Task<string> GetTopRepository(string modName)
+        {
+            try
+            {
+                GitHubClient gitHub;
+
+                if (Config.Instance.GitHubToken == string.Empty)
+                {
+                    gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"));
+                }
+                else
+                {
+                    var credential = new Credentials(Config.Instance.GitHubToken);
+                    gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
+                    {
+                        Credentials = credential
+                    };
+                }
+
+                SearchRepositoriesRequest srr = new SearchRepositoriesRequest(modName);
+                SearchRepositoryResult result = await gitHub.Search.SearchRepo(srr);
+
+                return result.Items[0].HtmlUrl;
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Debug(ex.Message);
+                return string.Empty;
+            }
+        }
+        
         public async Task DownloadAsync(string url, string destDirFullPath)
         {
             Release response = await GetLatestReleaseInfoAsync(url);
@@ -36,12 +67,12 @@ namespace BSModManager.Models
 
                 if (Config.Instance.GitHubToken == string.Empty)
                 {
-                    gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"));
+                    gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"));
                 }
                 else
                 {
                     var credential = new Credentials(Config.Instance.GitHubToken);
-                    gitHub = new GitHubClient(new ProductHeaderValue("GitHubModUpdateChecker"))
+                    gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
                     {
                         Credentials = credential
                     };
