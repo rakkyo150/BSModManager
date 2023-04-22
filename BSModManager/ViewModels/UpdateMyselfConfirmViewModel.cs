@@ -10,9 +10,9 @@ namespace BSModManager.ViewModels
 {
     public class UpdateMyselfConfirmViewModel : BindableBase, IDestructible
     {
-        readonly MyselfUpdater updater;
+        private readonly MyselfUpdater updater;
 
-        CompositeDisposable Disposables { get; } = new CompositeDisposable();
+        private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReadOnlyReactivePropertySlim<Version> LatestMyselfVersion { get; }
 

@@ -36,7 +36,7 @@ namespace BSModManager.Static
 
         public string Select(string previouPath)
         {
-            var dialog = new CommonOpenFileDialog
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
                 IsFolderPicker = true
             };

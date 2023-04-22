@@ -9,12 +9,11 @@ namespace BSModManager.Models
     public class ModsContainerAgent : BindableBase, IDestructible
     {
         private IModsContainer activeMods;
+        private readonly LocalModsContainer localMods;
+        private readonly PastModsContainer pastMods;
+        private readonly RecommendModsContainer recommendMods;
 
-        readonly LocalModsContainer localMods;
-        readonly PastModsContainer pastMods;
-        readonly RecommendModsContainer recommendMods;
-
-        CompositeDisposable Disposables { get; } = new CompositeDisposable();
+        private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         internal ReactiveProperty<int> InstallTabIndex { get; set; } = new ReactiveProperty<int>(0);
         internal ReactiveProperty<bool> ChangeModInfoButtonEnable { get; set; } = new ReactiveProperty<bool>(true);

@@ -8,7 +8,7 @@ namespace BSModManager.ViewModels
 {
     public class UpdateTabViewModel : BindableBase
     {
-        readonly ModsContainerAgent modsDataContainerAgent;
+        private readonly ModsContainerAgent modsDataContainerAgent;
 
         public ObservableCollection<IMod> LocalModsContainer { get; }
 

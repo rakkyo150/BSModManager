@@ -18,7 +18,7 @@ namespace BSModManager.ViewModels
 
         public DelegateCommand LoadedCommand { get; }
 
-        readonly ModsContainerAgent modsDataContainerAgent;
+        private readonly ModsContainerAgent modsDataContainerAgent;
 
         public InstallTabViewModel(ModsContainerAgent mdca)
         {

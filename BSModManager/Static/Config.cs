@@ -101,7 +101,7 @@ namespace BSModManager.Models
         {
             try
             {
-                var credential = new Credentials(GitHubToken);
+                Credentials credential = new Credentials(GitHubToken);
                 GitHubClient gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
                 {
                     Credentials = credential
@@ -110,7 +110,7 @@ namespace BSModManager.Models
                 string owner = "rakkyo150";
                 string name = "BSModManager";
 
-                var response = await gitHub.Repository.Release.GetLatest(owner, name);
+                Release response = await gitHub.Repository.Release.GetLatest(owner, name);
                 return true;
             }
             catch (Exception ex)
@@ -129,7 +129,7 @@ namespace BSModManager.Models
                 StreamReader re = new StreamReader(FilePath.Instance.configFilePath);
                 string _jsonStr = re.ReadToEnd();
                 re.Close();
-                var _jsonDyn = JsonConvert.DeserializeObject<Dictionary<string, string>>(_jsonStr);
+                Dictionary<string, string> _jsonDyn = JsonConvert.DeserializeObject<Dictionary<string, string>>(_jsonStr);
 
                 if (_jsonDyn != null)
                 {

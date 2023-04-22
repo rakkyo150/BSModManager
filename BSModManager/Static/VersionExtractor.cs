@@ -15,8 +15,8 @@ namespace BSModManager.Models
 
             if (!File.Exists(filename)) return "---";
 
-            using (var stream = File.OpenRead(filename))
-            using (var reader = new BinaryReader(stream, Encoding.UTF8))
+            using (FileStream stream = File.OpenRead(filename))
+            using (BinaryReader reader = new BinaryReader(stream, Encoding.UTF8))
             {
                 const string key = "public.app-category.games";
                 int pos = 0;
@@ -32,16 +32,16 @@ namespace BSModManager.Models
 
                 while (stream.Position < stream.Length)
                 {
-                    var current = (char)reader.ReadByte();
+                    char current = (char)reader.ReadByte();
                     if (char.IsDigit(current))
                         break;
                 }
 
-                var rewind = -sizeof(int) - sizeof(byte);
+                int rewind = -sizeof(int) - sizeof(byte);
                 stream.Seek(rewind, SeekOrigin.Current); // rewind to the string length
 
-                var strlen = reader.ReadInt32();
-                var strbytes = reader.ReadBytes(strlen);
+                int strlen = reader.ReadInt32();
+                byte[] strbytes = reader.ReadBytes(strlen);
 
                 return Encoding.UTF8.GetString(strbytes);
             }

@@ -70,7 +70,7 @@ namespace BSModManager.Models
             {
                 try
                 {
-                    var resp = await httpClient.GetStringAsync(modAssistantModInformationUrl);
+                    string resp = await httpClient.GetStringAsync(modAssistantModInformationUrl);
                     modAssistantMod = JsonConvert.DeserializeObject<MAMod[]>(resp);
 
                     Version retryGameVersion = new Version(gameVersion);
@@ -88,11 +88,11 @@ namespace BSModManager.Models
 
                         string retryModAssistantModInformationUrl = $"https://beatmods.com/api/v1/mod?status=approved&gameVersion={retryGameVersion}";
 
-                        var retryResp = await httpClient.GetStringAsync(retryModAssistantModInformationUrl);
+                        string retryResp = await httpClient.GetStringAsync(retryModAssistantModInformationUrl);
                         modAssistantMod = JsonConvert.DeserializeObject<MAMod[]>(retryResp);
                     }
 
-                    foreach (var mod in modAssistantMod)
+                    foreach (MAMod mod in modAssistantMod)
                     {
                         // Mod名とファイル名が違う、よく使うModに対応
                         if (mod.name == "BeatSaberMarkupLanguage")

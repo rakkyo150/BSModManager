@@ -24,7 +24,7 @@ namespace BSModManager.Models
             int i = 0;
             if (PastModsData.Count(x => x.Checked == true) * 2 > PastModsData.Count)
             {
-                foreach (var _ in PastModsData)
+                foreach (IMod _ in PastModsData)
                 {
                     PastModsData[i].Checked = false;
                     i++;
@@ -32,7 +32,7 @@ namespace BSModManager.Models
                 return;
             }
 
-            foreach (var _ in PastModsData)
+            foreach (IMod _ in PastModsData)
             {
                 PastModsData[i].Checked = true;
                 i++;
@@ -41,7 +41,7 @@ namespace BSModManager.Models
 
         public void ModRepositoryOpen()
         {
-            foreach (var a in PastModsData)
+            foreach (IMod a in PastModsData)
             {
                 if (!a.Checked) continue;
 
@@ -69,9 +69,9 @@ namespace BSModManager.Models
 
         public void SortByName()
         {
-            var sorted = this.PastModsData.OrderBy(x => x.Mod).ToList();
+            List<IMod> sorted = this.PastModsData.OrderBy(x => x.Mod).ToList();
             this.PastModsData.Clear();
-            foreach (var item in sorted) this.PastModsData.Add(item);
+            foreach (IMod item in sorted) this.PastModsData.Add(item);
         }
 
         public void Add(IMod modData)

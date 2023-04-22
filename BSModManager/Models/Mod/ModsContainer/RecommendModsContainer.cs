@@ -24,7 +24,7 @@ namespace BSModManager.Models
             int i = 0;
             if (RecommendModsData.Count(x => x.Checked == true) * 2 > RecommendModsData.Count)
             {
-                foreach (var _ in RecommendModsData)
+                foreach (IMod _ in RecommendModsData)
                 {
                     RecommendModsData[i].Checked = false;
                     i++;
@@ -32,7 +32,7 @@ namespace BSModManager.Models
                 return;
             }
 
-            foreach (var _ in RecommendModsData)
+            foreach (IMod _ in RecommendModsData)
             {
                 RecommendModsData[i].Checked = true;
                 i++;
@@ -41,7 +41,7 @@ namespace BSModManager.Models
 
         public void ModRepositoryOpen()
         {
-            foreach (var a in RecommendModsData)
+            foreach (IMod a in RecommendModsData)
             {
                 if (!a.Checked) continue;
 
@@ -69,9 +69,9 @@ namespace BSModManager.Models
 
         public void SortByName()
         {
-            var sorted = this.RecommendModsData.OrderBy(x => x.Mod).ToList();
+            List<IMod> sorted = this.RecommendModsData.OrderBy(x => x.Mod).ToList();
             this.RecommendModsData.Clear();
-            foreach (var item in sorted) this.RecommendModsData.Add(item);
+            foreach (IMod item in sorted) this.RecommendModsData.Add(item);
         }
 
         public void Add(IMod modData)

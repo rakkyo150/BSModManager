@@ -23,7 +23,7 @@ namespace BSModManager.Models
                 }
                 else
                 {
-                    var credential = new Credentials(Config.Instance.GitHubToken);
+                    Credentials credential = new Credentials(Config.Instance.GitHubToken);
                     gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
                     {
                         Credentials = credential
@@ -33,8 +33,8 @@ namespace BSModManager.Models
                 SearchRepositoriesRequest srr = new SearchRepositoriesRequest(modName);
                 SearchRepositoryResult result = await gitHub.Search.SearchRepo(srr);
 
-                if(result.TotalCount == 0) return string.Empty;
-                
+                if (result.TotalCount == 0) return string.Empty;
+
                 return result.Items[0].HtmlUrl;
             }
             catch (Exception ex)
@@ -43,13 +43,13 @@ namespace BSModManager.Models
                 return string.Empty;
             }
         }
-        
+
         public async Task DownloadAsync(string url, string destDirFullPath)
         {
             Release response = await GetLatestReleaseInfoAsync(url);
             if (response == null) return;
 
-            foreach (var item in response.Assets)
+            foreach (ReleaseAsset item in response.Assets)
             {
                 Logger.Instance.Info($"{item.Name}をダウンロード中");
                 bool success = await StreamingDownloadAsync(item.BrowserDownloadUrl, item.Name, destDirFullPath);
@@ -73,7 +73,7 @@ namespace BSModManager.Models
                 }
                 else
                 {
-                    var credential = new Credentials(Config.Instance.GitHubToken);
+                    Credentials credential = new Credentials(Config.Instance.GitHubToken);
                     gitHub = new GitHubClient(new ProductHeaderValue("BSModManager"))
                     {
                         Credentials = credential
@@ -92,7 +92,7 @@ namespace BSModManager.Models
                 owner = temp.Substring(0, nextSlashPosition);
                 name = temp.Substring(nextSlashPosition + 1);
 
-                var response = await gitHub.Repository.Release.GetLatest(owner, name);
+                Release response = await gitHub.Repository.Release.GetLatest(owner, name);
                 return response;
             }
             catch (Exception ex)
@@ -107,11 +107,11 @@ namespace BSModManager.Models
         private async Task<bool> StreamingDownloadAsync(string uri, string name, string destDirFullPath)
         {
             using (HttpClient httpClient = new HttpClient())
-            using (var request = new HttpRequestMessage(HttpMethod.Get, new Uri(uri)))
+            using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(uri)))
             {
                 try
                 {
-                    using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
+                    using (HttpResponseMessage response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
                     {
                         if (response.StatusCode != HttpStatusCode.OK)
                         {
@@ -119,15 +119,15 @@ namespace BSModManager.Models
                             return false;
                         }
 
-                        using (var content = response.Content)
-                        using (var stream = await content.ReadAsStreamAsync())
+                        using (HttpContent content = response.Content)
+                        using (Stream stream = await content.ReadAsStreamAsync())
                         {
                             if (!Directory.Exists(destDirFullPath))
                             {
                                 Directory.CreateDirectory(destDirFullPath);
                             }
                             string pluginDownloadPath = Path.Combine(destDirFullPath, name);
-                            using (var fileStream = new FileStream(pluginDownloadPath, System.IO.FileMode.Create, FileAccess.Write, FileShare.None))
+                            using (FileStream fileStream = new FileStream(pluginDownloadPath, System.IO.FileMode.Create, FileAccess.Write, FileShare.None))
                             {
                                 await stream.CopyToAsync(fileStream);
                             }

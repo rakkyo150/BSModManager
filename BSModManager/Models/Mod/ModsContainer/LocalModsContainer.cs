@@ -17,12 +17,11 @@ namespace BSModManager.Models
     public class LocalModsContainer : BindableBase, IModsContainer
     {
         public ObservableCollection<IMod> LocalModsData = new ObservableCollection<IMod>();
-
-        readonly GitHubApi gitHubApi;
-        readonly MA mAMods;
-        readonly ModsDataCsv modsDataCsv;
-        readonly DateTime now = DateTime.Now;
-        string updated = string.Empty;
+        private readonly GitHubApi gitHubApi;
+        private readonly MA mAMods;
+        private readonly ModsDataCsv modsDataCsv;
+        private readonly DateTime now = DateTime.Now;
+        private string updated = string.Empty;
 
         public LocalModsContainer(GitHubApi gha, MA mam, ModsDataCsv mdc)
         {
@@ -36,7 +35,7 @@ namespace BSModManager.Models
             int i = 0;
             if (LocalModsData.Count(x => x.Checked == true) * 2 > LocalModsData.Count)
             {
-                foreach (var _ in LocalModsData)
+                foreach (IMod _ in LocalModsData)
                 {
                     LocalModsData[i].Checked = false;
                     i++;
@@ -44,7 +43,7 @@ namespace BSModManager.Models
                 return;
             }
 
-            foreach (var _ in LocalModsData)
+            foreach (IMod _ in LocalModsData)
             {
                 LocalModsData[i].Checked = true;
                 i++;
@@ -53,7 +52,7 @@ namespace BSModManager.Models
 
         public void ModRepositoryOpen()
         {
-            foreach (var a in LocalModsData)
+            foreach (IMod a in LocalModsData)
             {
                 if (!a.Checked) continue;
 
@@ -81,18 +80,18 @@ namespace BSModManager.Models
 
         public void SortByName()
         {
-            var sorted = this.LocalModsData.OrderBy(x => x.Mod).ToList();
+            List<IMod> sorted = this.LocalModsData.OrderBy(x => x.Mod).ToList();
             LocalModsData.Clear();
-            foreach (var item in sorted) this.LocalModsData.Add(item);
+            foreach (IMod item in sorted) this.LocalModsData.Add(item);
         }
 
         public async Task SortByNameAndSupplementUrl()
         {
-            var sorted = LocalModsData.OrderBy(x => x.Mod).ToList();
+            List<IMod> sorted = LocalModsData.OrderBy(x => x.Mod).ToList();
             LocalModsData.Clear();
-            foreach (var sortedMod in sorted)
+            foreach (IMod sortedMod in sorted)
             {
-                if(sortedMod.Url != string.Empty || sortedMod.MA != "×")
+                if (sortedMod.Url != string.Empty || sortedMod.MA != "×")
                 {
                     LocalModsData.Add(sortedMod);
                     continue;
@@ -234,13 +233,13 @@ namespace BSModManager.Models
             if (!File.Exists(modsDataCsvPath)) return;
 
             previousDataList = modsDataCsv.Read(modsDataCsvPath);
-            foreach (var previousData in previousDataList)
+            foreach (ModsDataCsvIndex previousData in previousDataList)
             {
                 if (ExistsModDataInMA(previousData))
                 {
                     if (!previousData.Original) continue;
 
-                    var temp = Array.Find(mAMods.ModAssistantAllMods, x => x.name == previousData.Mod);
+                    MA.MAMod temp = Array.Find(mAMods.ModAssistantAllMods, x => x.name == previousData.Mod);
 
                     DateTime mAUpdatedAt = DateTime.Parse(temp.updatedDate);
                     if ((now - mAUpdatedAt).Days >= 1)

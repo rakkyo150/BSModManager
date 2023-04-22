@@ -14,7 +14,7 @@ namespace BSModManager.ViewModels
 {
     public class InitialSettingViewModel : BindableBase, IDialogAware, IDestructible
     {
-        CompositeDisposable Disposables { get; } = new CompositeDisposable();
+        private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReactiveProperty<string> VerifyBSFolder { get; }
         public ReactiveProperty<Brush> VerifyBSFolderColor { get; }

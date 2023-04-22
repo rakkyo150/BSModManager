@@ -10,10 +10,10 @@ namespace BSModManager.Models
 {
     public class ModUpdater
     {
-        readonly GitHubApi gitHubApi;
-        readonly ModDisposer modDisposer;
-        readonly Refresher refresher;
-        readonly ModsContainerAgent modsDataContainerAgent;
+        private readonly GitHubApi gitHubApi;
+        private readonly ModDisposer modDisposer;
+        private readonly Refresher refresher;
+        private readonly ModsContainerAgent modsDataContainerAgent;
 
         public ModUpdater(GitHubApi gha, ModDisposer md, Refresher r, ModsContainerAgent mdca)
         {
@@ -31,7 +31,7 @@ namespace BSModManager.Models
 
             if (CheckedLocalModsData.Count() == 0) return;
 
-            foreach (var checkedLocalModData in CheckedLocalModsData)
+            foreach (IMod checkedLocalModData in CheckedLocalModsData)
             {
                 if (checkedLocalModData.Installed >= checkedLocalModData.Latest) continue;
 

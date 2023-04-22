@@ -26,7 +26,7 @@ namespace BSModManager.Models.Mods.Structures
         private string description = "?";
         private Brush installedColor = Brushes.Green;
         private string url = string.Empty;
-        readonly Refresher refresher;
+        private readonly Refresher refresher;
 
         public ReactiveCommand<string> UninstallCommand { get; } = new ReactiveCommand<string>();
 

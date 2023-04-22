@@ -21,7 +21,7 @@ namespace BSModManager.ViewModels
 {
     public class MainWindowViewModel : BindableBase, IDestructible
     {
-        CompositeDisposable Disposables { get; } = new CompositeDisposable();
+        private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         // https://whitedog0215.hatenablog.jp/entry/2020/03/17/221403
         public ReadOnlyReactivePropertySlim<string> Debug { get; }
@@ -117,17 +117,17 @@ namespace BSModManager.ViewModels
             set { SetProperty(ref refreshButtonEnable, value); }
         }
 
-        readonly IDialogService dialogService;
-        readonly Models.ChangeModInfoModel changeModInfoModel;
-        readonly ModsDataCsv modCsv;
-        readonly InitialSetup initializer;
-        readonly MyselfUpdater mySelfUpdater;
-        readonly ModUpdater modUpdater;
-        readonly MA mAMod;
-        readonly ModInstaller modInstaller;
-        readonly Refresher refresher;
-        readonly ModsContainerAgent modsDataContainerAgent;
-        readonly MyselfUpdater myselfUpdater;
+        private readonly IDialogService dialogService;
+        private readonly Models.ChangeModInfoModel changeModInfoModel;
+        private readonly ModsDataCsv modCsv;
+        private readonly InitialSetup initializer;
+        private readonly MyselfUpdater mySelfUpdater;
+        private readonly ModUpdater modUpdater;
+        private readonly MA mAMod;
+        private readonly ModInstaller modInstaller;
+        private readonly Refresher refresher;
+        private readonly ModsContainerAgent modsDataContainerAgent;
+        private readonly MyselfUpdater myselfUpdater;
 
         public IRegionManager RegionManager { get; private set; }
         public DelegateCommand<string> ShowUpdateTabViewCommand { get; private set; }

@@ -15,10 +15,10 @@ namespace BSModManager.Models
 {
     public class ChangeModInfoModel : BindableBase
     {
-        readonly IDialogService dialogService;
-        readonly GitHubApi gitHubManager;
-        readonly MA mAMod;
-        readonly ModsContainerAgent modsContainerAgent;
+        private readonly IDialogService dialogService;
+        private readonly GitHubApi gitHubManager;
+        private readonly MA mAMod;
+        private readonly ModsContainerAgent modsContainerAgent;
 
         private List<IMod> AllCheckedMod = new List<IMod>();
         private int AllCheckedModCount = int.MinValue;
@@ -319,7 +319,7 @@ namespace BSModManager.Models
             if (response != null)
             {
                 string releaseBody = response.Body;
-                var releaseCreatedAt = response.CreatedAt;
+                DateTimeOffset releaseCreatedAt = response.CreatedAt;
                 DateTimeOffset now = DateTimeOffset.UtcNow;
 
                 Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName);

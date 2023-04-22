@@ -14,7 +14,7 @@ namespace BSModManager.Static
         public string SelectFile(string previouPath)
         {
             // ダイアログのインスタンスを生成
-            var dialog = new OpenFileDialog
+            OpenFileDialog dialog = new OpenFileDialog
             {
                 // ファイルの種類を設定
                 Filter = "exeファイル (*.exe)|*.exe"

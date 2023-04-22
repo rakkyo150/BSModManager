@@ -11,9 +11,9 @@ namespace BSModManager.Models
 {
     public class MyselfUpdater : BindableBase
     {
-        readonly string myselfUrl = "https://github.com/rakkyo150/BSModManager";
+        private readonly string myselfUrl = "https://github.com/rakkyo150/BSModManager";
         private Version latestMyselfVersion = new Version("0.0.0");
-        readonly GitHubApi gitHubApi;
+        private readonly GitHubApi gitHubApi;
 
         public MyselfUpdater(GitHubApi gha)
         {
@@ -80,12 +80,12 @@ namespace BSModManager.Models
         {
             try
             {
-                using (var fs = File.Open(zipFileName, System.IO.FileMode.Open))
-                using (var zip = new ZipArchive(fs))
+                using (FileStream fs = File.Open(zipFileName, System.IO.FileMode.Open))
+                using (ZipArchive zip = new ZipArchive(fs))
                 {
-                    foreach (var file in zip.Entries)
+                    foreach (ZipArchiveEntry file in zip.Entries)
                     {
-                        var installPath = Path.Combine(destDirFullPath, file.FullName);
+                        string installPath = Path.Combine(destDirFullPath, file.FullName);
                         if (!File.Exists(installPath)) continue;
 
                         File.Delete(installPath);

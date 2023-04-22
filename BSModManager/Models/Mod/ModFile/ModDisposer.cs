@@ -26,7 +26,7 @@ namespace BSModManager.Models
 
             if (dirs.Length == 0) return;
 
-            foreach (var dir in dirs)
+            foreach (DirectoryInfo dir in dirs)
             {
                 try
                 {
@@ -46,16 +46,16 @@ namespace BSModManager.Models
 
             if (zipFilesPath.Count() == 0) return;
 
-            foreach (var zipFileName in Directory.EnumerateFiles(sourceDirFullPath, "*.zip", SearchOption.TopDirectoryOnly))
+            foreach (string zipFileName in Directory.EnumerateFiles(sourceDirFullPath, "*.zip", SearchOption.TopDirectoryOnly))
             {
                 try
                 {
-                    using (var fs = File.Open(zipFileName, FileMode.Open))
-                    using (var zip = new ZipArchive(fs))
+                    using (FileStream fs = File.Open(zipFileName, FileMode.Open))
+                    using (ZipArchive zip = new ZipArchive(fs))
                     {
-                        foreach (var file in zip.Entries)
+                        foreach (ZipArchiveEntry file in zip.Entries)
                         {
-                            var installPath = Path.Combine(destDirFullPath, file.FullName);
+                            string installPath = Path.Combine(destDirFullPath, file.FullName);
                             if (File.Exists(installPath))
                             {
                                 File.Delete(installPath);
@@ -78,7 +78,7 @@ namespace BSModManager.Models
 
             if (dllFilesPath.Count() == 0) return;
 
-            foreach (var dllFileFullPath in dllFilesPath)
+            foreach (string dllFileFullPath in dllFilesPath)
             {
                 if (!Directory.Exists(Path.Combine(destDirFullPath, "Plugins")))
                 {
@@ -86,7 +86,7 @@ namespace BSModManager.Models
                 }
                 try
                 {
-                    var installPath = Path.Combine(destDirFullPath, "Plugins", Path.GetFileName(dllFileFullPath));
+                    string installPath = Path.Combine(destDirFullPath, "Plugins", Path.GetFileName(dllFileFullPath));
                     if (File.Exists(installPath))
                     {
                         File.Delete(installPath);

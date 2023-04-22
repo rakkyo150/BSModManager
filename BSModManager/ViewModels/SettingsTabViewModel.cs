@@ -15,7 +15,7 @@ namespace BSModManager.ViewModels
 {
     public class SettingsTabViewModel : BindableBase, IDestructible
     {
-        CompositeDisposable Disposables { get; } = new CompositeDisposable();
+        private CompositeDisposable Disposables { get; } = new CompositeDisposable();
 
         public ReactiveCommand OpenBSModManagerRepositoryCommand { get; } = new ReactiveCommand();
         public ReactiveCommand SelectBSFolder { get; } = new ReactiveCommand();
