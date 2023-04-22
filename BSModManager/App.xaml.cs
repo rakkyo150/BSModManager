@@ -28,7 +28,7 @@ namespace BSModManager
             containerRegistry.RegisterSingleton<MA>();
             containerRegistry.RegisterSingleton<GitHubApi>();
             containerRegistry.RegisterSingleton<ModsContainerAgent>();
-            containerRegistry.RegisterSingleton<ModDataChanger>();
+            containerRegistry.RegisterSingleton<ChangeModInfoModel>();
             containerRegistry.RegisterSingleton<MyselfUpdater>();
 
             containerRegistry.Register<Refresher>();

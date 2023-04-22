@@ -28,9 +28,9 @@ namespace BSModManager.ViewModels
         private bool canCloseDialog = false;
 
 
-        public ModDataChanger changeModInfoPropertyModel;
+        public ChangeModInfoModel changeModInfoPropertyModel;
 
-        public ChangeModInfoViewModel(ModDataChanger cmipm)
+        public ChangeModInfoViewModel(ChangeModInfoModel cmipm)
         {
             changeModInfoPropertyModel = cmipm;
 
@@ -56,32 +56,32 @@ namespace BSModManager.ViewModels
 
             ExitCommand.Subscribe(() =>
             {
-                changeModInfoPropertyModel.SetInfoToMods();
+                changeModInfoPropertyModel.SetInfoToModsList();
                 canCloseDialog = true;
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
             }).AddTo(Disposables);
 
             BackCommand.Subscribe(() =>
             {
-                changeModInfoPropertyModel.SetInfoToMods();
+                changeModInfoPropertyModel.SetInfoToModsList();
                 canCloseDialog = true;
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
-                changeModInfoPropertyModel.ShowChangeModInfoPreviousDialog();
+                changeModInfoPropertyModel.ShowPreviousDialog();
             }).AddTo(Disposables);
 
             NextOrFinishCommand.Subscribe(() =>
             {
-                changeModInfoPropertyModel.SetInfoToMods();
+                changeModInfoPropertyModel.SetInfoToModsList();
                 canCloseDialog = true;
                 RequestClose.Invoke(new DialogResult(ButtonResult.OK));
 
                 if (NextOrFinish.Value == "Next")
                 {
-                    changeModInfoPropertyModel.ShowChangeModInfoNextDialog();
+                    changeModInfoPropertyModel.ShowNextDialog();
                 }
             }).AddTo(Disposables);
 
-            changeModInfoPropertyModel.ChangeIsUrlTextBoxReadOnly();
+            changeModInfoPropertyModel.MakeUrlTextBoxReadOnlyOrNot();
         }
 
         public string Title => "Change Mod Info";

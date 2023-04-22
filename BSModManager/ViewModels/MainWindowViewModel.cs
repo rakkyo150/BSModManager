@@ -118,7 +118,7 @@ namespace BSModManager.ViewModels
         }
 
         readonly IDialogService dialogService;
-        readonly Models.ModDataChanger changeModInfoModel;
+        readonly Models.ChangeModInfoModel changeModInfoModel;
         readonly ModsDataCsv modCsv;
         readonly InitialSetup initializer;
         readonly MyselfUpdater mySelfUpdater;
@@ -155,7 +155,7 @@ namespace BSModManager.ViewModels
         public DelegateCommand<System.ComponentModel.CancelEventArgs> ClosingCommand { get; }
 
         public MainWindowViewModel(IRegionManager regionManager, IDialogService ds,
-            ModInstaller mi, Refresher r, Models.ModDataChanger cmim, ModsContainerAgent mmc, MyselfUpdater myu,
+            ModInstaller mi, Refresher r, Models.ChangeModInfoModel cmim, ModsContainerAgent mmc, MyselfUpdater myu,
             ModsDataCsv mc, InitialSetup i, MyselfUpdater u, ModUpdater mu, MA mam)
         {
             modCsv = mc;
@@ -339,7 +339,7 @@ namespace BSModManager.ViewModels
 
             ChangeModInfoButtonCommand = new DelegateCommand(() =>
             {
-                changeModInfoModel.ShowChangeModInfoInitialDialog();
+                changeModInfoModel.ShowInitialDialog();
             });
 
             ModRepositoryButtonCommand = new DelegateCommand(() =>

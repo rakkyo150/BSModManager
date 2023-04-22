@@ -13,7 +13,7 @@ using static BSModManager.Models.MA;
 
 namespace BSModManager.Models
 {
-    public class ModDataChanger : BindableBase
+    public class ChangeModInfoModel : BindableBase
     {
         readonly IDialogService dialogService;
         readonly GitHubApi gitHubManager;
@@ -23,7 +23,7 @@ namespace BSModManager.Models
         private List<IMod> AllCheckedMod = new List<IMod>();
         private int AllCheckedModCount = int.MinValue;
 
-        public ModDataChanger(IDialogService ds, GitHubApi ghm, MA mam, ModsContainerAgent mmc)
+        public ChangeModInfoModel(IDialogService ds, GitHubApi ghm, MA mam, ModsContainerAgent mmc)
         {
             dialogService = ds;
             gitHubManager = ghm;
@@ -31,7 +31,7 @@ namespace BSModManager.Models
             modsContainerAgent = mmc;
         }
 
-        private string modName;
+        private string nowModName;
 
         private string modNameAndProgress;
         public string ModNameAndProgress
@@ -50,7 +50,7 @@ namespace BSModManager.Models
                 SetProperty(ref url, value);
                 modsContainerAgent.ActiveMods.UpdateURL(new LocalMod()
                 {
-                    Mod = modName,
+                    Mod = nowModName,
                     Url = value
                 });
             }
@@ -65,7 +65,7 @@ namespace BSModManager.Models
                 SetProperty(ref updated, value);
                 modsContainerAgent.ActiveMods.UpdateUpdated(new LocalMod()
                 {
-                    Mod = modName,
+                    Mod = nowModName,
                     Updated = value
                 });
             }
@@ -83,16 +83,16 @@ namespace BSModManager.Models
                 {
                     modsContainerAgent.ActiveMods.UpdateOriginal(new LocalMod()
                     {
-                        Mod = modName,
+                        Mod = nowModName,
                         Original = "〇"
                     });
-                    SetInfoForMA();
+                    SetMAInfo();
                 }
                 else
                 {
                     modsContainerAgent.ActiveMods.UpdateOriginal(new LocalMod()
                     {
-                        Mod = modName,
+                        Mod = nowModName,
                         Original = "×"
                     });
                     ExistInMA = false;
@@ -124,27 +124,10 @@ namespace BSModManager.Models
                 SetProperty(ref latest, value);
                 modsContainerAgent.ActiveMods.UpdateLatest(new LocalMod()
                 {
-                    Mod = modName,
+                    Mod = nowModName,
                     Latest = value
                 });
             }
-        }
-
-        internal void ChangeIsUrlTextBoxReadOnly()
-        {
-            if (!Original)
-            {
-                ExistInMA = false;
-                return;
-            }
-
-            if (!mAMod.ExistsData(modName))
-            {
-                ExistInMA = false;
-                return;
-            }
-
-            ExistInMA = true;
         }
 
         private string mA = "?";
@@ -156,7 +139,7 @@ namespace BSModManager.Models
                 SetProperty(ref mA, value);
                 modsContainerAgent.ActiveMods.UpdateMA(new LocalMod()
                 {
-                    Mod = modName,
+                    Mod = nowModName,
                     MA = value
                 });
             }
@@ -181,7 +164,7 @@ namespace BSModManager.Models
                 SetProperty(ref description, value);
                 modsContainerAgent.ActiveMods.UpdateDescription(new LocalMod()
                 {
-                    Mod = modName,
+                    Mod = nowModName,
                     Description = value
                 });
             }
@@ -190,7 +173,7 @@ namespace BSModManager.Models
         private int nowChangingCheckedIndex = 0;
         // ModsDataのうち何個目のCheckedのデータを変更するか
         // Exit時や全情報更新終了時に1に戻す
-        public int NowChangingCheckedIndex
+        public int NowModIndex
         {
             get { return nowChangingCheckedIndex; }
             set
@@ -201,27 +184,44 @@ namespace BSModManager.Models
             }
         }
 
-        public void ShowChangeModInfoPreviousDialog()
+        internal void MakeUrlTextBoxReadOnlyOrNot()
         {
-            NowChangingCheckedIndex -= 1;
+            if (!Original)
+            {
+                ExistInMA = false;
+                return;
+            }
 
-            if (NowChangingCheckedIndex + 1 > AllCheckedModCount)
+            if (!mAMod.ExistsData(nowModName))
+            {
+                ExistInMA = false;
+                return;
+            }
+
+            ExistInMA = true;
+        }
+
+        public void ShowPreviousDialog()
+        {
+            NowModIndex -= 1;
+
+            if (NowModIndex + 1 > AllCheckedModCount)
             {
                 Logger.Instance.Error("[バグ]選択されているModの範囲を超えるロジックです");
                 return;
             }
 
-            if (NowChangingCheckedIndex < 0)
+            if (NowModIndex < 0)
             {
                 Logger.Instance.Error("[バグ]NextCheckedIndexは負の値をとることはできません");
                 return;
             }
 
-            SetDialogInitialInfo();
+            UpsertDialogInfo();
             dialogService.ShowDialog("ChangeModInfo");
         }
 
-        public void ShowChangeModInfoInitialDialog()
+        public void ShowInitialDialog()
         {
             AllCheckedMod = modsContainerAgent.ActiveMods.AllCheckedMod();
             AllCheckedModCount = AllCheckedMod.Count();
@@ -232,54 +232,54 @@ namespace BSModManager.Models
                 return;
             }
 
-            NowChangingCheckedIndex = 0;
+            NowModIndex = 0;
 
-            if (NowChangingCheckedIndex + 1 > AllCheckedModCount)
+            if (NowModIndex + 1 > AllCheckedModCount)
             {
                 Logger.Instance.Error("[バグ]選択されているModの範囲を超えるロジックです");
                 return;
             }
 
-            if (NowChangingCheckedIndex < 0)
+            if (NowModIndex < 0)
             {
                 Logger.Instance.Error("[バグ]NextCheckedIndexは負の値をとることはできません");
                 return;
             }
 
-            SetDialogInitialInfo();
+            UpsertDialogInfo();
             dialogService.ShowDialog("ChangeModInfo");
         }
 
-        public void ShowChangeModInfoNextDialog()
+        public void ShowNextDialog()
         {
-            NowChangingCheckedIndex += 1;
+            NowModIndex += 1;
 
-            if (NowChangingCheckedIndex + 1 > AllCheckedModCount)
+            if (NowModIndex + 1 > AllCheckedModCount)
             {
                 Logger.Instance.Error("[バグ]選択されているModの範囲を超えるロジックです");
                 return;
             }
 
-            if (NowChangingCheckedIndex < 0)
+            if (NowModIndex < 0)
             {
                 Logger.Instance.Error("[バグ]NextCheckedIndexは負の値をとることはできません");
                 return;
             }
 
-            SetDialogInitialInfo();
+            UpsertDialogInfo();
             dialogService.ShowDialog("ChangeModInfo");
         }
 
-        private void SetDialogInitialInfo()
+        private void UpsertDialogInfo()
         {
-            if (NowChangingCheckedIndex + 1 == AllCheckedModCount) NextOrFinishButtonText = "Finish";
+            if (NowModIndex + 1 == AllCheckedModCount) NextOrFinishButtonText = "Finish";
             else NextOrFinishButtonText = "Next";
 
-            IMod checkedMod = AllCheckedMod[NowChangingCheckedIndex];
+            IMod checkedMod = AllCheckedMod[NowModIndex];
 
-            modName = checkedMod.Mod;
+            nowModName = checkedMod.Mod;
 
-            ModNameAndProgress = checkedMod.Mod + "(" + (NowChangingCheckedIndex + 1).ToString()
+            ModNameAndProgress = checkedMod.Mod + "(" + (NowModIndex + 1).ToString()
             + "/" + AllCheckedModCount.ToString() + ")";
             Url = checkedMod.Url;
             if (checkedMod.Original == "?" || checkedMod.Original == "〇")
@@ -296,7 +296,7 @@ namespace BSModManager.Models
         {
             try
             {
-                string searchUrl = $"https://www.google.com/search?q={modName}";
+                string searchUrl = $"https://www.google.com/search?q={nowModName}";
                 ProcessStartInfo pi = new ProcessStartInfo()
                 {
                     FileName = searchUrl,
@@ -310,7 +310,7 @@ namespace BSModManager.Models
             }
         }
 
-        public void SetInfoToMods()
+        public void SetInfoToModsList()
         {
             if (ExistInMA) return;
 
@@ -342,13 +342,13 @@ namespace BSModManager.Models
             }
         }
 
-        private void SetInfoForMA()
+        private void SetMAInfo()
         {
-            if (!mAMod.ExistsData(modName)) return;
+            if (!mAMod.ExistsData(nowModName)) return;
 
             DateTimeOffset now = DateTimeOffset.UtcNow;
 
-            MAMod[] a = mAMod.ModAssistantAllMods.Where(x => x.name == modName).ToArray();
+            MAMod[] a = mAMod.ModAssistantAllMods.Where(x => x.name == nowModName).ToArray();
             ExistInMA = true;
             Latest = new Version(a[0].version);
             Url = a[0].link;
