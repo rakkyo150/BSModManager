@@ -33,11 +33,13 @@ namespace BSModManager.Models
                 SearchRepositoriesRequest srr = new SearchRepositoriesRequest(modName);
                 SearchRepositoryResult result = await gitHub.Search.SearchRepo(srr);
 
+                if(result.TotalCount == 0) return string.Empty;
+                
                 return result.Items[0].HtmlUrl;
             }
             catch (Exception ex)
             {
-                Logger.Instance.Debug(ex.Message);
+                Logger.Instance.Error(ex.Message);
                 return string.Empty;
             }
         }
