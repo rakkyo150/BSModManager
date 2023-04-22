@@ -2,7 +2,6 @@
 using Prism.Mvvm;
 using Prism.Navigation;
 using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 using System.Reactive.Disposables;
 
 namespace BSModManager.Models
@@ -36,7 +35,7 @@ namespace BSModManager.Models
 
         internal LocalModsContainer LocalModsContainer { get { return localMods; } }
         internal PastModsContainer PastModsContainer { get { return pastMods; } }
-        internal RecommendModsContainer RecommendModsContainer { get { return recommendMods; }}
+        internal RecommendModsContainer RecommendModsContainer { get { return recommendMods; } }
 
         internal void ActivateLocalModsContainer()
         {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using Prism.Mvvm;
 using System;
 using System.IO;
 

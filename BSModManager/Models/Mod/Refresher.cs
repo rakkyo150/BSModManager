@@ -116,7 +116,7 @@ namespace BSModManager.Models
             modsDataContainerAgent.LocalModsContainer.UpdateOriginal(modData);
 
             if (response == null) return;
-            
+
             // リリース情報に不備がある場合
             if (response.TagName == null) return;
 

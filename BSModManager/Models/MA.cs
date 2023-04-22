@@ -1,5 +1,4 @@
-﻿using BSModManager.Models.Mods.Structures;
-using BSModManager.Static;
+﻿using BSModManager.Static;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

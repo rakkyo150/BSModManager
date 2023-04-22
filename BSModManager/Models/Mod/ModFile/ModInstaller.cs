@@ -1,5 +1,4 @@
 ﻿using BSModManager.Interfaces;
-using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
 using System;
 using System.Collections.Generic;
@@ -45,7 +44,7 @@ namespace BSModManager.Models
                 await gitHubApi.DownloadAsync(checkedLocalModData.Url, Folder.Instance.tmpFolder);
                 modDisposer.Dispose(Folder.Instance.tmpFolder, Folder.Instance.tmpFolder);
                 IMod checkedLocalModDataWithNewInstalledVersionAndFileHash = SetInstalledVersionAndFileHash(checkedLocalModData);
-                modDisposer.MoveFolder(Folder.Instance.tmpFolder,Config.Instance.BSFolderPath);
+                modDisposer.MoveFolder(Folder.Instance.tmpFolder, Config.Instance.BSFolderPath);
                 modsDataContainerAgent.LocalModsContainer.Add(checkedLocalModDataWithNewInstalledVersionAndFileHash);
             }
 

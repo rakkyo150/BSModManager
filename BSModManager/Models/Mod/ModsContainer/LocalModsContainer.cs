@@ -1,7 +1,6 @@
 ﻿using BSModManager.Interfaces;
 using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
-using ImTools;
 using Octokit;
 using Prism.Mvvm;
 using System;
@@ -188,7 +187,7 @@ namespace BSModManager.Models
 
             LocalModsData.Remove(LocalModsData.First(x => x.Mod == modData.Mod));
         }
-        
+
         internal async Task InitializeFromCsvData()
         {
             string dataDirectory = Path.Combine(Folder.Instance.dataFolder, VersionExtractor.GameVersion);

@@ -7,7 +7,6 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.IO;
 using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 

@@ -53,7 +53,7 @@ namespace BSModManager.ViewModels
             VerifyMAExeColor = new ReactiveProperty<Brush>(Brushes.Green).AddTo(Disposables);
 
             Update();
-            
+
             Config.Instance.PropertyChanged += (sender, e) =>
             {
                 Update();

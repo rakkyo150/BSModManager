@@ -1,19 +1,15 @@
 ﻿using BSModManager.Interfaces;
-using BSModManager.Models.Mods.Structures;
-using BSModManager.Static;
 using Csv;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BSModManager.Models
 {
     public class ModsDataCsv
     {
         public void Write(string csvPath, IEnumerable<IMod> modEnum)
-        {          
+        {
             List<ModsDataCsvIndex> modInformationCsvList = new List<ModsDataCsvIndex>();
 
             foreach (IMod mod in modEnum)
@@ -35,7 +31,7 @@ namespace BSModManager.Models
 
             // List<ModsDataCsvIndex>をIEnumerable<string[]>に変換する
             string csv = CsvWriter.WriteToText(
-                ModsDataCsvIndex.GetPropertyNames(), 
+                ModsDataCsvIndex.GetPropertyNames(),
                 modInformationCsvList.Select(x => new string[] { x.Mod, x.LocalVersion, x.LatestVersion, x.DownloadedFileHash, x.Original.ToString(), x.Ma.ToString(), x.Url }),
                 ','
                 );
@@ -50,7 +46,7 @@ namespace BSModManager.Models
             string csv = File.ReadAllText(csvPath);
             IEnumerable<ICsvLine> data = CsvReader.ReadFromText(csv);
 
-            foreach(ICsvLine item in data)
+            foreach (ICsvLine item in data)
             {
                 output.Add(new ModsDataCsvIndex()
                 {

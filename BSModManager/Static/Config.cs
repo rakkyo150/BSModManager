@@ -23,7 +23,7 @@ namespace BSModManager.Models
         }
 
         public static Config Instance { get; set; } = new Config();
-        
+
         private string bSFolderPath = @"C:\Program Files (x86)\Steam\steamapps\common\Beat Saber";
         public string BSFolderPath
         {
@@ -72,7 +72,7 @@ namespace BSModManager.Models
         private bool mAExeVerification = false;
         public bool MAExeVerification => mAExeVerification;
 
-        public string BSFolderVerificationString => bSFolderVerification ? "〇": "×";
+        public string BSFolderVerificationString => bSFolderVerification ? "〇" : "×";
         public Brush BSFolderVerificationColor => bSFolderVerification ? Brushes.Green : Brushes.Red;
 
         public string GitHubTokenVerificationString => gitHubTokenVerification ? "〇" : "×";

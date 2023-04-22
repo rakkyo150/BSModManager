@@ -153,7 +153,7 @@ namespace BSModManager.ViewModels
             OpenBSFolderButtonEnable.Value = Config.Instance.MAExeVerification;
         }
 
-            public void Destroy()
+        public void Destroy()
         {
             Disposables.Dispose();
         }

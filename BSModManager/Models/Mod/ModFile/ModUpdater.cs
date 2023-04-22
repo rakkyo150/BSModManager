@@ -1,5 +1,4 @@
 ﻿using BSModManager.Interfaces;
-using BSModManager.Models.Mods.Structures;
 using BSModManager.Static;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace BSModManager.Models
         readonly Refresher refresher;
         readonly ModsContainerAgent modsDataContainerAgent;
 
-        public ModUpdater(GitHubApi gha, ModDisposer md, Refresher r,ModsContainerAgent mdca)
+        public ModUpdater(GitHubApi gha, ModDisposer md, Refresher r, ModsContainerAgent mdca)
         {
             gitHubApi = gha;
             modDisposer = md;
@@ -79,7 +78,7 @@ namespace BSModManager.Models
             foreach (FileInfo file in files)
             {
                 // 場合によってはPluginsフォルダの中に複数のdllファイルが入っているのでファイル名を確定させる
-                if (file.Name!=$"{modData.Mod}.dll") continue;
+                if (file.Name != $"{modData.Mod}.dll") continue;
 
                 modDataWithNewInstalledVersionAndFileHash.Installed = modDataWithNewInstalledVersionAndFileHash.Latest;
                 modDataWithNewInstalledVersionAndFileHash.DownloadedFileHash = FileHashProvider.ComputeFileHash(file.FullName);
