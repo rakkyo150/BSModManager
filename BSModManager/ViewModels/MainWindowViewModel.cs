@@ -219,6 +219,8 @@ namespace BSModManager.ViewModels
 
                     mAMod.ModAssistantAllMods = await mAMod.GetAllAsync();
 
+                    await modsDataContainerAgent.LocalModsContainer.InitializeFromCsvData();
+
                     await refresher.Refresh();
 
                     AllButtonEnable();
