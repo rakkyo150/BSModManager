@@ -66,30 +66,31 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                List<string> colors = Keywords.Where(x => x.StartsWith("@")).ToList();
-
-                Console.WriteLine(mod.InstalledColor.ToString());
-                // @から始まる文字列を削除する
-                colors.ForEach(x => Keywords.Remove(x));
-                // @から始まる文字列をすべて含むmodをShowedLocalModsDataに追加する
-                if (colors.Any(x => mod.InstalledColor.ToString() == x.Replace("@","")) &&
-                                                                Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower())
-                || mod.Url.ToLower().Contains(x.ToLower())
-                || mod.Description.ToLower().Contains(x.ToLower()))
-                                        )
+                if(Keywords.Any(x => x.StartsWith("@")))
                 {
-                    ShowedLocalModsData.Add(mod);
-                    // @から始まる文字列を戻す
-                    colors.ForEach(x => Keywords.Add(x));
-                    continue;
-                }
-                else
-                {
-                    // @から始まる文字列を戻す
-                    colors.ForEach(x => Keywords.Add(x));
-                    continue;
-                }
+                    List<string> colors = Keywords.Where(x => x.StartsWith("@")).ToList();
 
+                    // @から始まる文字列を削除する
+                    colors.ForEach(x => Keywords.Remove(x));
+                    // @から始まる文字列をすべて含むmodをShowedLocalModsDataに追加する
+                    if (colors.Any(x => mod.InstalledColor.ToString() == x.Replace("@", "")) &&
+                                                                    Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower())
+                    || mod.Url.ToLower().Contains(x.ToLower())
+                    || mod.Description.ToLower().Contains(x.ToLower()))
+                                            )
+                    {
+                        ShowedLocalModsData.Add(mod);
+                        // @から始まる文字列を戻す
+                        colors.ForEach(x => Keywords.Add(x));
+                        continue;
+                    }
+                    else
+                    {
+                        // @から始まる文字列を戻す
+                        colors.ForEach(x => Keywords.Add(x));
+                        continue;
+                    }
+                }
 
                 // Keywordsをすべて含むmodをShowedLocalModsDataに追加する
                 if (Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower()) 
