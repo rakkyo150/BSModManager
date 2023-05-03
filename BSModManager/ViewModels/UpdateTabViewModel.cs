@@ -17,6 +17,9 @@ namespace BSModManager.ViewModels
 
         public ReactiveProperty<string> SearchWords { get; } = new ReactiveProperty<string>("");
 
+        public ReactiveCommand<string> ColorCommand { get; }
+
+
         public ObservableCollection<IMod> LocalModsContainer { get; }
 
         public UpdateTabViewModel(ModsContainerAgent mdca)
@@ -25,6 +28,10 @@ namespace BSModManager.ViewModels
 
             SearchWords = modsDataContainerAgent.LocalModsContainer.ToReactivePropertyAsSynchronized(x => x.SearchWords).AddTo(disposables);
             LocalModsContainer = modsDataContainerAgent.LocalModsContainer.ShowedLocalModsData;
+
+            ColorCommand = new ReactiveCommand<string>()
+                .WithSubscribe(x => modsDataContainerAgent.LocalModsContainer.AddOrRemoveColorWord2SearchWords(x))
+                .AddTo(disposables);
 
             // https://alfort.online/689
             BindingOperations.EnableCollectionSynchronization(LocalModsContainer, new object());

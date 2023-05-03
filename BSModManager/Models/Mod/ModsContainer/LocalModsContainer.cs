@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,22 +55,62 @@ namespace BSModManager.Models
             // searchWordを空白文字ごとに分割してkeywordsリストをクリアしてから追加する
             Keywords.Clear();
             Keywords.AddRange(searchWords.Split(' '));
+            Keywords.RemoveAll(x => x == "");
             ShowedLocalModsData.Clear();
+
             foreach (IMod mod in LocalModsData)
-            {
+            {              
                 if (Keywords.Count() == 0)
                 {
                     ShowedLocalModsData.Add(mod);
                     continue;
                 }
-                foreach (string keyword in Keywords)
+
+                List<string> colors = Keywords.Where(x => x.StartsWith("@")).ToList();
+
+                Console.WriteLine(mod.InstalledColor.ToString());
+                // @から始まる文字列を削除する
+                colors.ForEach(x => Keywords.Remove(x));
+                // @から始まる文字列をすべて含むmodをShowedLocalModsDataに追加する
+                if (colors.Any(x => mod.InstalledColor.ToString() == x.Replace("@","")) &&
+                                                                Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower())
+                || mod.Url.ToLower().Contains(x.ToLower())
+                || mod.Description.ToLower().Contains(x.ToLower()))
+                                        )
                 {
-                    if (mod.Mod.Contains(keyword) || mod.Url.Contains(keyword) || mod.Description.Contains(keyword))
-                    {
-                        ShowedLocalModsData.Add(mod);
-                        break;
-                    }
+                    ShowedLocalModsData.Add(mod);
+                    // @から始まる文字列を戻す
+                    colors.ForEach(x => Keywords.Add(x));
+                    continue;
                 }
+                else
+                {
+                    // @から始まる文字列を戻す
+                    colors.ForEach(x => Keywords.Add(x));
+                    continue;
+                }
+
+
+                // Keywordsをすべて含むmodをShowedLocalModsDataに追加する
+                if (Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower()) 
+                    || mod.Url.ToLower().Contains(x.ToLower()) 
+                    || mod.Description.ToLower().Contains(x.ToLower()))
+                )
+                {
+                    ShowedLocalModsData.Add(mod);
+                }
+            }
+        }
+
+        public void AddOrRemoveColorWord2SearchWords(string color)
+        {
+            if (SearchWords.Contains($" @{color}"))
+            {
+                SearchWords = SearchWords.Replace($" @{color}", "");
+            }
+            else
+            {
+                SearchWords += $" @{color}";
             }
         }
 
