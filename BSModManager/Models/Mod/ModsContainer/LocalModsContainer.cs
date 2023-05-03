@@ -17,17 +17,60 @@ namespace BSModManager.Models
     public class LocalModsContainer : BindableBase, IModsContainer
     {
         public ObservableCollection<IMod> LocalModsData = new ObservableCollection<IMod>();
+        public ObservableCollection<IMod> ShowedLocalModsData = new ObservableCollection<IMod>();
         private readonly GitHubApi gitHubApi;
         private readonly MA mAMods;
         private readonly ModsDataCsv modsDataCsv;
         private readonly DateTime now = DateTime.Now;
         private string updated = string.Empty;
+        private string searchWords = string.Empty;
+        private List<string> Keywords = new List<string>();
 
         public LocalModsContainer(GitHubApi gha, MA mam, ModsDataCsv mdc)
         {
             gitHubApi = gha;
             mAMods = mam;
             modsDataCsv = mdc;
+
+            // LocalModsDataに変更があったらShowedLocalModsDataにも反映する
+            LocalModsData.CollectionChanged += (sender, e) =>
+            {
+                UpdateShowedLocalModsData();
+            };
+        }
+
+        public string SearchWords
+        {
+            get => searchWords;
+            set
+            {
+                SetProperty(ref searchWords, value);
+                UpdateShowedLocalModsData();
+            }
+        }
+
+        public void UpdateShowedLocalModsData()
+        {
+            // searchWordを空白文字ごとに分割してkeywordsリストをクリアしてから追加する
+            Keywords.Clear();
+            Keywords.AddRange(searchWords.Split(' '));
+            ShowedLocalModsData.Clear();
+            foreach (IMod mod in LocalModsData)
+            {
+                if (Keywords.Count() == 0)
+                {
+                    ShowedLocalModsData.Add(mod);
+                    continue;
+                }
+                foreach (string keyword in Keywords)
+                {
+                    if (mod.Mod.Contains(keyword) || mod.Url.Contains(keyword) || mod.Description.Contains(keyword))
+                    {
+                        ShowedLocalModsData.Add(mod);
+                        break;
+                    }
+                }
+            }
         }
 
         public void AllCheckedOrUnchecked()
@@ -352,6 +395,27 @@ namespace BSModManager.Models
         public IEnumerable<IMod> ReturnCheckedModsData()
         {
             return LocalModsData.Where(x => x.Checked == true);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing) { }
+
+            LocalModsData.CollectionChanged -= (sender, e) =>
+            { 
+                UpdateShowedLocalModsData(); 
+            };
+        }
+
+        ~LocalModsContainer()
+        {
+            Dispose(false);
         }
     }
 }
