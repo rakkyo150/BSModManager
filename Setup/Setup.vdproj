@@ -1525,15 +1525,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BSModManager"
-        "ProductCode" = "8:{6C82DD10-83C8-484F-BFF7-3E69E0126BE5}"
-        "PackageCode" = "8:{DDBCB0E5-6670-4172-B454-7240BDD9C214}"
+        "ProductCode" = "8:{81D6E158-A93D-4F06-8875-333FB39BCC35}"
+        "PackageCode" = "8:{9B250FDE-23C6-4AA9-A3B2-C6E8794FA482}"
         "UpgradeCode" = "8:{A58E0CA7-9856-4FF3-A956-738C70E93128}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.3.0"
+        "ProductVersion" = "8:1.3.1"
         "Manufacturer" = "8:Rakkyo150"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -2075,7 +2075,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6DDB5A73B47148CC9C837BBC9DF53D2B"
             {
-            "SourcePath" = "8:..\\BSModManager\\obj\\Release\\BSModManager.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_3734DC8D2650464EB25CF2332D505965"
@@ -2103,7 +2103,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7F0FD3666F234699AB839847AE2332AC"
             {
-            "SourcePath" = "8:..\\Updater\\obj\\Release\\Updater.exe"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_3734DC8D2650464EB25CF2332D505965"
