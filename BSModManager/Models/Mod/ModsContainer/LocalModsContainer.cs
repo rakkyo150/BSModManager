@@ -120,19 +120,19 @@ namespace BSModManager.Models
         public void AllCheckedOrUnchecked()
         {
             int i = 0;
-            if (EntityLocalModsData.Count(x => x.Checked == true) * 2 > EntityLocalModsData.Count)
+            if (DisplayedLocalModsData.Count(x => x.Checked == true) * 2 > DisplayedLocalModsData.Count)
             {
-                foreach (IMod _ in EntityLocalModsData)
+                foreach (IMod _ in DisplayedLocalModsData)
                 {
-                    EntityLocalModsData[i].Checked = false;
+                    DisplayedLocalModsData[i].Checked = false;
                     i++;
                 }
                 return;
             }
 
-            foreach (IMod _ in EntityLocalModsData)
+            foreach (IMod _ in DisplayedLocalModsData)
             {
-                EntityLocalModsData[i].Checked = true;
+                DisplayedLocalModsData[i].Checked = true;
                 i++;
             }
         }
