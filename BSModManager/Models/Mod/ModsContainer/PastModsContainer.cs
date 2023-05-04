@@ -20,6 +20,7 @@ namespace BSModManager.Models
         public PastModsContainer()
         {
             BindingOperations.EnableCollectionSynchronization(EntityPastModsData, new object());
+            BindingOperations.EnableCollectionSynchronization(DisplayedPastModsData, new object());
 
             EntityPastModsData.CollectionChanged += (sender, e) =>
             {

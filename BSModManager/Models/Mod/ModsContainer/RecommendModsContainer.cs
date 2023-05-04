@@ -20,6 +20,7 @@ namespace BSModManager.Models
         public RecommendModsContainer()
         {
             BindingOperations.EnableCollectionSynchronization(EntityRecommendModsData, new object());
+            BindingOperations.EnableCollectionSynchronization(DisplayedRecommendModsData, new object());
             EntityRecommendModsData.CollectionChanged += (sender, e) =>
             {
                 UpdateDisplayedRecommendModsData();
