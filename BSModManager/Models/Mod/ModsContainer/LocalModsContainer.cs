@@ -33,10 +33,9 @@ namespace BSModManager.Models
             mAMods = mam;
             modsDataCsv = mdc;
 
-            // LocalModsDataに変更があったらShowedLocalModsDataにも反映する
             EntityLocalModsData.CollectionChanged += (sender, e) =>
             {
-                UpdateShowedLocalModsData();
+                UpdateDisplayedLocalModsData();
             };
         }
 
@@ -46,11 +45,11 @@ namespace BSModManager.Models
             set
             {
                 SetProperty(ref searchWords, value);
-                UpdateShowedLocalModsData();
+                UpdateDisplayedLocalModsData();
             }
         }
 
-        public void UpdateShowedLocalModsData()
+        public void UpdateDisplayedLocalModsData()
         {
             // searchWordを空白文字ごとに分割してkeywordsリストをクリアしてから追加する
             Keywords.Clear();
@@ -59,14 +58,14 @@ namespace BSModManager.Models
             DisplayedLocalModsData.Clear();
 
             foreach (IMod mod in EntityLocalModsData)
-            {              
+            {
                 if (Keywords.Count() == 0)
                 {
                     DisplayedLocalModsData.Add(mod);
                     continue;
                 }
 
-                if(Keywords.Any(x => x.StartsWith("@")))
+                if (Keywords.Any(x => x.StartsWith("@")))
                 {
                     List<string> colors = Keywords.Where(x => x.StartsWith("@")).ToList();
 
@@ -92,15 +91,18 @@ namespace BSModManager.Models
                     }
                 }
 
-                // Keywordsをすべて含むmodをShowedLocalModsDataに追加する
-                if (Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower()) 
-                    || mod.Url.ToLower().Contains(x.ToLower()) 
-                    || mod.Description.ToLower().Contains(x.ToLower()))
-                )
+                if (ContainKeywords(mod))
                 {
                     DisplayedLocalModsData.Add(mod);
                 }
             }
+        }
+
+        private bool ContainKeywords(IMod mod)
+        {
+            return Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower())
+                                || mod.Url.ToLower().Contains(x.ToLower())
+                                || mod.Description.ToLower().Contains(x.ToLower()));
         }
 
         public void AddOrRemoveColorWord2SearchWords(string color)
@@ -451,7 +453,7 @@ namespace BSModManager.Models
 
             EntityLocalModsData.CollectionChanged -= (sender, e) =>
             { 
-                UpdateShowedLocalModsData(); 
+                UpdateDisplayedLocalModsData(); 
             };
         }
 

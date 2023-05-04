@@ -12,36 +12,85 @@ namespace BSModManager.Models
 {
     public class PastModsContainer : BindableBase, IModsContainer
     {
-        internal ObservableCollection<IMod> PastModsData = new ObservableCollection<IMod>();
+        internal ObservableCollection<IMod> EntityPastModsData = new ObservableCollection<IMod>();
+        internal ObservableCollection<IMod> DisplayedPastModsData = new ObservableCollection<IMod>();
+        private string searchWords = string.Empty;
+        private List<string> Keywords = new List<string>();
 
         public PastModsContainer()
         {
-            BindingOperations.EnableCollectionSynchronization(PastModsData, new object());
+            BindingOperations.EnableCollectionSynchronization(EntityPastModsData, new object());
+
+            EntityPastModsData.CollectionChanged += (sender, e) =>
+            {
+                UpdateDisplayedPastModsData();
+            };
+        }
+
+        public string SearchWords
+        {
+            get => searchWords;
+            set
+            {
+                SetProperty(ref searchWords, value);
+                UpdateDisplayedPastModsData();
+            }
+        }
+
+        public void UpdateDisplayedPastModsData()
+        {
+            // searchWordを空白文字ごとに分割してkeywordsリストをクリアしてから追加する
+            Keywords.Clear();
+            Keywords.AddRange(searchWords.Split(' '));
+            Keywords.RemoveAll(x => x == "");
+            DisplayedPastModsData.Clear();
+
+            foreach (IMod mod in EntityPastModsData)
+            {
+                if (Keywords.Count() == 0)
+                {
+                    DisplayedPastModsData.Add(mod);
+                    continue;
+                }
+
+                if (ContainKeywords(mod))
+                {
+                    DisplayedPastModsData.Add(mod);
+                }
+            }
+        }
+
+
+        private bool ContainKeywords(IMod mod)
+        {
+            return Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower())
+                                || mod.Url.ToLower().Contains(x.ToLower())
+                                || mod.Description.ToLower().Contains(x.ToLower()));
         }
 
         public void AllCheckedOrUnchecked()
         {
             int i = 0;
-            if (PastModsData.Count(x => x.Checked == true) * 2 > PastModsData.Count)
+            if (EntityPastModsData.Count(x => x.Checked == true) * 2 > EntityPastModsData.Count)
             {
-                foreach (IMod _ in PastModsData)
+                foreach (IMod _ in EntityPastModsData)
                 {
-                    PastModsData[i].Checked = false;
+                    EntityPastModsData[i].Checked = false;
                     i++;
                 }
                 return;
             }
 
-            foreach (IMod _ in PastModsData)
+            foreach (IMod _ in EntityPastModsData)
             {
-                PastModsData[i].Checked = true;
+                EntityPastModsData[i].Checked = true;
                 i++;
             }
         }
 
         public void ModRepositoryOpen()
         {
-            foreach (IMod a in PastModsData)
+            foreach (IMod a in EntityPastModsData)
             {
                 if (!a.Checked) continue;
 
@@ -64,14 +113,14 @@ namespace BSModManager.Models
 
         public List<IMod> AllCheckedMod()
         {
-            return PastModsData.Where(x => x.Checked == true).ToList();
+            return EntityPastModsData.Where(x => x.Checked == true).ToList();
         }
 
         public void SortByName()
         {
-            List<IMod> sorted = this.PastModsData.OrderBy(x => x.Mod).ToList();
-            this.PastModsData.Clear();
-            foreach (IMod item in sorted) this.PastModsData.Add(item);
+            List<IMod> sorted = this.EntityPastModsData.OrderBy(x => x.Mod).ToList();
+            this.EntityPastModsData.Clear();
+            foreach (IMod item in sorted) this.EntityPastModsData.Add(item);
         }
 
         public void Add(IMod modData)
@@ -82,7 +131,7 @@ namespace BSModManager.Models
                 return;
             }
 
-            PastModsData.Add(modData);
+            EntityPastModsData.Add(modData);
         }
 
         public void UpdateInstalled(IMod modData)
@@ -92,7 +141,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
         }
 
         public void UpdateLatest(IMod modData)
@@ -102,7 +151,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
         }
 
         public void UpdateDownloadedFileHash(IMod modData)
@@ -112,7 +161,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
         }
 
         public void UpdateOriginal(IMod modData)
@@ -122,7 +171,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
         }
 
         public void UpdateUpdated(IMod modData)
@@ -132,7 +181,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
         }
 
         public void UpdateMA(IMod modData)
@@ -142,7 +191,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
         }
 
         public void UpdateDescription(IMod modData)
@@ -152,7 +201,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
         }
 
         public void UpdateURL(IMod modData)
@@ -162,28 +211,49 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            PastModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
+            EntityPastModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
         }
 
         public void Remove(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
-                Logger.Instance.Debug($"{modData.Mod}は{PastModsData}に存在しないので削除できません");
+                Logger.Instance.Debug($"{modData.Mod}は{EntityPastModsData}に存在しないので削除できません");
                 return;
             }
 
-            PastModsData.Remove(PastModsData.First(x => x.Mod == modData.Mod));
+            EntityPastModsData.Remove(EntityPastModsData.First(x => x.Mod == modData.Mod));
         }
 
         public bool ExistsSameModNameData(IMod modData)
         {
-            return PastModsData.Any(x => x.Mod == modData.Mod);
+            return EntityPastModsData.Any(x => x.Mod == modData.Mod);
         }
 
         public IEnumerable<IMod> ReturnCheckedModsData()
         {
-            return PastModsData.Where(x => x.Checked == true);
+            return EntityPastModsData.Where(x => x.Checked == true);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing) { }
+
+            EntityPastModsData.CollectionChanged -= (sender, e) =>
+            {
+                UpdateDisplayedPastModsData();
+            };
+        }
+
+        ~PastModsContainer()
+        {
+            Dispose(false);
         }
     }
 }

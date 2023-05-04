@@ -12,36 +12,83 @@ namespace BSModManager.Models
 {
     public class RecommendModsContainer : BindableBase, IModsContainer
     {
-        public ObservableCollection<IMod> RecommendModsData = new ObservableCollection<IMod>();
+        public ObservableCollection<IMod> EntityRecommendModsData = new ObservableCollection<IMod>();
+        internal ObservableCollection<IMod> DisplayedRecommendModsData = new ObservableCollection<IMod>();
+        private string searchWords = string.Empty;
+        private List<string> Keywords = new List<string>();
 
         public RecommendModsContainer()
         {
-            BindingOperations.EnableCollectionSynchronization(RecommendModsData, new object());
+            BindingOperations.EnableCollectionSynchronization(EntityRecommendModsData, new object());
+            EntityRecommendModsData.CollectionChanged += (sender, e) =>
+            {
+                UpdateDisplayedRecommendModsData();
+            };
+        }
+
+        public string SearchWords
+        {
+            get => searchWords;
+            set
+            {
+                SetProperty(ref searchWords, value);
+                UpdateDisplayedRecommendModsData();
+            }
+        }
+
+        public void UpdateDisplayedRecommendModsData()
+        {
+            // searchWordを空白文字ごとに分割してkeywordsリストをクリアしてから追加する
+            Keywords.Clear();
+            Keywords.AddRange(searchWords.Split(' '));
+            Keywords.RemoveAll(x => x == "");
+            DisplayedRecommendModsData.Clear();
+
+            foreach (IMod mod in EntityRecommendModsData)
+            {
+                if (Keywords.Count() == 0)
+                {
+                    DisplayedRecommendModsData.Add(mod);
+                    continue;
+                }
+
+                if (ContainKeywords(mod))
+                {
+                    DisplayedRecommendModsData.Add(mod);
+                }
+            }
+        }
+
+        private bool ContainKeywords(IMod mod)
+        {
+            return Keywords.All(x => mod.Mod.ToLower().Contains(x.ToLower())
+                                || mod.Url.ToLower().Contains(x.ToLower())
+                                || mod.Description.ToLower().Contains(x.ToLower()));
         }
 
         public void AllCheckedOrUnchecked()
         {
             int i = 0;
-            if (RecommendModsData.Count(x => x.Checked == true) * 2 > RecommendModsData.Count)
+            if (EntityRecommendModsData.Count(x => x.Checked == true) * 2 > EntityRecommendModsData.Count)
             {
-                foreach (IMod _ in RecommendModsData)
+                foreach (IMod _ in EntityRecommendModsData)
                 {
-                    RecommendModsData[i].Checked = false;
+                    EntityRecommendModsData[i].Checked = false;
                     i++;
                 }
                 return;
             }
 
-            foreach (IMod _ in RecommendModsData)
+            foreach (IMod _ in EntityRecommendModsData)
             {
-                RecommendModsData[i].Checked = true;
+                EntityRecommendModsData[i].Checked = true;
                 i++;
             }
         }
 
         public void ModRepositoryOpen()
         {
-            foreach (IMod a in RecommendModsData)
+            foreach (IMod a in EntityRecommendModsData)
             {
                 if (!a.Checked) continue;
 
@@ -64,14 +111,14 @@ namespace BSModManager.Models
 
         public List<IMod> AllCheckedMod()
         {
-            return RecommendModsData.Where(x => x.Checked == true).ToList();
+            return EntityRecommendModsData.Where(x => x.Checked == true).ToList();
         }
 
         public void SortByName()
         {
-            List<IMod> sorted = this.RecommendModsData.OrderBy(x => x.Mod).ToList();
-            this.RecommendModsData.Clear();
-            foreach (IMod item in sorted) this.RecommendModsData.Add(item);
+            List<IMod> sorted = this.EntityRecommendModsData.OrderBy(x => x.Mod).ToList();
+            this.EntityRecommendModsData.Clear();
+            foreach (IMod item in sorted) this.EntityRecommendModsData.Add(item);
         }
 
         public void Add(IMod modData)
@@ -82,7 +129,7 @@ namespace BSModManager.Models
                 return;
             }
 
-            RecommendModsData.Add(modData);
+            EntityRecommendModsData.Add(modData);
         }
 
         public void UpdateInstalled(IMod modData)
@@ -92,7 +139,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
         }
 
         public void UpdateLatest(IMod modData)
@@ -102,7 +149,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
         }
 
         public void UpdateDownloadedFileHash(IMod modData)
@@ -112,7 +159,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
         }
 
         public void UpdateOriginal(IMod modData)
@@ -122,7 +169,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
         }
 
         public void UpdateUpdated(IMod modData)
@@ -132,7 +179,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
         }
 
         public void UpdateMA(IMod modData)
@@ -142,7 +189,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
         }
 
         public void UpdateDescription(IMod modData)
@@ -152,7 +199,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
         }
 
         public void UpdateURL(IMod modData)
@@ -162,28 +209,49 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            RecommendModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
+            EntityRecommendModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
         }
 
         public void Remove(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
-                Logger.Instance.Debug($"{modData.Mod}は{RecommendModsData}に存在しないので削除できません");
+                Logger.Instance.Debug($"{modData.Mod}は{EntityRecommendModsData}に存在しないので削除できません");
                 return;
             }
 
-            RecommendModsData.Remove(RecommendModsData.First(x => x.Mod == modData.Mod));
+            EntityRecommendModsData.Remove(EntityRecommendModsData.First(x => x.Mod == modData.Mod));
         }
 
         public bool ExistsSameModNameData(IMod modData)
         {
-            return RecommendModsData.Any(x => x.Mod == modData.Mod);
+            return EntityRecommendModsData.Any(x => x.Mod == modData.Mod);
         }
 
         public IEnumerable<IMod> ReturnCheckedModsData()
         {
-            return RecommendModsData.Where(x => x.Checked == true);
+            return EntityRecommendModsData.Where(x => x.Checked == true);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing) { }
+
+            EntityRecommendModsData.CollectionChanged -= (sender, e) =>
+            {
+                UpdateDisplayedRecommendModsData();
+            };
+        }
+
+        ~RecommendModsContainer()
+        {
+            Dispose(false);
         }
     }
 }
