@@ -285,7 +285,7 @@ namespace BSModManager.ViewModels
                 Directory.CreateDirectory(dataDirectory);
             }
             string modsDataCsvPath = Path.Combine(dataDirectory, "ModsData.csv");
-            modCsv.Write(modsDataCsvPath, modsDataContainerAgent.LocalModsContainer.LocalModsData);
+            modCsv.Write(modsDataCsvPath, modsDataContainerAgent.LocalModsContainer.EntityLocalModsData);
         }
 
         private async Task MyselfUpdateCheck()

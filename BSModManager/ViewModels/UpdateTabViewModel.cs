@@ -27,7 +27,7 @@ namespace BSModManager.ViewModels
             modsDataContainerAgent = mdca;
 
             SearchWords = modsDataContainerAgent.LocalModsContainer.ToReactivePropertyAsSynchronized(x => x.SearchWords).AddTo(disposables);
-            LocalModsContainer = modsDataContainerAgent.LocalModsContainer.ShowedLocalModsData;
+            LocalModsContainer = modsDataContainerAgent.LocalModsContainer.DisplayedLocalModsData;
 
             ColorCommand = new ReactiveCommand<string>()
                 .WithSubscribe(x => modsDataContainerAgent.LocalModsContainer.AddOrRemoveColorWord2SearchWords(x))

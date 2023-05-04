@@ -30,9 +30,9 @@ namespace BSModManager.Models
             gitHubApi = gha;
             modsContainerAgent = mdca;
 
-            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged += async (sender, e) => 
+            modsContainerAgent.LocalModsContainer.EntityLocalModsData.CollectionChanged += async (sender, e) => 
             { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await PastModsDataRefresh(); };
-            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged += async (sender, e) =>
+            modsContainerAgent.LocalModsContainer.EntityLocalModsData.CollectionChanged += async (sender, e) =>
             { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await RecommendModDataRefreash(); };
         }
 
@@ -47,7 +47,7 @@ namespace BSModManager.Models
 
         private async Task AssistLocalModDataByRemovedPastOrRecommendMods()
         {
-            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.EntityLocalModsData)
             {
                 if (localMod.Url != string.Empty) continue;
 
@@ -184,7 +184,7 @@ namespace BSModManager.Models
                 UpdateDataToExistsInMAVersion(notInstalledRecommendList, modAssistantMod);
             }
 
-            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.EntityLocalModsData)
             {
                 if (!notInstalledRecommendList.Any(x => x.Mod == localMod.Mod)) continue;
                 if (!(notInstalledRecommendList.First(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇"))) continue;
@@ -231,7 +231,7 @@ namespace BSModManager.Models
 
             GetPreviousDataList(previousDataListAddedToPastModsDataCue, AllPastVersion);
 
-            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod localMod in modsContainerAgent.LocalModsContainer.EntityLocalModsData)
             {
                 if (!previousDataListAddedToPastModsDataCue.Any(x => x.Mod == localMod.Mod)) continue;
                 if (!previousDataListAddedToPastModsDataCue.Find(x => x.Mod == localMod.Mod).Original == (localMod.Original == "〇")) continue;
@@ -461,7 +461,7 @@ namespace BSModManager.Models
             if (NoLocalModsData()) return;
 
             List<IMod> removeList = new List<IMod>();
-            foreach (IMod data in modsContainerAgent.LocalModsContainer.LocalModsData)
+            foreach (IMod data in modsContainerAgent.LocalModsContainer.EntityLocalModsData)
             {
                 if (HasRemovedFromLocal(localModFilesData, data))
                 {
@@ -545,7 +545,7 @@ namespace BSModManager.Models
 
         private bool NoLocalModsData()
         {
-            return modsContainerAgent.LocalModsContainer.LocalModsData.Count == 0;
+            return modsContainerAgent.LocalModsContainer.EntityLocalModsData.Count == 0;
         }
 
         private bool NoPreviousData(List<ModsDataCsvIndex> previousDataListAddedToPastModsData)
@@ -576,9 +576,9 @@ namespace BSModManager.Models
         {
             if (disposing) { }
 
-            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged -= async (sender, e) =>
+            modsContainerAgent.LocalModsContainer.EntityLocalModsData.CollectionChanged -= async (sender, e) =>
             { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await PastModsDataRefresh(); };
-            modsContainerAgent.LocalModsContainer.LocalModsData.CollectionChanged -= async (sender, e) =>
+            modsContainerAgent.LocalModsContainer.EntityLocalModsData.CollectionChanged -= async (sender, e) =>
             { if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) await RecommendModDataRefreash(); };
         }
 

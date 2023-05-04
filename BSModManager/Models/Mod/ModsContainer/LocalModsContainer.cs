@@ -17,8 +17,8 @@ namespace BSModManager.Models
 {
     public class LocalModsContainer : BindableBase, IModsContainer
     {
-        public ObservableCollection<IMod> LocalModsData = new ObservableCollection<IMod>();
-        public ObservableCollection<IMod> ShowedLocalModsData = new ObservableCollection<IMod>();
+        public ObservableCollection<IMod> EntityLocalModsData = new ObservableCollection<IMod>();
+        public ObservableCollection<IMod> DisplayedLocalModsData = new ObservableCollection<IMod>();
         private readonly GitHubApi gitHubApi;
         private readonly MA mAMods;
         private readonly ModsDataCsv modsDataCsv;
@@ -34,7 +34,7 @@ namespace BSModManager.Models
             modsDataCsv = mdc;
 
             // LocalModsDataに変更があったらShowedLocalModsDataにも反映する
-            LocalModsData.CollectionChanged += (sender, e) =>
+            EntityLocalModsData.CollectionChanged += (sender, e) =>
             {
                 UpdateShowedLocalModsData();
             };
@@ -56,13 +56,13 @@ namespace BSModManager.Models
             Keywords.Clear();
             Keywords.AddRange(searchWords.Split(' '));
             Keywords.RemoveAll(x => x == "");
-            ShowedLocalModsData.Clear();
+            DisplayedLocalModsData.Clear();
 
-            foreach (IMod mod in LocalModsData)
+            foreach (IMod mod in EntityLocalModsData)
             {              
                 if (Keywords.Count() == 0)
                 {
-                    ShowedLocalModsData.Add(mod);
+                    DisplayedLocalModsData.Add(mod);
                     continue;
                 }
 
@@ -79,7 +79,7 @@ namespace BSModManager.Models
                     || mod.Description.ToLower().Contains(x.ToLower()))
                                             )
                     {
-                        ShowedLocalModsData.Add(mod);
+                        DisplayedLocalModsData.Add(mod);
                         // @から始まる文字列を戻す
                         colors.ForEach(x => Keywords.Add(x));
                         continue;
@@ -98,7 +98,7 @@ namespace BSModManager.Models
                     || mod.Description.ToLower().Contains(x.ToLower()))
                 )
                 {
-                    ShowedLocalModsData.Add(mod);
+                    DisplayedLocalModsData.Add(mod);
                 }
             }
         }
@@ -118,26 +118,26 @@ namespace BSModManager.Models
         public void AllCheckedOrUnchecked()
         {
             int i = 0;
-            if (LocalModsData.Count(x => x.Checked == true) * 2 > LocalModsData.Count)
+            if (EntityLocalModsData.Count(x => x.Checked == true) * 2 > EntityLocalModsData.Count)
             {
-                foreach (IMod _ in LocalModsData)
+                foreach (IMod _ in EntityLocalModsData)
                 {
-                    LocalModsData[i].Checked = false;
+                    EntityLocalModsData[i].Checked = false;
                     i++;
                 }
                 return;
             }
 
-            foreach (IMod _ in LocalModsData)
+            foreach (IMod _ in EntityLocalModsData)
             {
-                LocalModsData[i].Checked = true;
+                EntityLocalModsData[i].Checked = true;
                 i++;
             }
         }
 
         public void ModRepositoryOpen()
         {
-            foreach (IMod a in LocalModsData)
+            foreach (IMod a in EntityLocalModsData)
             {
                 if (!a.Checked) continue;
 
@@ -160,25 +160,25 @@ namespace BSModManager.Models
 
         public List<IMod> AllCheckedMod()
         {
-            return LocalModsData.Where(x => x.Checked == true).ToList();
+            return EntityLocalModsData.Where(x => x.Checked == true).ToList();
         }
 
         public void SortByName()
         {
-            List<IMod> sorted = this.LocalModsData.OrderBy(x => x.Mod).ToList();
-            LocalModsData.Clear();
-            foreach (IMod item in sorted) this.LocalModsData.Add(item);
+            List<IMod> sorted = this.EntityLocalModsData.OrderBy(x => x.Mod).ToList();
+            EntityLocalModsData.Clear();
+            foreach (IMod item in sorted) this.EntityLocalModsData.Add(item);
         }
 
         public async Task SortByNameAndSupplementUrl()
         {
-            List<IMod> sorted = LocalModsData.OrderBy(x => x.Mod).ToList();
-            LocalModsData.Clear();
+            List<IMod> sorted = EntityLocalModsData.OrderBy(x => x.Mod).ToList();
+            EntityLocalModsData.Clear();
             foreach (IMod sortedMod in sorted)
             {
                 if (sortedMod.Url != string.Empty || sortedMod.MA != "×")
                 {
-                    LocalModsData.Add(sortedMod);
+                    EntityLocalModsData.Add(sortedMod);
                     continue;
                 }
 
@@ -188,7 +188,7 @@ namespace BSModManager.Models
 
                 if (response == null)
                 {
-                    LocalModsData.Add(sortedMod);
+                    EntityLocalModsData.Add(sortedMod);
 
                     continue;
                 }
@@ -203,7 +203,7 @@ namespace BSModManager.Models
                 }
 
                 sortedMod.Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName);
-                LocalModsData.Add(sortedMod);
+                EntityLocalModsData.Add(sortedMod);
             }
         }
 
@@ -215,7 +215,7 @@ namespace BSModManager.Models
                 return;
             }
 
-            LocalModsData.Add(modData);
+            EntityLocalModsData.Add(modData);
         }
 
         public void UpdateInstalled(IMod modData)
@@ -225,7 +225,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).Installed = modData.Installed;
         }
 
         public void UpdateLatest(IMod modData)
@@ -235,7 +235,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).Latest = modData.Latest;
         }
 
         public void UpdateDownloadedFileHash(IMod modData)
@@ -245,7 +245,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash = modData.DownloadedFileHash;
         }
 
         public void UpdateOriginal(IMod modData)
@@ -255,7 +255,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).Original = modData.Original;
         }
 
         public void UpdateUpdated(IMod modData)
@@ -265,7 +265,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).Updated = modData.Updated;
         }
 
         public void UpdateMA(IMod modData)
@@ -275,7 +275,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).MA = modData.MA;
         }
 
         public void UpdateDescription(IMod modData)
@@ -285,7 +285,7 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).Description = modData.Description;
         }
 
         public void UpdateURL(IMod modData)
@@ -295,18 +295,18 @@ namespace BSModManager.Models
                 Add(modData);
                 return;
             }
-            LocalModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
+            EntityLocalModsData.First(x => x.Mod == modData.Mod).Url = modData.Url;
         }
 
         public void Remove(IMod modData)
         {
             if (!ExistsSameModNameData(modData))
             {
-                Logger.Instance.Debug($"{modData.Mod}は{LocalModsData}に存在しないので削除できません");
+                Logger.Instance.Debug($"{modData.Mod}は{EntityLocalModsData}に存在しないので削除できません");
                 return;
             }
 
-            LocalModsData.Remove(LocalModsData.First(x => x.Mod == modData.Mod));
+            EntityLocalModsData.Remove(EntityLocalModsData.First(x => x.Mod == modData.Mod));
         }
 
         internal async Task InitializeFromCsvData()
@@ -336,7 +336,7 @@ namespace BSModManager.Models
                         updated = (now - mAUpdatedAt).Hours + "H" + (now - mAUpdatedAt).Minutes + "m ago";
                     }
 
-                    LocalModsData.Add(new LocalMod(this)
+                    EntityLocalModsData.Add(new LocalMod(this)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version(temp.version),
@@ -358,7 +358,7 @@ namespace BSModManager.Models
 
                 if (response == null)
                 {
-                    LocalModsData.Add(new LocalMod(this)
+                    EntityLocalModsData.Add(new LocalMod(this)
                     {
                         Mod = previousData.Mod,
                         Latest = new Version("0.0.0"),
@@ -383,7 +383,7 @@ namespace BSModManager.Models
 
                 if (previousData.DownloadedFileHash != string.Empty)
                 {
-                    LocalModsData.Add(new LocalMod(this)
+                    EntityLocalModsData.Add(new LocalMod(this)
                     {
                         Mod = previousData.Mod,
                         Installed = new Version(previousData.LatestVersion),
@@ -399,7 +399,7 @@ namespace BSModManager.Models
                     continue;
                 }
 
-                LocalModsData.Add(new LocalMod(this)
+                EntityLocalModsData.Add(new LocalMod(this)
                 {
                     Mod = previousData.Mod,
                     Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName),
@@ -421,22 +421,22 @@ namespace BSModManager.Models
 
         public bool ExistsSameModNameData(IMod modData)
         {
-            return LocalModsData.Any(x => x.Mod == modData.Mod);
+            return EntityLocalModsData.Any(x => x.Mod == modData.Mod);
         }
 
         public bool ShouldChangeInstalledVersionToFileItselfVersion(IMod modData)
         {
-            if (!LocalModsData.Any(x => x.Mod == modData.Mod)) return false;
+            if (!EntityLocalModsData.Any(x => x.Mod == modData.Mod)) return false;
 
             // 初期化が必要なので
-            if (LocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash == string.Empty) return true;
+            if (EntityLocalModsData.First(x => x.Mod == modData.Mod).DownloadedFileHash == string.Empty) return true;
 
-            return !LocalModsData.Any(x => x.DownloadedFileHash == modData.DownloadedFileHash);
+            return !EntityLocalModsData.Any(x => x.DownloadedFileHash == modData.DownloadedFileHash);
         }
 
         public IEnumerable<IMod> ReturnCheckedModsData()
         {
-            return LocalModsData.Where(x => x.Checked == true);
+            return EntityLocalModsData.Where(x => x.Checked == true);
         }
 
         public void Dispose()
@@ -449,7 +449,7 @@ namespace BSModManager.Models
         {
             if (disposing) { }
 
-            LocalModsData.CollectionChanged -= (sender, e) =>
+            EntityLocalModsData.CollectionChanged -= (sender, e) =>
             { 
                 UpdateShowedLocalModsData(); 
             };
