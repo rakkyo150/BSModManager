@@ -302,7 +302,7 @@ namespace BSModManager.ViewModels
 
             bool hasDownloaded = await myselfUpdater.DownloadMyselfNewVersion();
 
-            if (hasDownloaded && File.Exists(Path.Combine(Environment.CurrentDirectory, "Updater.exe")))
+            if (hasDownloaded)
             {
                 mySelfUpdater.UpdateUpdater();
 

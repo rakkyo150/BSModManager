@@ -62,21 +62,21 @@ namespace BSModManager.Models
 
         public async Task<bool> DownloadMyselfNewVersion()
         {
-            string destDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LatestMyselfVersion.ToString());
+            string versionDirFullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LatestMyselfVersion.ToString());
 
-            if (!Directory.Exists(destDirFullPath))
+            if (!Directory.Exists(versionDirFullPath))
             {
-                Directory.CreateDirectory(destDirFullPath);
+                Directory.CreateDirectory(versionDirFullPath);
             }
 
-            await gitHubApi.DownloadAsync(myselfUrl, destDirFullPath);
+            await gitHubApi.DownloadAsync(myselfUrl, versionDirFullPath);
 
-            string zipFileName = Path.Combine(destDirFullPath, "BSModManager.zip");
+            string zipFileName = Path.Combine(versionDirFullPath, "BSModManager.zip");
 
-            return UnzipMyselfNewVersion(destDirFullPath, zipFileName);
+            return UnzipMyselfNewVersion(versionDirFullPath, zipFileName);
         }
 
-        private static bool UnzipMyselfNewVersion(string destDirFullPath, string zipFileName)
+        private static bool UnzipMyselfNewVersion(string versionDirFullPath, string zipFileName)
         {
             try
             {
@@ -85,21 +85,27 @@ namespace BSModManager.Models
                 {
                     foreach (ZipArchiveEntry file in zip.Entries)
                     {
-                        string installPath = Path.Combine(destDirFullPath, file.FullName);
+                        string installPath = Path.Combine(versionDirFullPath, file.FullName);
                         if (!File.Exists(installPath)) continue;
 
                         File.Delete(installPath);
                     }
-                    zip.ExtractToDirectory(destDirFullPath);
+                    zip.ExtractToDirectory(versionDirFullPath);
                 }
                 File.Delete(zipFileName);
 
-                string unzipPath = Path.Combine(destDirFullPath, "BSModManager");
+                string entityDirPath = Path.Combine(versionDirFullPath, "BSModManager");
 
-                if (!Directory.Exists(unzipPath)) return false;
+                if (!Directory.Exists(entityDirPath))
+                {
+                    Logger.Instance.Error($"アップデートが途中で終了しました。メンテナーがリリースしたzipファイルの構造を間違えているようです。" +
+                    $"\n最新バージョンのフォルダが生成されているはずなので、その中にあるSetup.msiをクリックして実行してください。" +
+                    $"\nお手数おかけして申し訳ありません。");
+                    return false;
+                }
 
-                Folder.Instance.Copy(unzipPath, destDirFullPath, true);
-                Directory.Delete(unzipPath, true);
+                Folder.Instance.Copy(entityDirPath, versionDirFullPath, true);
+                Directory.Delete(entityDirPath, true);
 
                 return true;
             }
