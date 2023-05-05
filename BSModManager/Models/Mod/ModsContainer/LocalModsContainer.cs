@@ -205,6 +205,8 @@ namespace BSModManager.Models
                 }
 
                 sortedMod.Latest = VersionExtractor.DetectVersionFromRawVersion(response.TagName);
+                sortedMod.Description = response.Body;
+
                 EntityLocalModsData.Add(sortedMod);
             }
         }
